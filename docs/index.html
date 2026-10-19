@@ -1521,6 +1521,8 @@ program:{
 (function(){
 const CFG=window.TRACKER_CONFIG||{};
 const IS_MAC=!!(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.tracker);
+/* Inside claude.ai the page is an Artifact: Claude is built in and the board is saved to the viewer's Claude account. */
+const IS_ARTIFACT=!IS_MAC&&!!(window.claude&&window.claude.use);
 const REPO_URL=CFG.repo||"https://github.com/xfshan1014-boop/followthrough";
 const DOWNLOAD_URL=REPO_URL+"/releases/latest";
 const ICON_SVG='<svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#1c1b19"/><path d="M118 330 C 170 330, 190 170, 270 170 C 345 170, 345 270, 280 270 C 220 270, 230 340, 360 340" fill="none" stroke="#f6f6f3" stroke-width="40" stroke-linecap="round"/><circle cx="376" cy="340" r="38" fill="#e68d66"/></svg>';
@@ -1559,7 +1561,7 @@ const PROVIDERS={
   custom:{label:"Other",sub:"OpenAI-compatible",name:"AI",base:"",ph:"Key, if needed",site:""}
 };
 const PROV_ORDER=["anthropic","openai","gemini","deepseek","openrouter","custom"];
-function aiName(){return P.ai&&P.ai.ok?(PROVIDERS[P.ai.provider]||{}).name||"AI":"AI";}
+function aiName(){if(IS_ARTIFACT)return "Claude";return P.ai&&P.ai.ok?(PROVIDERS[P.ai.provider]||{}).name||"AI":"AI";}
 async function http(url,opts){
   if(IS_MAC)return native("fetch",{url,method:opts.method||"GET",headers:opts.headers||{},body:opts.body||null});
   let r;try{r=await fetch(url,opts);}catch(e){throw {code:"network",message:String(e&&e.message||e)};}
@@ -1649,6 +1651,11 @@ en:{ai_off:"AI: off",ai_on:n=>"AI: "+n,mac:"Mac app",settings:"Settings",
   ["→","acc","AI requests go straight to your provider","Sent from your computer to the AI provider you pick, with your own key."],
   ["◐","warn",mac?"Transcription runs on your Mac":"Transcription uses your browser",mac?"The Mac app uses Apple's on-device speech recognition.":"The browser's speech service is used. The Mac app transcribes on-device with Apple's speech recognition."],
   ["✕","mute","Never","No analytics, trackers, or ads."]],
+ p_rows_a:[["✓","ok","Your board is saved to your Claude account","Only you can see it. Nothing reaches us."],
+  ["✳","acc","AI is Claude, built in","Reviews, nudges, and answers run on your own Claude account. No API key needed."],
+  ["◐","warn","Paste transcripts here","claude.ai can't use the microphone. Paste a transcript, or record in the Mac app."],
+  ["✕","mute","Never","No analytics, trackers, or ads."]],
+ st_dataL_a:"Saved to your Claude account",rec_art:"claude.ai can't use the microphone. Paste a transcript, or record in the Mac app.",
  p_more:"Export or erase your data anytime in Settings.",p_code:"Read the code ↗",p_go:"Sounds good",
  s_eb:"Sign up",s_h:"Sign up with your email",s_p:"Your email is the only thing we store. It tells us who uses Followthrough, and we send an update when a new version ships.",s_email:"Email",s_note:"Never shared or sold. Your board stays on this computer.",s_go:"Sign up",s_busy:"Signing up…",
  ab_eb:"About you",ab_h:"Tell us a little about you",ab_p:"This stays on your computer. It sets your greeting and the sample week.",ab_name:"Your name",ab_role:"Your role",ab_hint:"Sets your sample week and team options. Change it in Settings.",err_role:"Pick the role closest to yours.",
@@ -1684,6 +1691,11 @@ zh:{ai_off:"AI：未连接",ai_on:n=>"AI："+n,mac:"Mac 应用",settings:"设置
   ["→","acc","AI 请求直接发给你选的服务商","从你的电脑直接发出，使用你自己的 key。"],
   ["◐","warn",mac?"转写在你的 Mac 本地完成":"转写使用浏览器的语音服务",mac?"Mac 应用使用苹果的本地语音识别。":"浏览器版使用浏览器自带的语音服务；Mac 应用则用苹果的本地语音识别。"],
   ["✕","mute","绝不会有","没有数据分析、追踪器或广告。"]],
+ p_rows_a:[["✓","ok","看板保存在你的 Claude 账号里","只有你自己能看到，不会传给我们。"],
+  ["✳","acc","AI 就是内置的 Claude","整理、催办和答复都用你自己的 Claude 账号，不需要 API key。"],
+  ["◐","warn","在这里粘贴转写稿","claude.ai 里不能用麦克风。可以粘贴转写稿，或者用 Mac 应用录音。"],
+  ["✕","mute","绝不会有","没有数据分析、追踪器或广告。"]],
+ st_dataL_a:"保存在你的 Claude 账号里",rec_art:"claude.ai 里不能用麦克风。可以粘贴转写稿，或者用 Mac 应用录音。",
  p_more:"随时可以在设置里导出或清除你的数据。",p_code:"查看源代码 ↗",p_go:"明白了",
  s_eb:"注册",s_h:"用邮箱注册",s_p:"邮箱是我们唯一会保存的信息，用来了解有多少人在用 Followthrough，并在新版本发布时通知你。",s_email:"邮箱",s_note:"绝不分享或出售。看板内容只留在这台电脑上。",s_go:"注册",s_busy:"注册中…",
  ab_eb:"关于你",ab_h:"简单介绍一下你自己",ab_p:"这些只保存在你的电脑上，用来设置问候语和示例周。",ab_name:"你的名字",ab_role:"你的角色",ab_hint:"决定示例周和团队选项，可在设置里修改。",err_role:"选一个最接近你的角色。",
@@ -1817,12 +1829,16 @@ startReplay=function(){const d=draft();if(S.replay&&person(S.replay.person)){d.p
 const _save=save;save=function(){if(S&&S.pristine)S.pristine=false;_save();};
 
 /* ---------- hooks into the board ---------- */
+if(!IS_ARTIFACT){
 lsGet=function(){try{const v=kvGet(LS_KEY);return v?JSON.parse(v):null;}catch(e){return null;}};
 lsSet=function(o){kvSet(LS_KEY,JSON.stringify(o));};
 window.addEventListener("pagehide",()=>{if(S)lsSet(S);});
+}
 if(IS_MAC)copy=async function(text){try{await native("copy",{text:String(text)});toast("Copied");}catch(e){toast("Couldn't copy. Select the text and copy it instead.");}};
-renderFoot=function(){$("#foot").textContent=IS_MAC?"Saved on this Mac only":"Saved in this browser only";localize($("#foot"));};
-initClaude=async function(){CLAUDE=P.ai&&P.ai.ok?makeAdapter(P.ai):null;render();};
+if(!IS_ARTIFACT)renderFoot=function(){$("#foot").textContent=IS_MAC?"Saved on this Mac only":"Saved in this browser only";localize($("#foot"));};
+if(!IS_ARTIFACT)initClaude=async function(){CLAUDE=P.ai&&P.ai.ok?makeAdapter(P.ai):null;render();};
+const _empty=emptyState;emptyState=function(){const b=_empty();b.project="";return b;};
+const _norm=normalize;normalize=function(){_norm();if(S&&S.project==="My project")S.project="";};
 const _err=claudeErr;
 claudeErr=function(e){const c=e&&e.code,E=t("a_errs");
   if(c==="auth")return E.auth;if(c==="network")return E.network;if(c==="no_model")return E.no_model;if(c==="empty_completion")return E.other;return _err(e);};
@@ -1838,7 +1854,7 @@ function chrome(){
   let x=$("#tbExtra");
   if(!x){x=document.createElement("div");x.id="tbExtra";x.className="tb-extra";$(".top").appendChild(x);}
   const on=!!(P.ai&&P.ai.ok);
-  x.innerHTML=`<button class="tb-btn" data-ob="ai" type="button"><span class="dot${on?" on":""}"></span><span class="lbl" data-raw>${esc(on?t("ai_on")(aiName()):t("ai_off"))}</span></button>${IS_MAC?"":`<a class="tb-btn" href="${DOWNLOAD_URL}" target="_blank" rel="noopener" data-raw>↓ <span class="lbl">${t("mac")}</span></a>`}<button class="tb-btn icon" data-ob="settings" type="button" aria-label="${t("settings")}" data-raw>⚙</button>`;
+  x.innerHTML=`${IS_ARTIFACT?"":`<button class="tb-btn" data-ob="ai" type="button"><span class="dot${on?" on":""}"></span><span class="lbl" data-raw>${esc(on?t("ai_on")(aiName()):t("ai_off"))}</span></button>`}${IS_MAC?"":`<a class="tb-btn" href="${DOWNLOAD_URL}" target="_blank" rel="noopener" data-raw>↓ <span class="lbl">${t("mac")}</span></a>`}<button class="tb-btn icon" data-ob="settings" type="button" aria-label="${t("settings")}" data-raw>⚙</button>`;
   const r=route();
   if(r==="capture")captureChrome();
   if(r==="today"&&!S.sample&&!S.tasks.length){const m=$(".main .sec");if(m&&!$("#setupCta")){m.insertAdjacentHTML("beforeend",`<div class="setup-cta" id="setupCta" data-raw><button class="btn pri" data-ob="setup" type="button">${t("su_cta")}</button></div>`);}}
@@ -1858,7 +1874,7 @@ function applyTheme(){const r=document.documentElement;if(P.theme==="system")del
 
 /* ---------- onboarding and panels ---------- */
 const OB={start:"own",role:"",pplName:"",otherTeam:false,screen:null,tab:0,prov:P.ai?P.ai.provider:"anthropic",key:P.ai?P.ai.key:"",base:P.ai?P.ai.base||"":"",models:P.ai&&P.ai.models||[],main:P.ai?P.ai.model:"",fast:P.ai?P.ai.fast:"",tested:!!(P.ai&&P.ai.ok),testing:false,testErr:"",people:[],vals:{},imp:null,impBusy:false,impErr:"",erase:false,busy:false};
-const STEPS=()=>IS_MAC?["welcome","privacy","signup","about","ai","done"]:["welcome","privacy","signup","about","ai","mac","done"];
+const STEPS=()=>IS_ARTIFACT?["welcome","privacy","about","mac","done"]:IS_MAC?["welcome","privacy","signup","about","ai","done"]:["welcome","privacy","signup","about","ai","mac","done"];
 const DEMO={en:[
  `<div class="ob-live"><i></i>Recording · 12:47</div><div class="ln"><span class="sp" style="color:var(--violet)">Maya</span>Per signup cohort. <mark>Exclude reactivated users</mark>, otherwise the invite channel looks better.</div><div class="ln"><span class="sp" style="color:var(--accent)">You</span>I'll update the metric spec today.</div><div class="cap">Transcribed live. AI highlights answers and promises.</div>`,
  `<div class="row"><span class="ic" style="background:var(--ok-soft);color:var(--ok)">A</span>D7 retention = per signup cohort</div><div class="row"><span class="ic" style="background:var(--accent-soft);color:var(--accent)">N</span>Update metric spec, share Friday</div><div class="row"><span class="ic" style="background:var(--warn-soft);color:var(--warn)">W</span>Waiting on Maya: power calc, Thu</div><div class="cap">Accept or skip each update. One click applies them.</div>`,
@@ -1895,7 +1911,7 @@ function cardHTML(){const s=OB.screen;
     <div class="ob-oss"><span aria-hidden="true">◇</span><span>${t("w_oss")}</span></div>
     <div class="ob-acts"><button class="btn pri" type="button" data-obgo="next">${t("w_go")}</button><span class="grow"></span><button class="ob-lnk" type="button" data-obgo="import">${t("imp_link")}</button></div>`;
   if(s==="privacy")return `${bars()}${head(t("p_eb"))}<h2>${t("p_h")}</h2><p>${t("p_p")}</p>
-    <div class="ob-flow">${t("p_rows")(IS_MAC).map(([ic,k,h,d])=>{const c={ok:"var(--ok-soft);color:var(--ok)",acc:"var(--accent-soft);color:var(--accent)",warn:"var(--warn-soft);color:var(--warn)",mute:"var(--surface-2);color:var(--ink-2)"}[k];return `<div class="ob-fl"><span class="ic" style="background:${c}">${ic}</span><div><div class="h">${h}</div><div class="d">${d}</div></div></div>`;}).join("")}</div>
+    <div class="ob-flow">${(IS_ARTIFACT?t("p_rows_a"):t("p_rows")(IS_MAC)).map(([ic,k,h,d])=>{const c={ok:"var(--ok-soft);color:var(--ok)",acc:"var(--accent-soft);color:var(--accent)",warn:"var(--warn-soft);color:var(--warn)",mute:"var(--surface-2);color:var(--ink-2)"}[k];return `<div class="ob-fl"><span class="ic" style="background:${c}">${ic}</span><div><div class="h">${h}</div><div class="d">${d}</div></div></div>`;}).join("")}</div>
     <p class="ob-hint" style="margin-top:10px">${t("p_more")} <a class="ob-lnk" style="font-size:12px" href="${REPO_URL}" target="_blank" rel="noopener">${t("p_code")}</a></p>
     <div class="ob-acts"><button class="btn pri" type="button" data-obgo="next">${t("p_go")}</button><span class="grow"></span><button class="ob-skip" type="button" data-obgo="prev">${t("back")}</button></div>`;
   if(s==="signup"||s==="signupOnly")return `${s==="signup"?bars():""}${head(t("s_eb"),s==="signupOnly")}<h2>${t("s_h")}</h2><p>${t("s_p")}</p>
@@ -1926,10 +1942,10 @@ function cardHTML(){const s=OB.screen;
     <div class="ob-set"><h3>${t("st_lang")}</h3>${langSeg().replace("margin-left:auto","")}</div>
     <div class="ob-set"><h3>${t("st_role")}</h3><div class="ob-roles">${ROLES[L()].map(([k,n])=>`<button type="button" class="ob-role sm${(P.role||"product")===k?" on":""}" data-obsetrole="${k}">${n}</button>`).join("")}</div></div>
     <div class="ob-set"><h3>${t("st_theme")}</h3><div class="ob-seg">${t("st_themes").map(([k,l])=>`<button type="button" data-obtheme="${k}" class="${P.theme===k?"on":""}">${l}</button>`).join("")}</div></div>
-    <div class="ob-set"><h3>${t("st_ai")}</h3><div class="ob-setrow"><span class="l">${pv?esc(t("st_aiOn")(pv.label,P.ai.model)):t("st_aiOff")}</span><button class="btn sm" type="button" data-ob="ai">${pv?t("st_aiEdit"):t("st_aiBtn")}</button></div></div>
-    <div class="ob-set"><h3>${t("st_data")}</h3><div class="ob-setrow"><span class="l">${t("st_dataL")}</span><button class="btn sm" type="button" data-obexport>${t("st_exp")}</button><button class="btn sm" type="button" data-obgo="import">${t("st_imp")}</button><button class="btn sm" type="button" data-oberase style="color:var(--danger)">${t("st_erase")}</button></div>
+    ${IS_ARTIFACT?"":`<div class="ob-set"><h3>${t("st_ai")}</h3><div class="ob-setrow"><span class="l">${pv?esc(t("st_aiOn")(pv.label,P.ai.model)):t("st_aiOff")}</span><button class="btn sm" type="button" data-ob="ai">${pv?t("st_aiEdit"):t("st_aiBtn")}</button></div></div>`}
+    <div class="ob-set"><h3>${t("st_data")}</h3><div class="ob-setrow"><span class="l">${IS_ARTIFACT?t("st_dataL_a"):t("st_dataL")}</span><button class="btn sm" type="button" data-obexport>${t("st_exp")}</button><button class="btn sm" type="button" data-obgo="import">${t("st_imp")}</button><button class="btn sm" type="button" data-oberase style="color:var(--danger)">${t("st_erase")}</button></div>
       ${OB.erase?`<div class="ob-setrow" style="margin-top:8px"><span class="l" style="color:var(--danger)">${t("st_eraseQ")}</span><button class="btn sm" type="button" data-oberaseyes style="color:var(--danger);border-color:var(--danger)">${t("st_eraseYes")}</button><button class="btn sm" type="button" data-oberaseno>${t("cancel")}</button></div>`:""}</div>
-    <div class="ob-set"><h3>${t("st_acct")}</h3><div class="ob-setrow"><span class="l">${P.email?esc(P.email):t("st_noAcct")}</span>${P.email?"":`<button class="btn sm" type="button" data-obgo="signupOnly">${t("st_signup")}</button>`}</div></div>
+    ${IS_ARTIFACT?"":`<div class="ob-set"><h3>${t("st_acct")}</h3><div class="ob-setrow"><span class="l">${P.email?esc(P.email):t("st_noAcct")}</span>${P.email?"":`<button class="btn sm" type="button" data-obgo="signupOnly">${t("st_signup")}</button>`}</div></div>`}
     <div class="ob-set"><h3>${t("st_help")}</h3><div class="ob-setrow"><button class="ob-lnk" type="button" data-obtour>${t("st_tour")}</button><span class="grow"></span><a class="ob-lnk" href="${REPO_URL}" target="_blank" rel="noopener">${t("p_code")}</a></div><p class="ob-hint">${t("st_ver")(VERSION)}</p></div>
     <div class="ob-acts"><button class="btn pri" type="button" data-obclose>${t("done")}</button></div>`;}
   if(s==="setup")return `${head(t("su_eb"),true)}<h2>${t("su_h")}</h2><p>${t("su_p")}</p>
@@ -2004,7 +2020,8 @@ function saveAI(){P.ai={provider:OB.prov,key:OB.key,base:OB.base,model:OB.main,f
 function backupJSON(){return JSON.stringify({app:"followthrough",version:VERSION,exportedAt:new Date().toISOString(),board:S},null,2);}
 async function exportData(){
   const name="followthrough-backup-"+TODAY()+".json",data=backupJSON();
-  try{if(IS_MAC){await native("saveFile",{name,data});}
+  try{if(IS_ARTIFACT){const dl=await window.claude.use("downloads");if(!dl)throw {code:"unavailable"};await dl.save({filename:name,data});}
+    else if(IS_MAC){await native("saveFile",{name,data});}
     else{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
     toast(t("exp_done"));}catch(e){}
 }
@@ -2056,7 +2073,7 @@ function createBoard(){
 /* ---------- live transcription ---------- */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const REC={on:false,who:"me",rec:null,t0:0,local:false,err:"",
-  can(){return IS_MAC||!!SR;},
+  can(){return !IS_ARTIFACT&&(IS_MAC||!!SR);},
   start(){const d=draft();this.err="";this.on=true;this.t0=Date.now()-CAP.elapsed*1000;CAP.editing=false;
     const lang=L()==="zh"?"zh-CN":"en-US";
     CAP.tick=setInterval(()=>{CAP.elapsed=Math.round((Date.now()-this.t0)/1000);const tm=$("#timer");if(tm)tm.textContent=fmtClock(CAP.elapsed);
@@ -2081,7 +2098,7 @@ function captureChrome(){
   const d=S.draft;if(!d||d.phase==="review")return;
   const ctrl=$(".sess .ctrl");if(!ctrl)return;
   const hint=[...document.querySelectorAll(".tx > p.hint")].pop();
-  if(hint)hint.textContent=!REC.can()?t("rec_none"):REC.on?(IS_MAC?t("rec_mac"):REC.local?t("rec_local"):t("rec_web")):(REC.err||t("rec_hint"));
+  if(hint)hint.textContent=IS_ARTIFACT?t("rec_art"):!REC.can()?t("rec_none"):REC.on?(IS_MAC?t("rec_mac"):REC.local?t("rec_local"):t("rec_web")):(REC.err||t("rec_hint"));
   if(!REC.can()||CAP.replay)return;
   const p=person(d.personId);
   if(REC.on){
@@ -2127,7 +2144,7 @@ document.addEventListener("click",async e=>{
   if(g("[data-obexport]")){exportData();return;}
   if(g("[data-oberase]")){OB.erase=true;drawOB();return;}
   if(g("[data-oberaseno]")){OB.erase=false;drawOB();return;}
-  if(g("[data-oberaseyes]")){kvSet(LS_KEY,null);kvSet(PREF_KEY,null);kvSet("pm-tracker-theme",null);try{localStorage.clear();}catch(x){}location.reload();return;}
+  if(g("[data-oberaseyes]")){if(IS_ARTIFACT&&typeof dbRef!=="undefined"&&dbRef){try{await dbRef.delete();}catch(x){}}kvSet(LS_KEY,null);kvSet(PREF_KEY,null);kvSet("pm-tracker-theme",null);try{localStorage.clear();}catch(x){}location.reload();return;}
   if(g("[data-obtour]")){openOB("welcome");return;}
   if(el=g("[data-obrm]")){OB.people.splice(+el.dataset.obrm,1);drawOB();return;}
   if(g("[data-obsetup]")){createBoard();return;}
@@ -2138,8 +2155,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&OB.screen&&!["welco
 /* ---------- start ---------- */
 document.documentElement.lang=P.lang==="zh"?"zh-CN":"en";
 applyTheme();applySampleLang();ME=P.name||"";
-if(P.signupPending&&P.email)sendSignup();
-window.TRACKER={P,OB,REC,PROVIDERS,listModels,pickModels,makeAdapter,parseJSONLoose,localize,zh,openOB,closeOB,IS_MAC};
+if(!IS_ARTIFACT&&P.signupPending&&P.email)sendSignup();
+window.TRACKER={IS_ARTIFACT,P,OB,REC,PROVIDERS,listModels,pickModels,makeAdapter,parseJSONLoose,localize,zh,openOB,closeOB,IS_MAC};
 boot();
 if(!P.onboarded)openOB("welcome");
 })();

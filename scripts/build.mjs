@@ -1,5 +1,5 @@
 // Builds every version of the tracker from src/: no dependencies, run with `node scripts/build.mjs`.
-//   build/artifact.html  -> the claude.ai Artifact (Claude built in, no platform layer)
+//   build/artifact.html  -> the claude.ai Artifact (Claude built in, platform layer in Artifact mode)
 //   docs/index.html      -> the web version on GitHub Pages
 //   mac/Resources/web/   -> the page bundled inside the Mac app
 import fs from "node:fs";
@@ -17,7 +17,12 @@ const platformJs = read("src/samples.js") + "\n" + read("src/platform.js");
 const fontsCss = read("docs/fonts/fonts.css");
 
 // 1. Artifact: unchanged source, booted directly.
-write("build/artifact.html", tracker.replace("</script>\n", "</script>\n<script>boot();</script>\n").trimEnd() + "\n");
+// claude.ai has its own Claude and storage; the platform layer switches to Artifact mode there.
+const artifact = tracker
+  .replace(/<title>.*?<\/title>/, "<title>Followthrough</title>")
+  .replace("</style>\n", "</style>\n<style>\n" + platformCss + "</style>\n")
+  .trimEnd() + "\n<script>window.TRACKER_CONFIG=" + JSON.stringify({version: config.version, repo: config.repo}) + ";</script>\n<script>\n" + platformJs + "\n</script>\n";
+write("build/artifact.html", artifact);
 
 // 2. Web + Mac: a full document with local fonts, a strict security policy, and the platform layer.
 const providers = [
