@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracker Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f7f5;--surface:#ffffff;--surface-2:#f2f1ee;--hover:#efeee9;
+  --border:#e7e5e0;--border-strong:#d6d3cc;
+  --ink:#1d1c1a;--ink-2:#6b6862;--ink-3:#a19d95;
+  --accent:#2f5bd3;--accent-soft:#e8eefc;
+  --danger:#c0402f;--danger-soft:#fbeae6;
+  --warn:#a86b12;--warn-soft:#faf0dc;
+  --ok:#2b7d50;--ok-soft:#e5f3ea;
+  --violet:#6a4bb8;--violet-soft:#efeafa;
+  --serif:"Newsreader",Georgia,serif;--sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141413;--surface:#1c1c1b;--surface-2:#242422;--hover:#2a2a28;
+  --border:#2f2e2c;--border-strong:#3d3c39;
+  --ink:#ecebe7;--ink-2:#a5a29b;--ink-3:#6f6c66;
+  --accent:#86a4ff;--accent-soft:#1f2a47;
+  --danger:#f08473;--danger-soft:#3a201c;
+  --warn:#e4ad55;--warn-soft:#382b15;
+  --ok:#66c792;--ok-soft:#183223;
+  --violet:#b39cf0;--violet-soft:#2a2340;
+}}
+:root[data-theme="dark"]{
+  --bg:#141413;--surface:#1c1c1b;--surface-2:#242422;--hover:#2a2a28;
+  --border:#2f2e2c;--border-strong:#3d3c39;
+  --ink:#ecebe7;--ink-2:#a5a29b;--ink-3:#6f6c66;
+  --accent:#86a4ff;--accent-soft:#1f2a47;
+  --danger:#f08473;--danger-soft:#3a201c;
+  --warn:#e4ad55;--warn-soft:#382b15;
+  --ok:#66c792;--ok-soft:#183223;
+  --violet:#b39cf0;--violet-soft:#2a2340;
+}
+*{box-sizing:border-box}
+h1,h2,h3{text-wrap:balance}
+p,div,span{text-wrap:pretty}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+
+/* picker bar */
+.picker{position:sticky;top:0;z-index:10;display:flex;justify-content:center;align-items:center;gap:10px;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:none;color:var(--ink-2);padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.iconbtn{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer}
+
+/* app frame */
+.stage{display:flex;justify-content:center;padding:28px 16px 64px}
+.app{width:100%;max-width:1080px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.topbar{display:flex;align-items:center;gap:20px;padding:14px 22px;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.mark{width:20px;height:20px;border-radius:6px;background:var(--ink);color:var(--surface);display:grid;place-items:center;font-size:11px;font-weight:600}
+.nav{display:flex;gap:2px}
+.nav span{padding:5px 11px;border-radius:7px;color:var(--ink-2);font-size:13px;font-weight:500}
+.nav span.on{background:var(--surface-2);color:var(--ink)}
+.topbar .sp{flex:1}
+.kbd{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);border:1px solid var(--border);border-radius:6px;padding:2px 7px}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:11px;font-weight:600}
+
+.view{display:none}.view.on{display:block}
+
+/* shared atoms */
+.label{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.02em;margin:0 0 10px}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:1px 7px;border-radius:5px;white-space:nowrap}
+.p0{background:var(--danger-soft);color:var(--danger)}
+.p1{background:var(--warn-soft);color:var(--warn)}
+.p2{background:var(--surface-2);color:var(--ink-2)}
+.who{background:var(--violet-soft);color:var(--violet)}
+.okt{background:var(--ok-soft);color:var(--ok)}
+.circle{width:16px;height:16px;border:1.5px solid var(--border-strong);border-radius:50%;flex:none;margin-top:2px}
+.muted{color:var(--ink-2)}.faint{color:var(--ink-3)}
+.late{color:var(--danger);font-weight:500}
+
+/* A · Briefing */
+.a-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px}
+.a-main{padding:30px 32px}
+.a-rail{border-left:1px solid var(--border);padding:30px 24px;background:var(--bg)}
+.a-date{font-size:12.5px;color:var(--ink-3);margin-bottom:6px}
+.a-hello{font-family:var(--serif);font-size:30px;line-height:1.2;font-weight:400;letter-spacing:-.01em;margin:0 0 6px}
+.a-sub{color:var(--ink-2);margin:0 0 28px}
+.a-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px}
+.a-item .t{font-weight:500}
+.a-item .s{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.a-item .tags{margin-left:auto;display:flex;gap:5px;flex:none}
+.a-src{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--ok);margin-top:5px}
+.a-sec{margin-top:26px}
+.a-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px}
+.a-row:last-child{border-bottom:0}
+.a-row .d{width:62px;flex:none;color:var(--ink-3);font-size:12.5px}
+.rail-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+.wait{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.wait:last-child{border-bottom:0}
+.wait .n{font-size:13.5px;font-weight:500}
+.wait .w{font-size:12px;color:var(--ink-2)}
+.nudge{font-size:11.5px;color:var(--accent);font-weight:500;margin-top:3px}
+.ans .q{font-size:12.5px;color:var(--ink-2)}
+.ans .r{font-size:13.5px;margin:3px 0 4px}
+.capture{display:flex;align-items:center;gap:8px;border:1px dashed var(--border-strong);border-radius:10px;padding:10px 12px;color:var(--ink-3);font-size:13px}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--danger)}
+
+/* B · Command list */
+.b-wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:560px}
+.b-main{padding:20px 22px}
+.b-filters{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.b-filters span{padding:4px 11px;border-radius:7px;font-size:12.5px;color:var(--ink-2);font-weight:500}
+.b-filters span.on{background:var(--surface-2);color:var(--ink)}
+.b-filters .sp{flex:1}
+.b-filters input{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:8px;padding:5px 10px;font-size:12.5px;width:170px;font-family:inherit}
+.b-head,.b-row{display:grid;grid-template-columns:14px minmax(0,1fr) 92px 70px 44px;gap:12px;align-items:start}
+.b-head{font-size:11px;color:var(--ink-3);padding:6px 10px;border-bottom:1px solid var(--border)}
+.b-grp{font-size:11.5px;font-weight:500;color:var(--ink-3);padding:14px 10px 6px}
+.b-row{padding:10px;border-radius:8px;font-size:13.5px}
+.b-row.sel{background:var(--accent-soft)}
+.b-row .dot{width:8px;height:8px;border-radius:50%;margin-top:6px}
+.b-row .t{font-weight:500}
+.b-row .n{font-size:12.5px;color:var(--ink-2);margin-top:1px}
+.b-row .w{font-size:12.5px;color:var(--ink-2)}
+.b-side{border-left:1px solid var(--border);padding:22px;background:var(--bg)}
+.b-side h3{font-size:16px;font-weight:600;margin:6px 0 14px;line-height:1.35}
+.field{margin-bottom:14px}
+.field .k{font-size:11.5px;color:var(--ink-3);margin-bottom:4px}
+.field .v{font-size:13.5px}
+.next-box{background:var(--surface);border:1px solid var(--accent);border-radius:9px;padding:10px 12px;font-size:13.5px}
+.thread{border-left:2px solid var(--border);padding-left:12px;margin-top:6px}
+.thread .e{font-size:12.5px;margin-bottom:10px}
+.thread .e .m{color:var(--ink-3);font-size:11.5px}
+
+/* C · Lanes */
+.c-wrap{padding:22px}
+.c-strip{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.c-stat{flex:1;min-width:130px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px}
+.c-stat .n{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.c-stat .l{font-size:12px;color:var(--ink-2)}
+.c-lanes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.lane{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px}
+.lane-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.lane-h .av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:10.5px;font-weight:600}
+.lane-h .nm{font-size:13px;font-weight:600}
+.lane-h .rl{font-size:11.5px;color:var(--ink-3)}
+.lane-h .ct{margin-left:auto;font-size:11.5px;color:var(--ink-3)}
+.lc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 11px;margin-bottom:8px}
+.lc .st{font-size:11px;font-weight:500;margin-bottom:4px}
+.lc .t{font-size:13px;font-weight:500;line-height:1.4}
+.lc .s{font-size:12px;color:var(--ink-2);margin-top:3px}
+.lc .lk{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.lc.block{border-color:var(--danger);background:var(--danger-soft)}
+.lc.block .t{color:var(--danger)}
+.add{font-size:12.5px;color:var(--ink-3);padding:6px 4px}
+
+.note{max-width:1080px;margin:0 auto;padding:0 16px;color:var(--ink-3);font-size:12.5px;text-align:center}
+
+@media (max-width:860px){
+  .a-wrap,.b-wrap{grid-template-columns:1fr}
+  .a-rail,.b-side{border-left:0;border-top:1px solid var(--border)}
+  .c-lanes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nav{display:none}
+}
+@media (max-width:520px){
+  .c-lanes{grid-template-columns:1fr}
+  .a-main{padding:22px 18px}
+  .b-head,.b-row{grid-template-columns:14px minmax(0,1fr) 44px}
+  .b-head span:nth-child(3),.b-head span:nth-child(4),.b-row>:nth-child(3),.b-row>:nth-child(4){display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="picker">
+  <div class="seg" id="seg">
+    <button data-v="a" class="on">A · Briefing</button>
+    <button data-v="b">B · Command list</button>
+    <button data-v="c">C · Stakeholder lanes</button>
+  </div>
+  <button class="iconbtn" id="theme">Dark</button>
+</div>
+
+<div class="stage">
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><div class="mark">T</div>Tracker</div>
+    <div class="nav"><span class="on">Today</span><span>Tasks</span><span>Questions</span><span>Capture</span></div>
+    <div class="sp"></div>
+    <span class="kbd">⌘K</span>
+    <div class="avatar">JS</div>
+  </div>
+
+  <!-- A -->
+  <section class="view on" id="v-a">
+    <div class="a-wrap">
+      <div class="a-main">
+        <div class="a-date">Tuesday, October 20 · Week 3 of internship</div>
+        <h1 class="a-hello">Good morning, Justin.<br>Three moves today, two people to nudge.</h1>
+        <p class="a-sub">Referral program v2 · 7 open · 1 blocked · 2 answers came in since yesterday</p>
+
+        <div class="label">Next actions</div>
+        <div class="a-item">
+          <div class="circle"></div>
+          <div>
+            <div class="t">Update metric spec with Maya's cohort definition</div>
+            <div class="s">Lock success metric for referral test</div>
+            <div class="a-src">↳ from Maya's answer in yesterday's 1:1 recording</div>
+          </div>
+          <div class="tags"><span class="tag p0">P0</span></div>
+        </div>
+        <div class="a-item">
+          <div class="circle"></div>
+          <div>
+            <div class="t">Write the edge cases section</div>
+            <div class="s">Draft PRD for in-app referral entry · due Thu</div>
+          </div>
+          <div class="tags"><span class="tag p1">P1</span></div>
+        </div>
+        <div class="a-item">
+          <div class="circle"></div>
+          <div>
+            <div class="t">Prep three questions for design review</div>
+            <div class="s">Referral entry point mocks · review Wed 2pm</div>
+          </div>
+          <div class="tags"><span class="tag p1">P1</span></div>
+        </div>
+
+        <div class="a-sec">
+          <div class="label">This week</div>
+          <div class="a-row"><span class="d">Wed</span><span>Design review: referral entry point</span></div>
+          <div class="a-row"><span class="d">Thu</span><span>PRD draft due to mentor</span></div>
+          <div class="a-row"><span class="d">Fri</span><span>Weekly sync: share metric definition and baseline</span></div>
+        </div>
+      </div>
+
+      <aside class="a-rail">
+        <div class="label">Waiting on</div>
+        <div class="rail-card">
+          <div class="wait"><div><div class="n">Leo · Eng</div><div class="w">Tracking schema review</div><div class="nudge">Nudge in Slack →</div></div><span class="late">3d</span></div>
+          <div class="wait"><div><div class="n">Priya · DA</div><div class="w">Baseline funnel, last 30d</div></div><span class="faint">1d</span></div>
+        </div>
+
+        <div class="label">New answers</div>
+        <div class="rail-card ans">
+          <div class="q">Q to Maya · DS</div>
+          <div class="r">D7 retention is per signup cohort; exclude reactivated users.</div>
+          <span class="tag okt">Linked to: Lock success metric</span>
+        </div>
+
+        <div class="label">Capture</div>
+        <div class="capture"><span class="rec-dot"></span>Record a 1:1 or jot a question…</div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="view" id="v-b">
+    <div class="b-wrap">
+      <div class="b-main">
+        <div class="b-filters">
+          <span class="on">Now 3</span><span>Waiting 2</span><span>Later 4</span><span>Done 6</span>
+          <div class="sp"></div>
+          <input placeholder="Filter by task, person, team">
+        </div>
+        <div class="b-head"><span></span><span>Task → next action</span><span>With</span><span>Due</span><span>Age</span></div>
+
+        <div class="b-grp">P0</div>
+        <div class="b-row sel">
+          <span class="dot" style="background:var(--danger)"></span>
+          <div><div class="t">Lock success metric for referral test</div><div class="n">→ Update spec with cohort definition</div></div>
+          <span class="w">Maya · DS</span><span class="w">Today</span><span class="faint">4d</span>
+        </div>
+        <div class="b-row">
+          <span class="dot" style="background:var(--danger)"></span>
+          <div><div class="t">Align event tracking spec <span class="tag p0">blocked</span></div><div class="n">→ Nudge Leo on schema review</div></div>
+          <span class="w">Leo · Eng</span><span class="w">Wed</span><span class="late">3d</span>
+        </div>
+
+        <div class="b-grp">P1</div>
+        <div class="b-row">
+          <span class="dot" style="background:var(--warn)"></span>
+          <div><div class="t">Draft PRD for in-app referral entry</div><div class="n">→ Write edge cases section</div></div>
+          <span class="w">Self</span><span class="w">Thu</span><span class="faint">5d</span>
+        </div>
+        <div class="b-row">
+          <span class="dot" style="background:var(--warn)"></span>
+          <div><div class="t">Baseline funnel numbers</div><div class="n">→ Waiting on last 30d by channel</div></div>
+          <span class="w">Priya · DA</span><span class="w">Fri</span><span class="faint">1d</span>
+        </div>
+        <div class="b-row">
+          <span class="dot" style="background:var(--warn)"></span>
+          <div><div class="t">Design review: referral entry point</div><div class="n">→ Prep three questions</div></div>
+          <span class="w">Ana · Design</span><span class="w">Wed</span><span class="faint">2d</span>
+        </div>
+
+        <div class="b-grp">P2</div>
+        <div class="b-row">
+          <span class="dot" style="background:var(--ink-3)"></span>
+          <div><div class="t">Collect ideas for next iteration</div><div class="n">→ Skim support tickets tagged "invite"</div></div>
+          <span class="w">Self</span><span class="w">—</span><span class="faint">6d</span>
+        </div>
+      </div>
+
+      <aside class="b-side">
+        <span class="tag p0">P0</span> <span class="tag who">Maya · DS</span>
+        <h3>Lock success metric for referral test</h3>
+        <div class="field"><div class="k">Next action</div><div class="next-box">Update metric spec with cohort definition, then share in Friday sync</div></div>
+        <div class="field"><div class="k">Waiting on</div><div class="v muted">Nobody — your move</div></div>
+        <div class="field"><div class="k">Due</div><div class="v">Today</div></div>
+        <div class="field">
+          <div class="k">History</div>
+          <div class="thread">
+            <div class="e"><div class="m">Oct 19 · from 1:1 recording</div>Maya: D7 retention is per signup cohort; exclude reactivated users.</div>
+            <div class="e"><div class="m">Oct 17 · question</div>Asked Maya: cohort or rolling D7?</div>
+            <div class="e"><div class="m">Oct 16 · created</div>Need one primary metric before PRD review.</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="view" id="v-c">
+    <div class="c-wrap">
+      <div class="c-strip">
+        <div class="c-stat"><div class="n">3</div><div class="l">Your moves today</div></div>
+        <div class="c-stat"><div class="n">4</div><div class="l">Questions open</div></div>
+        <div class="c-stat"><div class="n" style="color:var(--danger)">1</div><div class="l">Blocking, 3d+</div></div>
+        <div class="c-stat"><div class="n" style="color:var(--ok)">2</div><div class="l">New answers</div></div>
+      </div>
+      <div class="c-lanes">
+        <div class="lane">
+          <div class="lane-h"><div class="av" style="background:var(--accent-soft);color:var(--accent)">JS</div><div><div class="nm">Mine</div><div class="rl">PM</div></div><span class="ct">3</span></div>
+          <div class="lc"><div class="st" style="color:var(--danger)">P0 · Today</div><div class="t">Update metric spec with cohort definition</div></div>
+          <div class="lc"><div class="st" style="color:var(--warn)">P1 · Thu</div><div class="t">Write PRD edge cases section</div></div>
+          <div class="lc"><div class="st" style="color:var(--warn)">P1 · Wed</div><div class="t">Prep questions for design review</div></div>
+          <div class="add">+ Add task</div>
+        </div>
+        <div class="lane">
+          <div class="lane-h"><div class="av" style="background:var(--violet-soft);color:var(--violet)">M</div><div><div class="nm">Maya</div><div class="rl">Data science</div></div><span class="ct">2</span></div>
+          <div class="lc"><div class="st" style="color:var(--ok)">Answered · yesterday</div><div class="t">Cohort or rolling D7 retention?</div><div class="s">Per signup cohort; exclude reactivated users.</div><div class="lk">↳ Lock success metric</div></div>
+          <div class="lc"><div class="st faint">To ask</div><div class="t">Min sample size to detect a 2% lift?</div><div class="lk">↳ Referral A/B test</div></div>
+          <div class="add">+ Add question</div>
+        </div>
+        <div class="lane">
+          <div class="lane-h"><div class="av" style="background:var(--ok-soft);color:var(--ok)">P</div><div><div class="nm">Priya</div><div class="rl">Data analytics</div></div><span class="ct">1</span></div>
+          <div class="lc"><div class="st" style="color:var(--warn)">Waiting · 1d</div><div class="t">Baseline funnel numbers</div><div class="s">Last 30d, split by channel</div><div class="lk">↳ Lock success metric</div></div>
+          <div class="add">+ Add question</div>
+        </div>
+        <div class="lane">
+          <div class="lane-h"><div class="av" style="background:var(--warn-soft);color:var(--warn)">L</div><div><div class="nm">Leo</div><div class="rl">Engineering</div></div><span class="ct">2</span></div>
+          <div class="lc block"><div class="st">Waiting 3d · blocking</div><div class="t">Tracking schema review</div><div class="lk">↳ Align event tracking spec</div></div>
+          <div class="lc"><div class="st faint">To ask</div><div class="t">Feasibility of deep link entry from SMS?</div><div class="lk">↳ Draft referral PRD</div></div>
+          <div class="add">+ Add question</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</div>
+
+<p class="note">Static preview · same sample data in all three · toggle Dark to check both themes</p>
+
+<script>
+const seg=document.getElementById("seg");
+seg.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+b.dataset.v));
+});
+const root=document.documentElement,tb=document.getElementById("theme");
+const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+const sync=()=>tb.textContent=isDark()?"Light":"Dark";
+tb.onclick=()=>{root.dataset.theme=isDark()?"light":"dark";sync();};
+sync();
+</script>
+</body>
+</html>

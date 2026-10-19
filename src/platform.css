@@ -1,0 +1,142 @@
+/* Platform layer (web + Mac app): onboarding card, settings, AI setup, import, setup card, recording. */
+.tb-extra{display:flex;gap:6px;align-items:center;flex:none}
+.tb-btn{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none}
+.tb-btn:hover{border-color:var(--border-strong);color:var(--ink)}
+.tb-btn .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.tb-btn .dot.on{background:var(--ok)}
+.tb-btn.icon{width:30px;justify-content:center;padding:5px 0;font-size:14px}
+.ob-scrim{position:fixed;inset:0;background:rgba(20,18,15,.38);z-index:50;display:flex;align-items:flex-start;justify-content:center;overflow:auto;overscroll-behavior:contain;
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+/* margin:auto centers the card in the scrim; a card taller than the window scrolls instead of being clipped */
+.ob-card{width:min(640px,100%);margin:auto;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 24px 60px rgba(20,18,15,.22);padding:32px 34px 28px}
+.ob-card.wide{width:min(680px,100%)}
+.ob-bars{display:flex;gap:6px;margin-bottom:22px}
+.ob-bars i{height:4px;flex:1;border-radius:2px;background:var(--surface-2)}
+.ob-bars i.on{background:var(--ink)}
+.ob-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ob-eb{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em}
+.ob-x{margin-left:auto;border:0;background:none;color:var(--ink-3);font-size:20px;line-height:1;padding:2px 4px}
+.ob-x:hover{color:var(--ink)}
+.ob-card h2{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.2;letter-spacing:-.01em;margin:6px 0 10px}
+.ob-card p{margin:0 0 14px;color:var(--ink-2);font-size:14.5px}
+.ob-acts{display:flex;align-items:center;gap:8px;margin-top:18px;flex-wrap:wrap}
+.ob-skip{border:0;background:none;color:var(--ink-3);font-size:13px;padding:0}
+.ob-skip:hover{color:var(--ink)}
+.ob-lnk{border:0;background:none;padding:0;color:var(--accent);font-size:13px;font-weight:500;text-decoration:none}
+.ob-lnk:hover{text-decoration:underline}
+.ob-label{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin:12px 0 5px}
+.ob-req{color:var(--danger);margin-left:2px}
+.ob-err{font-size:12px;color:var(--danger);margin-top:5px}
+.inp.bad{border-color:var(--danger)}
+.ob-hint{font-size:12px;color:var(--ink-3);margin-top:6px}
+.ob-langs{display:inline-flex;background:var(--surface-2);border-radius:9px;padding:3px;gap:2px;margin-left:auto}
+.ob-langs button{border:0;background:none;border-radius:7px;padding:3px 10px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.ob-langs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.ob-pills{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
+.ob-pill{font-size:13px;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--ink-2);background:var(--surface);white-space:nowrap}
+.ob-even{display:grid!important}
+.ob-even>*{text-align:center}
+.ob-oss{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border-radius:10px;padding:12px 14px;font-size:13.5px;color:var(--ink-2)}
+.ob-oss b{color:var(--ink);font-weight:500}
+.ob-flow{display:grid;gap:8px;margin:6px 0 4px}
+.ob-fl{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:11px;padding:10px 12px}
+.ob-fl .ic{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.ob-fl .h{font-size:13px;font-weight:500}
+.ob-fl .d{font-size:12.5px;color:var(--ink-2)}
+.ob-tabs{display:flex;gap:2px;background:var(--surface-2);border-radius:9px;padding:3px;margin:4px 0 10px}
+.ob-tabs button{flex:1;border:0;background:none;border-radius:7px;padding:5px 6px;font-size:12px;font-weight:500;color:var(--ink-2)}
+.ob-tabs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.ob-demo{border:1px solid var(--border);border-radius:11px;padding:12px;background:var(--bg);min-height:132px}
+.ob-demo .ln{font-size:12.5px;padding:3px 0}
+.ob-demo .sp{font-weight:600;font-size:11.5px;margin-right:4px}
+.ob-demo mark{background:var(--ok-soft);color:inherit;border-radius:3px;padding:0 2px}
+.ob-demo .row{display:flex;gap:8px;align-items:center;font-size:12.5px;border:1px solid var(--border);border-radius:8px;padding:6px 8px;margin-bottom:5px;background:var(--surface)}
+.ob-demo .row .ic{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:10px;font-weight:600;flex:none}
+.ob-demo .bub{font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:7px 9px;margin-bottom:6px}
+.ob-demo .cap{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.ob-live{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--danger);font-weight:500;margin-bottom:6px}
+.ob-live i{width:6px;height:6px;border-radius:50%;background:var(--danger)}
+.ob-provs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 10px}
+.ob-prov{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:7px 8px;font-size:12.5px;font-weight:500;text-align:left}
+.ob-prov small{display:block;font-weight:400;color:var(--ink-3);font-size:11px}
+.ob-prov.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ob-card details{border:1px solid var(--border);border-radius:10px;margin-top:10px}
+.ob-card summary{cursor:pointer;padding:9px 12px;font-size:13px;font-weight:500;list-style:none;display:flex;align-items:center;gap:8px}
+.ob-card summary::-webkit-details-marker{display:none}
+.ob-card summary::after{content:"+";margin-left:auto;color:var(--ink-3);font-size:15px}
+.ob-card details[open] summary::after{content:"–"}
+.ob-card details ol{margin:0;padding:0 14px 12px 32px;font-size:12.5px;color:var(--ink-2)}
+.ob-card details li{margin:4px 0}
+.ob-card code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.ob-keyrow{display:flex;gap:8px;margin-top:10px}
+.ob-keyrow .inp{font-family:var(--mono);font-size:12.5px}
+.ob-ok{font-size:12px;color:var(--ok);margin-top:6px}
+.ob-two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.ob-perks{display:grid;gap:8px;margin:8px 0 6px}
+.ob-perk{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.ob-perk .ic{width:26px;height:26px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:13px}
+.ob-perk .h{font-weight:500}
+.ob-perk .d{font-size:12.5px;color:var(--ink-2)}
+.ob-dl{display:flex;gap:12px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px}
+.ob-appicon{width:44px;height:44px;flex:none}.ob-appicon svg{width:44px;height:44px;display:block}
+.ob-set{border-top:1px solid var(--border);padding:14px 0}
+.ob-set:first-of-type{border-top:0;padding-top:4px}
+.ob-set h3{font-size:13px;font-weight:600;margin:0 0 8px}
+.ob-setrow{display:flex;align-items:center;gap:8px;font-size:13px;padding:2px 0;flex-wrap:wrap}
+.ob-setrow .l{flex:1;min-width:140px;color:var(--ink-2)}
+.ob-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.ob-chip{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;border:1px solid var(--border);border-radius:999px;padding:3px 6px 3px 10px;background:var(--surface-2)}
+.ob-chip button{border:0;background:none;color:var(--ink-3);padding:0 2px}
+.ob-drop{border:1.5px dashed var(--border-strong);border-radius:12px;padding:22px;text-align:center;display:grid;gap:8px;justify-items:center;margin:6px 0 4px;background:var(--bg)}
+.ob-drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.ob-drop .big{font-size:22px;color:var(--ink-3)}
+.ob-kinds{display:grid;gap:6px;margin-top:10px}
+.ob-kind{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2)}
+.ob-kind b{color:var(--ink);font-weight:500}
+.ob-scan{border:1px solid var(--ok);background:var(--ok-soft);border-radius:12px;padding:12px 14px;margin:6px 0 4px}
+.ob-scan .f{font-size:12.5px;color:var(--ink-2);font-family:var(--mono);overflow-wrap:anywhere}
+.ob-counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.ob-cnt{background:var(--surface);border-radius:9px;padding:8px 10px}
+.ob-cnt .v{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.ob-cnt .l{font-size:11.5px;color:var(--ink-2)}
+.ob-seg{display:inline-flex;background:var(--surface-2);border-radius:9px;padding:3px;gap:2px}
+.ob-seg button{border:0;background:none;border-radius:7px;padding:3px 10px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.ob-seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.rec-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rec-bar .who-btn{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:3px 11px;font-size:12.5px;color:var(--ink-2)}
+.rec-bar .who-btn.on{border-color:var(--ink);color:var(--ink);font-weight:500}
+.interim{color:var(--ink-3);font-size:14px;padding:6px 0 0 64px;min-height:22px}
+.setup-cta{margin-top:14px}
+@media (max-width:640px){
+  .ob-provs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ob-two{grid-template-columns:1fr}
+  .ob-counts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ob-dl{flex-wrap:wrap}.ob-dl .grow{display:none}.ob-dl .btn{width:100%}
+  .tb-extra .tb-btn .lbl{display:none}
+  .interim{padding-left:0}
+}
+/* App chrome isn't selectable text (drags would highlight it); what you type and read stays selectable. */
+.top,.nav,.brand,.tb-extra,.btn,.ghost,.linkbtn,.fchip,.stat,.label,.tbl th,.check,.bx,.ob-langs,.ob-tabs,.ob-prov,.ob-pill,.ob-seg,.ob-bars,.ob-eb,.tag,.due,.pill,.who-btn,.banner button{-webkit-user-select:none;user-select:none}
+.ob-roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ob-role{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:8px 10px;text-align:left;font-size:13px;font-weight:500}
+.ob-role small{display:block;font-weight:400;font-size:11.5px;color:var(--ink-3)}
+.ob-role.sm{padding:5px 8px;font-size:12.5px;text-align:center}
+.ob-role.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ob-teams{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:7px}
+.ob-sug{border:1px dashed var(--border-strong);background:var(--surface);border-radius:999px;padding:4px 8px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ob-sug:hover,.ob-sug.on{border-style:solid;border-color:var(--ink);color:var(--ink)}
+.ob-choice{display:grid;gap:8px;margin-top:6px}
+.ob-opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;padding:12px 14px;text-align:left;background:var(--surface);width:100%}
+.ob-opt.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ob-opt .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--surface-2);font-size:14px}
+.ob-opt .h{display:block;font-weight:500;font-size:14px}.ob-opt .d{display:block;font-size:12.5px;color:var(--ink-2)}
+@media (max-width:640px){.ob-roles{grid-template-columns:repeat(2,minmax(0,1fr))}.ob-teams{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* mouse clicks don't leave a focus ring on these toggles; keyboard focus still shows one */
+.ob-langs button:focus:not(:focus-visible),.ob-seg button:focus:not(:focus-visible),.ob-tabs button:focus:not(:focus-visible){outline:none}
+.ob-langs button:focus-visible,.ob-seg button:focus-visible,.ob-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+@media (max-width:640px){.ob-card{padding:24px 20px 20px}.ob-card h2{font-size:26px}}
+.brand svg{width:22px;height:22px;display:block;flex:none}
+.ob-brand{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
+.ob-brand svg{width:44px;height:44px;flex:none}
+.ob-brand .nm{font-weight:600;font-size:16px}
+.ob-brand .tg{font-size:13px;color:var(--ink-3)}

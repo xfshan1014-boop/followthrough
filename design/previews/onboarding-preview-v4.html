@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onboarding Preview v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400&display=swap">
+<style>
+:root{--bg:#f6f6f3;--surface:#fff;--surface-2:#f0efeb;--border:#e5e3dd;--border-strong:#d3d0c8;--ink:#1c1b19;--ink-2:#67645e;--ink-3:#9c988f;--accent:#2f56c9;--accent-soft:#e7ecfb;--danger:#bd3f2e;--danger-soft:#fae9e5;--warn:#9f6612;--warn-soft:#f8eedb;--ok:#2a7a4e;--ok-soft:#e3f1e8;--on-ink:#fff;--scrim:rgba(20,18,15,.34);
+  --display:"Newsreader","Songti SC",Georgia,serif;--body:"Geist","PingFang SC",-apple-system,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--border:#2e2d2a;--border-strong:#3e3d39;--ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;--accent:#88a5ff;--accent-soft:#1f2946;--danger:#f0836f;--danger-soft:#3a1f1a;--warn:#e2ab52;--warn-soft:#372a14;--ok:#68c690;--ok-soft:#173122;--on-ink:#131312;--scrim:rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--border:#2e2d2a;--border-strong:#3e3d39;--ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;--accent:#88a5ff;--accent-soft:#1f2946;--danger:#f0836f;--danger-soft:#3a1f1a;--warn:#e2ab52;--warn-soft:#372a14;--ok:#68c690;--ok-soft:#173122;--on-ink:#131312;--scrim:rgba(0,0,0,.5);color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2{text-wrap:balance;margin:0}p,.d{text-wrap:pretty}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+.picker{position:sticky;top:0;z-index:30;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;color:var(--ink-2);padding:5px 11px;border-radius:8px;font-size:12.5px;font-weight:500}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.ghost{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px}
+.stage{display:flex;justify-content:center;padding:22px 16px 14px}
+.frame{position:relative;width:100%;max-width:1100px;min-height:900px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.top{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600}
+.mark{width:20px;height:20px;border-radius:6px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font-size:11px;font-weight:600}
+.nav{display:flex;gap:2px}.nav span{padding:5px 10px;border-radius:7px;color:var(--ink-2);font-size:13px;font-weight:500}.nav span.on{background:var(--surface-2);color:var(--ink)}
+.grow{flex:1}
+.banner{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:9px 22px;background:var(--surface-2);border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink-2)}
+.banner b{color:var(--ink);font-weight:500}
+.banner .lk{border:0;background:none;color:var(--accent);font-weight:500;font-size:12.5px;padding:0}
+.board{padding:28px 32px}
+.date{font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+.hello{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.18}.hello .l2{color:var(--ink-2)}
+.sub{color:var(--ink-2);font-size:13.5px;margin:10px 0 0}
+.blabel{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em;margin:26px 0 4px}
+.item{display:flex;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-top:8px;max-width:680px;align-items:flex-start}
+.circ{width:18px;height:18px;border:1.5px solid var(--border-strong);border-radius:50%;flex:none}
+.item .b{flex:1;min-width:0}.item .t{font-weight:500}.item .s{font-size:12.5px;color:var(--ink-2)}
+.tag{font-size:11px;font-weight:500;padding:1px 7px;border-radius:5px;white-space:nowrap}.P0{background:var(--danger-soft);color:var(--danger)}.P1{background:var(--warn-soft);color:var(--warn)}
+.due{font-size:12px;color:var(--ink-3)}
+.scrim{position:absolute;inset:0;background:var(--scrim);display:flex;align-items:flex-start;justify-content:center;padding:56px 20px 20px}
+.card{width:min(540px,100%);background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 60px rgba(20,18,15,.22);padding:24px 24px 20px}
+.bars{display:flex;gap:5px;margin-bottom:18px}.bars i{height:4px;flex:1;border-radius:2px;background:var(--surface-2)}.bars i.on{background:var(--ink)}
+.head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.eb{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em}
+.card h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.22;margin:4px 0 8px}
+.card p{margin:0 0 12px;color:var(--ink-2);font-size:13.5px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
+.pill{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--ink-2);white-space:nowrap}
+.oss{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink-2)}.oss b{color:var(--ink);font-weight:500}
+.label{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin:12px 0 5px}.req{color:var(--danger);margin-left:2px}
+.inp{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:9px 11px;font-size:14px}
+.roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.role{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:8px 10px;text-align:left;font-size:13px;font-weight:500}
+.role small{display:block;font-weight:400;font-size:11.5px;color:var(--ink-3)}
+.role.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.hint{font-size:12px;color:var(--ink-3);margin-top:6px}
+.sugs{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.sugs.teams{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.sugs.teams .sug{text-align:center;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){.sugs.teams{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.sug{border:1px dashed var(--border-strong);background:var(--surface);border-radius:999px;padding:3px 11px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.sug:hover,.sug.on{border-style:solid;border-color:var(--ink);color:var(--ink)}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;border:1px solid var(--border);border-radius:999px;padding:3px 6px 3px 10px;background:var(--surface-2)}
+.chip button{border:0;background:none;color:var(--ink-3);padding:0 2px}
+.even{display:grid!important}
+.acts{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{border:1px solid var(--border-strong);background:var(--surface);border-radius:9px;padding:7px 14px;font-size:13px;font-weight:500;white-space:nowrap}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.choice{display:grid;gap:8px;margin-top:6px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;padding:12px 14px;text-align:left;background:var(--surface);width:100%}
+.opt.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.opt .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--surface-2);font-size:14px}
+.opt .h{font-weight:500;font-size:14px}.opt .d{font-size:12.5px;color:var(--ink-2)}
+.note{max-width:1100px;margin:0 auto 40px;padding:0 16px;text-align:center;color:var(--ink-3);font-size:12.5px}
+@media (max-width:640px){.roles{grid-template-columns:repeat(2,minmax(0,1fr))}.nav{display:none}.board{padding:22px 18px}}
+</style>
+</head>
+<body>
+<div class="picker">
+  <div class="seg" id="scr"><button data-v="welcome" class="on">1 Welcome</button><button data-v="about">4 About you + role</button><button data-v="done">7 Done: how to start</button><button data-v="setup">Set up my board (people only)</button><button data-v="sample">Sample week (Operations)</button></div>
+  <div class="seg" id="lang"><button data-l="en" class="on">English</button><button data-l="zh">中文</button></div>
+  <button class="ghost" id="theme">Dark</button>
+</div>
+<div class="stage"><div class="frame">
+  <div class="top"><div class="brand"><div class="mark">T</div>Tracker</div><div class="nav" id="nav"></div></div>
+  <div id="banner"></div>
+  <div class="board" id="board"></div>
+  <div class="scrim" id="scrim"><div class="card" id="card"></div></div>
+</div></div>
+<p class="note" id="note"></p>
+<script>
+const ROLES={en:[["product","Product","PRDs, launches, metrics"],["ops","Operations","Vendors, campaigns, approvals"],["design","Design","Reviews, feedback, handoff"],["marketing","Marketing","Launches, content, partners"],["program","Program / project","Timelines, owners, risks"],["other","Something else","Start general"]],
+ zh:[["product","产品","PRD、上线、指标"],["ops","运营","供应商、活动、审批"],["design","设计","评审、反馈、交付"],["marketing","市场","发布、内容、合作方"],["program","项目管理","排期、负责人、风险"],["other","其他","通用模板"]]};
+const T={en:{nav:["Today","Tasks","Questions","Capture"],
+ w_eb:"Welcome",w_h:"Congrats, you found your work tracker.",w_p:"Built for anyone whose work runs through other people: the asks, answers, and follow-ups that pile up between meetings.",w_pills:["Next actions","Who you're waiting on","Questions to ask","1:1 captures"],w_oss:"<b>Open source.</b> If it helps you, fork it and change anything to fit how you work.",w_go:"Get started",
+ ab_eb:"About you",ab_h:"Tell us a little about you",ab_p:"This stays on your computer. It sets your greeting and the sample week.",ab_name:"Your name",ab_proj:"What are you working on?",ab_projPh:"Q4 merchant onboarding",ab_role:"Your role",ab_hint:"Sets your sample week and team options. Change it in Settings.",
+ su_eb:"Your own board",su_h:"Set up your board",su_p:"Add the people you work with most. Type a name, then tap their team.",su_people:"People you work with",su_name:"Name, like Maya",su_team:"Their team",su_other:"Other team…",su_after:"You'll add tasks and questions on your board, as many as you need.",su_add:"Add",su_task:"Your first task",su_next:"Its next step",su_taskPh:"Or type your own task",su_nextPh:"What you'll do first",su_go:"Create my board",cont:"Continue",back:"Back",
+ d_eb:"All set",d_h:"You're ready, Justin.",d_p:"How do you want to start?",o1h:"Set up my board",o1d:"Add who you work with and your first task. Takes a minute.",o2h:"Look around a sample week first",o2d:"A made-up Operations week. Switch to your own board anytime.",d_go:"Continue",
+ b_sample:"<b>Sample Operations week.</b> Made-up data so you can try everything.",b_mine:"Start my own board",
+ hello:"Good evening, Justin.",l2:"Three moves today, two people to nudge.",sub:"6 open · 1 blocked",next:"Next actions",
+ items:[["Confirm the banner asset deadline with the agency","Holiday campaign · waiting on Lina","Today","P0"],["Send the revised contract to legal for review","Vendor renewal: SMS provider","Tomorrow","P0"],["Collect week-one activation numbers from DA","Merchant onboarding funnel · waiting on Priya","Wed","P1"]],
+ note:"Static preview v4 · no project or first-task questions · role sets the sample week and team options · setup asks only who you work with"},
+zh:{nav:["今天","任务","问题","记录"],
+ w_eb:"欢迎",w_h:"恭喜，你找到了你的工作追踪看板。",w_p:"为所有需要和别人协作推进工作的人而做：会议之间那些零散的需求、答复和待跟进事项，都在这里接住。",w_pills:["下一步行动","在等谁","要问的问题","1:1 记录"],w_oss:"<b>开源项目。</b>用得顺手的话，欢迎 fork，按你的工作方式随意改。",w_go:"开始",
+ ab_eb:"关于你",ab_h:"简单介绍一下你自己",ab_p:"这些只保存在你的电脑上，用来设置问候语和示例周。",ab_name:"你的名字",ab_proj:"你在做什么项目？",ab_projPh:"Q4 商家入驻",ab_role:"你的角色",ab_hint:"决定示例周和团队选项，可在设置里修改。",
+ su_eb:"你自己的看板",su_h:"搭建你的看板",su_p:"添加你最常对接的人：输入名字，再点选 TA 的团队。",su_people:"常对接的人",su_name:"名字，比如 Maya",su_team:"TA 的团队",su_other:"其他团队…",su_after:"任务和问题之后在看板上添加，想加多少都行。",su_add:"添加",su_task:"第一个任务",su_next:"它的下一步",su_taskPh:"或者输入你自己的任务",su_nextPh:"你要先做什么",su_go:"创建我的看板",cont:"继续",back:"返回",
+ d_eb:"准备好了",d_h:"一切就绪，Justin。",d_p:"你想怎么开始？",o1h:"搭建我的看板",o1d:"添加你常对接的人和第一个任务，一分钟就好。",o2h:"先看看示例周",o2d:"一周虚构的运营工作，随时可以切换到你自己的看板。",d_go:"继续",
+ b_sample:"<b>运营示例周。</b>虚构数据，方便你把功能都试一遍。",b_mine:"开始我自己的看板",
+ hello:"晚上好，Justin。",l2:"今天有三件要推进，两个人要催。",sub:"6 项进行中 · 1 项受阻",next:"下一步",
+ items:[["和代理商确认 banner 物料的截止时间","节日活动 · 在等 Lina","今天","P0"],["把修改后的合同发给法务审核","供应商续约：短信服务商","明天","P0"],["找数据分析要第一周的激活数据","商家入驻漏斗 · 在等 Priya","周三","P1"]],
+ note:"静态预览 v4 · 去掉了项目和第一个任务 · 角色决定示例周和团队选项 · 搭建看板只问常对接的人"}};
+const SUG={en:{product:{proj:["Referral program v2","Checkout redesign","Onboarding revamp"],teams:["Engineering","Design","Data science","Data analytics","QA","Marketing","Operations","Sales","Customer support","Legal","Leadership"],tasks:[["Draft the PRD","Write the problem statement"],["Lock the success metric","Ask data science how it's defined"],["Prep the design review","List three open questions"]]},
+ ops:{proj:["Q4 merchant onboarding","Holiday campaign","Vendor renewal"],teams:["Data analytics","Product","Engineering","Marketing","Sales","Customer support","Finance","Legal","Agency","Vendors","Leadership"],tasks:[["Confirm campaign asset deadlines","Message the agency for dates"],["Renew the SMS vendor contract","Send the redline to legal"],["Report week-one activation","Ask DA for the numbers"]]}},
+ zh:{product:{proj:["Referral 项目 v2","结算页改版","新手引导改版"],teams:["研发","设计","数据科学","数据分析","测试","市场","运营","销售","客服","法务","管理层"],tasks:[["写 PRD","先写问题陈述"],["锁定成功指标","问数据科学口径怎么定义"],["准备设计评审","列出三个待讨论问题"]]},
+ ops:{proj:["Q4 商家入驻","节日活动","供应商续约"],teams:["数据分析","产品","研发","市场","销售","客服","财务","法务","代理商","供应商","管理层"],tasks:[["确认活动物料的截止时间","找代理商要排期"],["续签短信服务商合同","把修订稿发给法务"],["汇报第一周激活数据","找数据分析要数"]]}}};
+let L="en",scr="welcome",role="ops",start=0,proj="",people=[["Lina","Agency"]],pName="",pTeam="",task=["",""];
+const sg=()=>SUG[L][role==="product"?"product":"ops"];
+const ORDER=["welcome","privacy","signup","about","ai","mac","done"];
+function bars(){const i=ORDER.indexOf(scr);return `<div class="bars">${ORDER.map((s,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>`;}
+function card(){const t=T[L];
+  if(scr==="welcome")return `${bars()}<div class="head"><span class="eb">${t.w_eb}</span></div><h2>${t.w_h}</h2><p>${t.w_p}</p><div class="pills">${t.w_pills.map(x=>`<span class="pill">${x}</span>`).join("")}</div><div class="oss">${t.w_oss}</div><div class="acts"><button class="btn pri">${t.w_go}</button></div>`;
+  if(scr==="about")return `${bars()}<div class="head"><span class="eb">${t.ab_eb}</span></div><h2>${t.ab_h}</h2><p>${t.ab_p}</p>
+    <label><span class="label">${t.ab_name}<span class="req">*</span></span><input class="inp" value="Justin"></label>
+    <span class="label">${t.ab_role}<span class="req">*</span></span><div class="roles">${ROLES[L].map(([k,n,d])=>`<button class="role${k===role?" on":""}" data-role="${k}">${n}<small>${d}</small></button>`).join("")}</div>
+    
+    <p class="hint">${t.ab_hint}</p><div class="acts"><button class="btn pri">${t.cont}</button><span class="grow"></span><button class="btn" style="border:0;color:var(--ink-3)">${t.back}</button></div>`;
+  if(scr==="done")return `${bars()}<div class="head"><span class="eb">${t.d_eb}</span></div><h2>${t.d_h}</h2><p>${t.d_p}</p>
+    <div class="choice"><button class="opt${start===0?" on":""}" data-start="0"><span class="ic">＋</span><span><div class="h">${t.o1h}</div><div class="d">${t.o1d}</div></span></button><button class="opt${start===1?" on":""}" data-start="1"><span class="ic">◎</span><span><div class="h">${t.o2h}</div><div class="d">${t.o2d}</div></span></button></div>
+    <div class="acts"><button class="btn pri">${t.d_go}</button></div>`;
+  if(scr==="setup")return `<div class="head"><span class="eb">${t.su_eb}</span></div><h2>${t.su_h}</h2><p>${t.su_p}</p>
+    <span class="label">${t.su_people}<span class="req">*</span></span>
+    <input class="inp" id="pnIn" value="${pName}" placeholder="${t.su_name}">
+    <div class="hint">${t.su_team}</div><div class="sugs teams">${sg().teams.map(x=>`<button class="sug${x===pTeam?" on":""}" data-team="${x}">${x}</button>`).join("")}<button class="sug" data-team="__other">${t.su_other}</button></div>
+    <div class="chips">${people.map((p,i)=>`<span class="chip">${p[0]} · ${p[1]}<button data-rm="${i}">×</button></span>`).join("")}</div>
+    <p class="hint" style="margin-top:12px">${t.su_after}</p>
+    <div class="acts"><button class="btn pri">${t.su_go}</button></div>`;
+  return "";}
+function evenRows(){document.querySelectorAll(".sugs,.pills,.chips").forEach(el=>{el.classList.remove("even");el.style.gridTemplateColumns="";const k=[...el.children];if(k.length<3)return;const rows=[];let bottom=-1e9;k.map(x=>[x,x.getBoundingClientRect()]).sort((a,b)=>a[1].top-b[1].top).forEach(([x,r])=>{if(r.top>=bottom-1){rows.push([x]);bottom=r.bottom;}else{rows[rows.length-1].push(x);bottom=Math.max(bottom,r.bottom);}});if(rows.length>1&&rows[rows.length-1].length===1){el.classList.add("even");el.style.gridTemplateColumns=`repeat(${Math.ceil(k.length/rows.length)},max-content)`;}});}
+function show(){const t=T[L];
+  document.getElementById("nav").innerHTML=t.nav.map((x,i)=>`<span class="${i===0?"on":""}">${x}</span>`).join("");
+  document.getElementById("banner").innerHTML=scr==="sample"?`<div class="banner"><span>${t.b_sample}</span><span class="grow"></span><button class="lk">${t.b_mine}</button></div>`:"";
+  document.getElementById("board").innerHTML=`<div class="date">${L==="zh"?"10 月 18 日 星期日":"Sunday, October 18"}</div><h1 class="hello"><span>${t.hello}</span><br><span class="l2">${t.l2}</span></h1><p class="sub">${t.sub}</p><div class="blabel">${t.next}</div>${t.items.map(([a,b,c,p])=>`<div class="item"><span class="circ"></span><div class="b"><div class="t">${a}</div><div class="s">${b}</div></div><span class="due">${c}</span><span class="tag ${p}">${p}</span></div>`).join("")}`;
+  const sc=document.getElementById("scrim");sc.hidden=scr==="sample";if(!sc.hidden)document.getElementById("card").innerHTML=card();
+  document.getElementById("note").textContent=t.note;
+  document.querySelectorAll("#scr button").forEach(b=>b.classList.toggle("on",b.dataset.v===scr));
+  document.querySelectorAll("#lang button").forEach(b=>b.classList.toggle("on",b.dataset.l===L));
+  evenRows();if(L==="en")document.querySelectorAll(".card h2,.card p,.d,.item .t,.item .s").forEach(el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let last=null,n;while(n=w.nextNode())if(n.nodeValue.trim())last=n;if(last)last.nodeValue=last.nodeValue.replace(/(\S)[ ]+(\S+\s*)$/,"$1 $2");});
+}
+document.addEventListener("click",e=>{const g=s=>e.target.closest(s);let el;
+  if(el=g("#scr button")){scr=el.dataset.v;show();}else if(el=g("#lang button")){L=el.dataset.l;show();}
+  else if(el=g("[data-role]")){role=el.dataset.role;proj="";task=["",""];show();}
+  else if(el=g("[data-proj]")){proj=el.dataset.proj;show();}
+  else if(el=g("[data-team]")){pTeam=el.dataset.team==="__other"?(L==="zh"?"其他":"Other"):el.dataset.team;pName=(document.getElementById("pnIn")||{}).value||pName;if(pName.trim()){people.push([pName.trim(),pTeam]);pName="";pTeam="";}show();}
+  else if(g("[data-addp]")){pName=document.getElementById("pnIn").value;if(pName.trim()){people.push([pName.trim(),pTeam||"—"]);pName="";pTeam="";}show();}
+  else if(el=g("[data-rm]")){people.splice(+el.dataset.rm,1);show();}
+  else if(el=g("[data-task]")){task=sg().tasks[+el.dataset.task].slice();show();}else if(el=g("[data-start]")){start=+el.dataset.start;show();}});
+const root=document.documentElement,th=document.getElementById("theme");const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+th.onclick=()=>{root.dataset.theme=isDark()?"light":"dark";th.textContent=isDark()?"Light":"Dark";};th.textContent=isDark()?"Light":"Dark";show();
+</script>
+</body>
+</html>

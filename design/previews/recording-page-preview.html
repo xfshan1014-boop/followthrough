@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capture Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f7f5;--surface:#ffffff;--surface-2:#f2f1ee;
+  --border:#e7e5e0;--border-strong:#d6d3cc;
+  --ink:#1d1c1a;--ink-2:#6b6862;--ink-3:#a19d95;
+  --accent:#2f5bd3;--accent-soft:#e8eefc;
+  --danger:#c0402f;--danger-soft:#fbeae6;
+  --warn:#a86b12;--warn-soft:#faf0dc;
+  --ok:#2b7d50;--ok-soft:#e5f3ea;
+  --violet:#6a4bb8;--violet-soft:#efeafa;
+  --clay:#c2643f;--clay-soft:#f8ebe4;
+  --serif:"Newsreader",Georgia,serif;--sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141413;--surface:#1c1c1b;--surface-2:#242422;
+  --border:#2f2e2c;--border-strong:#3d3c39;
+  --ink:#ecebe7;--ink-2:#a5a29b;--ink-3:#6f6c66;
+  --accent:#86a4ff;--accent-soft:#1f2a47;
+  --danger:#f08473;--danger-soft:#3a201c;
+  --warn:#e4ad55;--warn-soft:#382b15;
+  --ok:#66c792;--ok-soft:#183223;
+  --violet:#b39cf0;--violet-soft:#2a2340;
+  --clay:#e48c66;--clay-soft:#3a251c;
+}}
+:root[data-theme="dark"]{
+  --bg:#141413;--surface:#1c1c1b;--surface-2:#242422;
+  --border:#2f2e2c;--border-strong:#3d3c39;
+  --ink:#ecebe7;--ink-2:#a5a29b;--ink-3:#6f6c66;
+  --accent:#86a4ff;--accent-soft:#1f2a47;
+  --danger:#f08473;--danger-soft:#3a201c;
+  --warn:#e4ad55;--warn-soft:#382b15;
+  --ok:#66c792;--ok-soft:#183223;
+  --violet:#b39cf0;--violet-soft:#2a2340;
+  --clay:#e48c66;--clay-soft:#3a251c;
+}
+*{box-sizing:border-box}
+h1,h2,h3{text-wrap:balance}
+p,div,span{text-wrap:pretty}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+
+.picker{position:sticky;top:0;z-index:10;display:flex;justify-content:center;align-items:center;gap:10px;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:none;color:var(--ink-2);padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.iconbtn{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer}
+
+.stage{display:flex;justify-content:center;padding:28px 16px 64px}
+.app{width:100%;max-width:1080px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.topbar{display:flex;align-items:center;gap:20px;padding:14px 22px;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600}
+.mark{width:20px;height:20px;border-radius:6px;background:var(--ink);color:var(--surface);display:grid;place-items:center;font-size:11px;font-weight:600}
+.nav{display:flex;gap:2px}
+.nav span{padding:5px 11px;border-radius:7px;color:var(--ink-2);font-size:13px;font-weight:500}
+.nav span.on{background:var(--surface-2);color:var(--ink)}
+.sp{flex:1}
+.kbd{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);border:1px solid var(--border);border-radius:6px;padding:2px 7px}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:11px;font-weight:600}
+
+.view{display:none}.view.on{display:block}
+.label{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.02em;margin:0 0 10px}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:1px 7px;border-radius:5px;white-space:nowrap}
+.p0{background:var(--danger-soft);color:var(--danger)}
+.who{background:var(--violet-soft);color:var(--violet)}
+.okt{background:var(--ok-soft);color:var(--ok)}
+.warnt{background:var(--warn-soft);color:var(--warn)}
+.acct{background:var(--accent-soft);color:var(--accent)}
+.muted{color:var(--ink-2)}.faint{color:var(--ink-3)}
+
+/* session header */
+.sess{display:flex;align-items:flex-start;gap:16px;padding:24px 28px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.sess h1{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.2;margin:2px 0 6px;letter-spacing:-.01em}
+.sess .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-2)}
+.ctrl{margin-left:auto;display:flex;align-items:center;gap:10px}
+.timer{font-family:var(--mono);font-size:20px;letter-spacing:.02em}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--danger)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--danger);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.btn{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);border-radius:9px;padding:7px 13px;font-size:13px;font-weight:500;cursor:pointer}
+.btn.stop{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.btn.claude{background:var(--clay);border-color:var(--clay);color:#fff}
+
+/* waveform */
+.wave{display:flex;align-items:center;gap:3px;height:34px;padding:0 28px;margin:14px 0 0}
+.wave span{flex:1;max-width:4px;border-radius:2px;background:var(--border-strong)}
+.wave span.hot{background:var(--danger)}
+
+/* layout */
+.cap{display:grid;grid-template-columns:minmax(0,1fr) 360px}
+.tx{padding:18px 28px 28px}
+.rail{border-left:1px solid var(--border);background:var(--bg);padding:20px 22px}
+
+/* transcript */
+.line{display:grid;grid-template-columns:54px minmax(0,1fr);gap:12px;padding:9px 0}
+.line .ts{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:3px}
+.line .sp-n{font-size:12px;font-weight:600;margin-bottom:2px}
+.line .tt{font-size:14.5px;line-height:1.6}
+.me{color:var(--accent)}.them{color:var(--violet)}
+.hl{background:var(--ok-soft);border-radius:4px;padding:0 3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.hla{background:var(--warn-soft);border-radius:4px;padding:0 3px}
+.flag{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--clay);font-weight:500;margin-left:6px}
+.interim{color:var(--ink-3)}
+.caret{display:inline-block;width:2px;height:16px;background:var(--ink-3);vertical-align:-3px;animation:pulse 1s steps(2) infinite}
+.txbar{display:flex;gap:8px;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
+.chip{font-size:12px;color:var(--ink-2);border:1px solid var(--border);border-radius:999px;padding:4px 11px}
+
+/* rail cards */
+.rc{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:13px 14px;margin-bottom:14px}
+.rc-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.rc-h .t{font-size:13px;font-weight:600}
+.rc-h .c{margin-left:auto;font-size:11.5px;color:var(--ink-3)}
+.spark{width:16px;height:16px;border-radius:5px;background:var(--clay-soft);color:var(--clay);display:grid;place-items:center;font-size:10px;font-weight:600}
+.q{display:flex;gap:9px;padding:6px 0;font-size:13px;align-items:flex-start}
+.q .box{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border-strong);flex:none;margin-top:2px;position:relative}
+.q.done .box{background:var(--ok);border-color:var(--ok)}
+.q.done .box::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.q.done .qt{color:var(--ink-2)}
+.q .ans{font-size:12px;color:var(--ok);margin-top:2px}
+.ex{border-top:1px solid var(--border);padding:10px 0 4px}
+.ex:first-of-type{border-top:0;padding-top:0}
+.ex .k{font-size:11px;font-weight:500;margin-bottom:3px}
+.ex .v{font-size:13.5px;line-height:1.45}
+.ex .to{font-size:11.5px;color:var(--ink-3);margin-top:4px}
+.thinking{font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:6px;margin-top:8px}
+.dots i{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--ink-3);margin-right:2px;animation:pulse 1.2s infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+
+/* review */
+.rv{display:grid;grid-template-columns:minmax(0,1fr) 340px}
+.rv-main{padding:24px 28px 30px}
+.sum{font-family:var(--serif);font-size:18px;line-height:1.55;margin:0 0 22px;color:var(--ink)}
+.prop{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);border-radius:11px;padding:12px 14px;margin-bottom:9px}
+.prop .ic{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.prop .b{flex:1;min-width:0}
+.prop .k{font-size:11.5px;color:var(--ink-3)}
+.prop .v{font-size:14px;font-weight:500;margin:1px 0 3px}
+.prop .d{font-size:12.5px;color:var(--ink-2)}
+.prop .d s{color:var(--ink-3)}
+.prop .acts{display:flex;gap:6px;flex:none}
+.mini{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:7px;padding:4px 9px;font-size:12px;cursor:pointer}
+.mini.yes{border-color:var(--ok);color:var(--ok)}
+.prop.on{border-color:var(--ok);background:var(--ok-soft)}
+.applybar{display:flex;align-items:center;gap:12px;margin-top:18px;padding:14px 16px;border-radius:11px;background:var(--surface-2)}
+.applybar .t{font-size:13px;color:var(--ink-2)}
+.rv-side{border-left:1px solid var(--border);background:var(--bg);padding:22px}
+.mini-tx .line{grid-template-columns:44px minmax(0,1fr);padding:6px 0}
+.mini-tx .tt{font-size:13px}
+.ask{display:flex;gap:8px;margin-top:10px}
+.ask input{flex:1;border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:9px;padding:8px 11px;font-size:13px;font-family:inherit}
+
+.note{max-width:1080px;margin:0 auto;padding:0 16px;color:var(--ink-3);font-size:12.5px;text-align:center}
+
+@media (max-width:860px){
+  .cap,.rv{grid-template-columns:1fr}
+  .rail,.rv-side{border-left:0;border-top:1px solid var(--border)}
+  .nav{display:none}
+  .ctrl{margin-left:0}
+}
+@media (max-width:520px){
+  .sess,.tx,.rv-main{padding-left:18px;padding-right:18px}
+  .prop{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<div class="picker">
+  <div class="seg" id="seg">
+    <button data-v="live" class="on">1 · Live</button>
+    <button data-v="review">2 · Review</button>
+  </div>
+  <button class="iconbtn" id="theme">Dark</button>
+</div>
+
+<div class="stage">
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><div class="mark">T</div>Tracker</div>
+    <div class="nav"><span>Today</span><span>Tasks</span><span>Questions</span><span class="on">Capture</span></div>
+    <div class="sp"></div>
+    <span class="kbd">⌘K</span>
+    <div class="avatar">JS</div>
+  </div>
+
+  <!-- LIVE -->
+  <section class="view on" id="v-live">
+    <div class="sess">
+      <div>
+        <div class="label" style="margin-bottom:4px">Capture · 1:1</div>
+        <h1>Metric definition sync with Maya</h1>
+        <div class="meta"><span class="tag who">Maya · DS</span><span class="tag p0">Lock success metric</span><span>+ link task</span></div>
+      </div>
+      <div class="ctrl">
+        <span class="live"><i></i>Recording</span>
+        <span class="timer">12:47</span>
+        <button class="btn">Pause</button>
+        <button class="btn">Flag moment</button>
+        <button class="btn stop">Stop</button>
+      </div>
+    </div>
+    <div class="wave" id="wave"></div>
+
+    <div class="cap">
+      <div class="tx">
+        <div class="line"><span class="ts">09:58</span><div><div class="sp-n me">You</div><div class="tt">For the referral test, should D7 retention be per cohort or rolling? I want one number I can put in the PRD.</div></div></div>
+        <div class="line"><span class="ts">10:21</span><div><div class="sp-n them">Maya</div><div class="tt"><span class="hl">Per signup cohort. And exclude reactivated users</span>, otherwise the invite channel looks better than it is.<span class="flag">◆ flagged</span></div></div></div>
+        <div class="line"><span class="ts">11:02</span><div><div class="sp-n me">You</div><div class="tt">Makes sense. What sample size would we need to see a two percent lift?</div></div></div>
+        <div class="line"><span class="ts">11:30</span><div><div class="sp-n them">Maya</div><div class="tt">Roughly forty thousand per arm at current traffic. <span class="hla">I'll send you the power calc by Thursday.</span></div></div></div>
+        <div class="line"><span class="ts">12:14</span><div><div class="sp-n me">You</div><div class="tt">Great. <span class="hla">I'll update the metric spec today and share it in Friday's sync.</span></div></div></div>
+        <div class="line"><span class="ts">12:40</span><div><div class="sp-n them">Maya</div><div class="tt interim">Also check with Priya whether the baseline already splits by channel <span class="caret"></span></div></div></div>
+
+        <div class="txbar">
+          <span class="chip">English · auto-punctuation on</span>
+          <span class="chip">Speakers: You, Maya</span>
+          <span class="sp"></span>
+          <span class="faint" style="font-size:12px">Transcript stays editable</span>
+        </div>
+      </div>
+
+      <aside class="rail">
+        <div class="rc">
+          <div class="rc-h"><span class="t">Questions for Maya</span><span class="c">2 of 3 answered</span></div>
+          <div class="q done"><span class="box"></span><div><div class="qt">Cohort or rolling D7 retention?</div><div class="ans">Per signup cohort, exclude reactivated</div></div></div>
+          <div class="q done"><span class="box"></span><div><div class="qt">Sample size for a 2% lift?</div><div class="ans">~40k per arm · power calc Thu</div></div></div>
+          <div class="q"><span class="box"></span><div class="qt">Should guardrail include cancel rate?</div></div>
+        </div>
+
+        <div class="rc">
+          <div class="rc-h"><span class="spark">✳</span><span class="t">Claude is listening</span><span class="c">updated 4s ago</span></div>
+          <div class="ex"><div class="k" style="color:var(--ok)">Answer</div><div class="v">D7 retention = per signup cohort, excluding reactivated users</div><div class="to">→ Lock success metric</div></div>
+          <div class="ex"><div class="k" style="color:var(--accent)">Your next action</div><div class="v">Update metric spec today, share in Friday sync</div><div class="to">→ Lock success metric</div></div>
+          <div class="ex"><div class="k" style="color:var(--warn)">Waiting on Maya</div><div class="v">Power calc, due Thu</div><div class="to">→ Referral A/B test</div></div>
+          <div class="thinking"><span class="dots"><i></i><i></i><i></i></span>Picking up a follow-up for Priya</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="view" id="v-review">
+    <div class="sess">
+      <div>
+        <div class="label" style="margin-bottom:4px">Capture · 1:1 · ended 14:05 · 14 min</div>
+        <h1>Metric definition sync with Maya</h1>
+        <div class="meta"><span class="tag who">Maya · DS</span><span class="tag p0">Lock success metric</span><span class="tag okt">2 of 3 questions answered</span></div>
+      </div>
+      <div class="ctrl">
+        <button class="btn">Copy summary</button>
+        <button class="btn">Export .md</button>
+      </div>
+    </div>
+
+    <div class="rv">
+      <div class="rv-main">
+        <div class="label">Summary</div>
+        <p class="sum">Maya confirmed D7 retention should be measured per signup cohort and exclude reactivated users. A 2% lift needs about 40k users per arm; she'll send the power calc Thursday. You'll update the metric spec today and check channel splits with Priya.</p>
+
+        <div class="label">Proposed updates to your board · 5</div>
+        <div class="prop on">
+          <div class="ic okt">A</div>
+          <div class="b"><div class="k">Answer → question</div><div class="v">Cohort or rolling D7 retention?</div><div class="d">Per signup cohort; exclude reactivated users</div></div>
+          <div class="acts"><button class="mini yes">✓ Added</button></div>
+        </div>
+        <div class="prop on">
+          <div class="ic acct">N</div>
+          <div class="b"><div class="k">Next action → Lock success metric</div><div class="v">Update metric spec, share in Friday sync</div><div class="d"><s>Ask Maya for cohort definition</s> → replaced · due today</div></div>
+          <div class="acts"><button class="mini yes">✓ Added</button></div>
+        </div>
+        <div class="prop">
+          <div class="ic warnt">W</div>
+          <div class="b"><div class="k">Waiting on → Referral A/B test</div><div class="v">Maya · power calc</div><div class="d">Due Thu · reminder Thu 10am if nothing arrives</div></div>
+          <div class="acts"><button class="mini">Edit</button><button class="mini">Skip</button><button class="mini yes">Add</button></div>
+        </div>
+        <div class="prop">
+          <div class="ic who">Q</div>
+          <div class="b"><div class="k">New question → Priya · DA</div><div class="v">Does the baseline already split by channel?</div><div class="d">Linked to Baseline funnel numbers</div></div>
+          <div class="acts"><button class="mini">Edit</button><button class="mini">Skip</button><button class="mini yes">Add</button></div>
+        </div>
+        <div class="prop">
+          <div class="ic" style="background:var(--surface-2);color:var(--ink-2)">?</div>
+          <div class="b"><div class="k">Still open → Maya</div><div class="v">Should guardrail include cancel rate?</div><div class="d">Not covered · keep on the list for next 1:1</div></div>
+          <div class="acts"><button class="mini">Skip</button><button class="mini yes">Keep</button></div>
+        </div>
+
+        <div class="applybar">
+          <span class="t">2 added · 3 to review</span><span class="sp"></span>
+          <button class="btn">Skip the rest</button>
+          <button class="btn primary">Apply all 3</button>
+        </div>
+      </div>
+
+      <aside class="rv-side">
+        <div class="label">Key moments</div>
+        <div class="rc mini-tx">
+          <div class="line"><span class="ts">10:21</span><div><div class="sp-n them">Maya</div><div class="tt"><span class="hl">Per signup cohort. And exclude reactivated users.</span></div></div></div>
+          <div class="line"><span class="ts">11:30</span><div><div class="sp-n them">Maya</div><div class="tt"><span class="hla">I'll send you the power calc by Thursday.</span></div></div></div>
+          <div class="line"><span class="ts">12:14</span><div><div class="sp-n me">You</div><div class="tt"><span class="hla">I'll update the metric spec today.</span></div></div></div>
+          <div style="font-size:12px;color:var(--accent);margin-top:4px">Open full transcript →</div>
+        </div>
+
+        <div class="label">Ask about this meeting</div>
+        <div class="rc">
+          <div style="font-size:13px;color:var(--ink-2);margin-bottom:8px">Why did Maya say to exclude reactivated users?</div>
+          <div style="font-size:13px;line-height:1.5"><span class="spark" style="display:inline-grid;margin-right:6px;vertical-align:-3px">✳</span>Reactivated users come back through the invite link at a higher rate, so including them would inflate the referral channel's retention (10:21).</div>
+          <div class="ask"><input placeholder="Ask Claude about this transcript"><button class="btn claude">Ask</button></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</div>
+</div>
+
+<p class="note">Static preview · Live = during the 1:1 · Review = after you hit Stop · toggle Dark to check both themes</p>
+
+<script>
+const w=document.getElementById("wave");let h="";
+for(let i=0;i<120;i++){const v=Math.abs(Math.sin(i*.37)*Math.cos(i*.11))*0.85+0.12;h+=`<span${i>104?' class="hot"':''} style="height:${Math.round(v*34)}px"></span>`;}
+w.innerHTML=h;
+const seg=document.getElementById("seg");
+seg.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+b.dataset.v));
+});
+const root=document.documentElement,tb=document.getElementById("theme");
+const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+const sync=()=>tb.textContent=isDark()?"Light":"Dark";
+tb.onclick=()=>{root.dataset.theme=isDark()?"light":"dark";sync();};
+sync();
+</script>
+</body>
+</html>

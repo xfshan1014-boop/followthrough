@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Followthrough Brand Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400&display=swap">
+<style>
+:root{--bg:#f6f6f3;--surface:#fff;--surface-2:#f0efeb;--border:#e5e3dd;--ink:#1c1b19;--ink-2:#67645e;--ink-3:#9c988f;--clay:#e68d66;--accent:#2f56c9;--on-ink:#fff;
+  --display:"Newsreader","Songti SC",Georgia,serif;--body:"Geist","PingFang SC",-apple-system,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--border:#2e2d2a;--ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;--accent:#88a5ff;--on-ink:#131312;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--border:#2e2d2a;--ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;--accent:#88a5ff;--on-ink:#131312;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2{text-wrap:balance;margin:0}p{text-wrap:pretty}
+button{font:inherit;color:inherit;cursor:pointer}
+.picker{position:sticky;top:0;z-index:5;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;color:var(--ink-2);padding:5px 11px;border-radius:8px;font-size:12.5px;font-weight:500}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.ghost{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 16px 48px;display:grid;gap:28px}
+.lbl{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em;margin-bottom:10px}
+.icons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ic{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:18px;display:grid;justify-items:center;gap:10px;text-align:center}
+.ic.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ic svg.big{width:96px;height:96px}
+.ic .row{display:flex;gap:10px;align-items:center}
+.ic .row svg{width:32px;height:32px}.ic .row svg.tiny{width:16px;height:16px}
+.ic .n{font-weight:500}.ic .d{font-size:12.5px;color:var(--ink-2)}
+.app{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.top{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:9px;flex:none}
+.brand svg{width:22px;height:22px}
+.brand .nm{font-weight:600}
+.brand .tag{font-size:12.5px;color:var(--ink-3);padding-left:10px;margin-left:2px;border-left:1px solid var(--border);white-space:nowrap}
+.nav{display:flex;gap:2px}.nav span{padding:5px 10px;border-radius:7px;color:var(--ink-2);font-size:13px;font-weight:500;white-space:nowrap}.nav span.on{background:var(--surface-2);color:var(--ink)}
+.grow{flex:1}
+.tbtn{border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.board{padding:26px 30px 30px}
+.hello{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.2}.hello .l2{color:var(--ink-2)}
+.welcome{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px 34px;max-width:640px;margin:0 auto}
+.welcome .head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.welcome .head svg{width:44px;height:44px}
+.welcome .wn{font-weight:600;font-size:16px}.welcome .wt{font-size:13px;color:var(--ink-3)}
+.welcome h2{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.2;margin:4px 0 10px}
+.welcome p{color:var(--ink-2);font-size:14.5px;margin:0}
+.dock{display:flex;justify-content:center;gap:10px;padding:10px 16px;background:rgba(120,120,120,.18);border-radius:18px;width:max-content;margin:0 auto}
+.dock .d{width:52px;height:52px;border-radius:12px;background:var(--surface-2)}
+.dock svg{width:52px;height:52px}
+.note{text-align:center;color:var(--ink-3);font-size:12.5px}
+@media (max-width:760px){.icons{grid-template-columns:repeat(2,minmax(0,1fr))}.nav{display:none}.brand .tag{display:none}}
+</style>
+</head>
+<body>
+<div class="picker">
+  <div class="seg" id="iconSeg"><button data-i="0" class="on">Icon A · Monogram</button><button data-i="1">Icon B · Thread</button><button data-i="2">Icon C · Check loop</button><button data-i="3">Icon D · Handoff</button></div>
+  <div class="seg" id="barSeg"><button data-b="tag" class="on">Top bar 1 · name + subtitle</button><button data-b="plain">Top bar 2 · name only</button></div>
+  <div class="seg" id="langSeg"><button data-l="en" class="on">English</button><button data-l="zh">中文</button></div>
+  <button class="ghost" id="theme">Dark</button>
+</div>
+<div class="wrap">
+  <div><div class="lbl" id="l1"></div><div class="icons" id="icons"></div></div>
+  <div><div class="lbl" id="l2"></div><div class="app"><div class="top" id="top"></div><div class="board" id="board"></div></div></div>
+  <div><div class="lbl" id="l3"></div><div class="welcome" id="welcome"></div></div>
+  <div><div class="lbl" id="l4"></div><div class="dock" id="dock"></div></div>
+  <p class="note" id="note"></p>
+</div>
+<script>
+const INK="#1c1b19",LIGHT="#f6f6f3",CLAY="#e68d66";
+const ICONS=[
+ // A: monogram F with a clay dot
+ `<svg viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="${INK}"/><rect x="150" y="128" width="56" height="256" rx="16" fill="${LIGHT}"/><rect x="150" y="128" width="200" height="54" rx="16" fill="${LIGHT}"/><rect x="150" y="232" width="150" height="50" rx="16" fill="${LIGHT}"/><circle cx="352" cy="352" r="36" fill="${CLAY}"/></svg>`,
+ // B: a thread that loops once and lands on a dot
+ `<svg viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="${INK}"/><path d="M118 330 C 170 330, 190 170, 270 170 C 345 170, 345 270, 280 270 C 220 270, 230 340, 360 340" fill="none" stroke="${LIGHT}" stroke-width="40" stroke-linecap="round"/><circle cx="376" cy="340" r="38" fill="${CLAY}"/></svg>`,
+ // C: a check whose tail circles back
+ `<svg viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="${INK}"/><path d="M140 268 L 222 348 L 386 170" fill="none" stroke="${LIGHT}" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/><path d="M386 170 C 430 220, 420 330, 330 380" fill="none" stroke="${CLAY}" stroke-width="30" stroke-linecap="round"/></svg>`,
+ // D: two people (dots) linked; the far one is where it lands
+ `<svg viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="${INK}"/><path d="M170 330 C 200 190, 320 190, 342 300" fill="none" stroke="${LIGHT}" stroke-width="36" stroke-linecap="round" stroke-dasharray="1 64"/><path d="M170 330 C 200 190, 320 190, 342 300" fill="none" stroke="${LIGHT}" stroke-width="36" stroke-linecap="round" opacity=".35"/><circle cx="160" cy="340" r="46" fill="${LIGHT}"/><circle cx="352" cy="320" r="46" fill="${CLAY}"/></svg>`];
+const T={en:{name:"Followthrough",tag:"Every ask, answer, and follow-up in one place.",icons:[["Monogram","An F with a dot: you, closing the loop."],["Thread","One line through the work, ending where it lands."],["Check loop","Done, plus the follow-up that got it there."],["Handoff","From one person to the next, tracked."]],
+ nav:["Today","Tasks","Questions","Capture"],ai:"AI: off",mac:"↓ Mac app",hello:"Good evening, Justin.",l2:"Two moves today, one person to nudge.",
+ l1:"App icon · large, Dock size, and tab size",l2t:"Top bar",l3:"Welcome card header",l4:"In your Dock",
+ wh:"Congrats, you found Followthrough.",wp:"Built for anyone whose work runs through other people: the asks, answers, and follow-ups that pile up between meetings.",
+ note:"Pick one icon and one top bar. Subtitle text is the same everywhere: welcome card, top bar, GitHub."},
+ zh:{name:"Followthrough",tag:"所有请求、答复和待跟进，都在一处。",icons:[["字母","一个 F 加一个点：你把事情闭环。"],["一条线","一条线穿过工作，落在终点。"],["回环勾","完成了，也带上让它完成的那次跟进。"],["交接","从一个人到下一个人，全程有记录。"]],
+ nav:["今天","任务","问题","记录"],ai:"AI：未连接",mac:"↓ Mac 应用",hello:"晚上好，Justin。",l2:"今天有两件要推进，一个人要催。",
+ l1:"App 图标 · 大图、Dock 尺寸、标签页尺寸",l2t:"顶栏",l3:"欢迎卡片的标题区",l4:"在 Dock 里",
+ wh:"恭喜，你找到了 Followthrough。",wp:"为所有需要和别人协作推进工作的人而做：会议之间那些零散的需求、答复和待跟进事项，都在这里接住。",
+ note:"选一个图标和一种顶栏。副标题在欢迎卡片、顶栏和 GitHub 上用同一句。"}};
+let ic=0,bar="tag",L="en";
+function show(){const t=T[L];
+ document.getElementById("l1").textContent=t.l1;document.getElementById("l2").textContent=t.l2t;document.getElementById("l3").textContent=t.l3;document.getElementById("l4").textContent=t.l4;document.getElementById("note").textContent=t.note;
+ document.getElementById("icons").innerHTML=ICONS.map((s,i)=>`<button class="ic${i===ic?" on":""}" data-i="${i}">${s.replace("<svg",'<svg class="big"')}<div class="row">${s}${s.replace("<svg",'<svg class="tiny"')}</div><div class="n">${"ABCD"[i]} · ${t.icons[i][0]}</div><div class="d">${t.icons[i][1]}</div></button>`).join("");
+ document.getElementById("top").innerHTML=`<div class="brand">${ICONS[ic]}<span class="nm">${t.name}</span>${bar==="tag"?`<span class="tag">${t.tag}</span>`:""}</div><div class="nav">${t.nav.map((x,i)=>`<span class="${i===0?"on":""}">${x}</span>`).join("")}</div><span class="grow"></span><span class="tbtn">● ${t.ai}</span><span class="tbtn">${t.mac}</span><span class="tbtn">⚙</span>`;
+ document.getElementById("board").innerHTML=`<h1 class="hello"><span>${t.hello}</span><br><span class="l2">${t.l2}</span></h1>`;
+ document.getElementById("welcome").innerHTML=`<div class="head">${ICONS[ic]}<div><div class="wn">${t.name}</div><div class="wt">${t.tag}</div></div></div><h2>${t.wh}</h2><p>${t.wp}</p>`;
+ document.getElementById("dock").innerHTML=`<div class="d"></div><div class="d"></div>${ICONS[ic]}<div class="d"></div><div class="d"></div>`;
+ document.querySelectorAll("#iconSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.i===ic));
+ document.querySelectorAll("#barSeg button").forEach(b=>b.classList.toggle("on",b.dataset.b===bar));
+ document.querySelectorAll("#langSeg button").forEach(b=>b.classList.toggle("on",b.dataset.l===L));
+ if(L==="en")document.querySelectorAll(".d,.welcome p,.welcome h2,.hello span").forEach(el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let last=null,n;while(n=w.nextNode())if(n.nodeValue.trim())last=n;if(last)last.nodeValue=last.nodeValue.replace(/(\S)[ ]+(\S+\s*)$/,"$1 $2");});
+}
+document.addEventListener("click",e=>{const g=s=>e.target.closest(s);let el;
+ if(el=g("[data-i]")){ic=+el.dataset.i;show();}else if(el=g("[data-b]")){bar=el.dataset.b;show();}else if(el=g("[data-l]")){L=el.dataset.l;show();}});
+const root=document.documentElement,th=document.getElementById("theme");const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+th.onclick=()=>{root.dataset.theme=isDark()?"light":"dark";th.textContent=isDark()?"Light":"Dark";};th.textContent=isDark()?"Light":"Dark";show();
+</script>
+</body>
+</html>

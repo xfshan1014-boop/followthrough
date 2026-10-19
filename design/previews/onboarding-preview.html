@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onboarding Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Newsreader:opsz,wght@6..72,400&display=swap">
+<style>
+:root{
+  --bg:#f6f6f3;--surface:#fff;--surface-2:#f0efeb;--hover:#ecebe6;--border:#e5e3dd;--border-strong:#d3d0c8;
+  --ink:#1c1b19;--ink-2:#67645e;--ink-3:#9c988f;--accent:#2f56c9;--accent-soft:#e7ecfb;
+  --danger:#bd3f2e;--danger-soft:#fae9e5;--warn:#9f6612;--warn-soft:#f8eedb;--ok:#2a7a4e;--ok-soft:#e3f1e8;
+  --violet:#6548b3;--violet-soft:#eee9f9;--clay:#b95d38;--clay-soft:#f7e9e2;--on-ink:#fff;--scrim:rgba(20,18,15,.34);
+  --display:"Newsreader",Georgia,serif;--body:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"Geist Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--hover:#2a2a27;--border:#2e2d2a;--border-strong:#3e3d39;--ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;--accent:#88a5ff;--accent-soft:#1f2946;--danger:#f0836f;--danger-soft:#3a1f1a;--warn:#e2ab52;--warn-soft:#372a14;--ok:#68c690;--ok-soft:#173122;--violet:#b49df0;--violet-soft:#29223f;--clay:#e68d66;--clay-soft:#38241b;--on-ink:#131312;--scrim:rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--hover:#2a2a27;--border:#2e2d2a;--border-strong:#3e3d39;--ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;--accent:#88a5ff;--accent-soft:#1f2946;--danger:#f0836f;--danger-soft:#3a1f1a;--warn:#e2ab52;--warn-soft:#372a14;--ok:#68c690;--ok-soft:#173122;--violet:#b49df0;--violet-soft:#29223f;--clay:#e68d66;--clay-soft:#38241b;--on-ink:#131312;--scrim:rgba(0,0,0,.5);color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{text-wrap:balance;margin:0}p{text-wrap:pretty}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+.picker{position:sticky;top:0;z-index:30;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:none;color:var(--ink-2);padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.ghost{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 10px;font-size:13px}
+
+.stage{display:flex;justify-content:center;padding:24px 16px 16px}
+.frame{position:relative;width:100%;max-width:1100px;height:900px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.top{display:flex;align-items:center;gap:18px;padding:13px 22px;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600}
+.mark{width:20px;height:20px;border-radius:6px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font-size:11px;font-weight:600}
+.nav{display:flex;gap:2px}.nav span{padding:5px 11px;border-radius:7px;color:var(--ink-2);font-size:13px;font-weight:500}.nav span.on{background:var(--surface-2);color:var(--ink)}
+.grow{flex:1}
+.topbtn{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
+.topbtn.hl{border-color:var(--ink);color:var(--ink)}
+.topbtn .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.topbtn .dot.on{background:var(--ok)}
+.board{padding:28px 32px;opacity:1}
+.date{font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+.hello{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.18}
+.hello .l2{color:var(--ink-2)}
+.item{display:flex;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-top:8px;max-width:640px}
+.circ{width:18px;height:18px;border:1.5px solid var(--border-strong);border-radius:50%;flex:none}
+.item .t{font-weight:500}.item .s{font-size:12.5px;color:var(--ink-2)}
+.label{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em;margin:26px 0 4px}
+
+/* card shell */
+.scrim{position:absolute;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:20px}
+.scrim.corner{background:transparent;align-items:flex-end;justify-content:flex-end;pointer-events:none}
+.card{width:min(460px,100%);background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 60px rgba(20,18,15,.22);padding:24px 24px 20px;max-height:100%;overflow:auto;pointer-events:auto}
+.corner .card{width:min(400px,100%);box-shadow:0 12px 36px rgba(20,18,15,.18)}
+.steps{display:flex;gap:5px;margin-bottom:18px}
+.steps i{height:4px;flex:1;border-radius:2px;background:var(--surface-2)}
+.steps i.on{background:var(--ink)}
+.eyebrow{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em;margin-bottom:6px}
+.card h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.2;letter-spacing:-.01em;margin-bottom:8px}
+.card p{margin:0 0 12px;color:var(--ink-2);font-size:13.5px}
+.acts{display:flex;align-items:center;gap:8px;margin-top:18px}
+.btn{border:1px solid var(--border-strong);background:var(--surface);border-radius:9px;padding:7px 14px;font-size:13px;font-weight:500;white-space:nowrap}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.btn.claude{background:var(--clay);border-color:var(--clay);color:#fff}
+.skip{border:0;background:none;color:var(--ink-3);font-size:13px;padding:0}
+.skip:hover{color:var(--ink)}
+.inp{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:9px 11px;font-size:14px}
+.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.hint{font-size:12px;color:var(--ink-3);margin-top:6px}
+.oss{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink-2);margin-top:4px}
+.oss b{color:var(--ink);font-weight:500}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
+.pill{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--ink-2)}
+
+/* AI preview tabs */
+.tabs{display:flex;gap:2px;background:var(--surface-2);border-radius:9px;padding:3px;margin:4px 0 10px}
+.tabs button{flex:1;border:0;background:none;border-radius:7px;padding:5px 6px;font-size:12px;font-weight:500;color:var(--ink-2)}
+.tabs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.demo{border:1px solid var(--border);border-radius:11px;padding:12px;background:var(--bg);min-height:150px}
+.demo .k{font-size:11px;font-weight:500;margin-bottom:2px}
+.demo .v{font-size:13px;margin-bottom:8px}
+.demo .ln{font-size:12.5px;padding:3px 0}
+.demo .sp{font-weight:600;font-size:11.5px}
+.demo mark{background:var(--ok-soft);color:inherit;border-radius:3px;padding:0 2px}
+.demo .row{display:flex;gap:8px;align-items:center;font-size:12.5px;border:1px solid var(--border);border-radius:8px;padding:6px 8px;margin-bottom:5px;background:var(--surface)}
+.demo .row .ic{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:10px;font-weight:600;flex:none}
+.demo .bub{font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:7px 9px;margin-bottom:6px}
+.demo .cap{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.live{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--danger);font-weight:500;margin-bottom:6px}
+.live i{width:6px;height:6px;border-radius:50%;background:var(--danger)}
+details{border:1px solid var(--border);border-radius:10px;margin-top:12px}
+summary{cursor:pointer;padding:9px 12px;font-size:13px;font-weight:500;list-style:none;display:flex;align-items:center;gap:8px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;color:var(--ink-3);font-size:15px}
+details[open] summary::after{content:"–"}
+details ol{margin:0;padding:0 14px 12px 32px;font-size:12.5px;color:var(--ink-2)}
+details ol li{margin:4px 0}
+details code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.keyrow{display:flex;gap:8px;margin-top:12px}
+.keyrow .inp{font-family:var(--mono);font-size:12.5px}
+.install{display:flex;gap:12px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:12px;margin:6px 0 4px}
+.appicon{width:44px;height:44px;border-radius:11px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font-weight:600;font-size:20px;flex:none}
+.note{max-width:1100px;margin:0 auto 40px;padding:0 16px;text-align:center;color:var(--ink-3);font-size:12.5px}
+@media (max-width:640px){.nav{display:none}.frame{height:760px}.board{padding:22px 18px}.hello{font-size:26px}}
+.flow{display:grid;gap:8px;margin:6px 0 4px}
+.fl{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:11px;padding:10px 12px}
+.fl .ic{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.fl .h{font-size:13px;font-weight:500}
+.fl .d{font-size:12.5px;color:var(--ink-2)}
+.trust{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.trust span{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--ink-2)}
+.priv{background:var(--ok-soft);border-radius:11px;padding:10px 12px;font-size:12.5px;color:var(--ink);margin:10px 0 2px}
+.priv b{font-weight:500}
+.provs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 10px}
+.prov{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:7px 8px;font-size:12.5px;font-weight:500;text-align:left}
+.prov small{display:block;font-weight:400;color:var(--ink-3);font-size:11px}
+.prov.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.sel{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:8px 10px;font-size:13px;color:var(--ink)}
+.ok{font-size:12px;color:var(--ok);margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+@media (max-width:640px){.provs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="picker">
+  <div class="seg" id="privMode"><button data-v="step" class="on">Privacy A · Own step</button><button data-v="welcome">Privacy B · On welcome</button></div>
+  <div class="seg" id="stepSeg"><button data-s="0" class="on">Welcome</button><button data-s="1">Privacy</button><button data-s="2">Name</button><button data-s="3">AI</button><button data-s="4">Install</button><button data-s="5">Done</button></div>
+  <button class="ghost" id="theme">Dark</button>
+</div>
+
+<div class="stage"><div class="frame">
+  <div class="top"><div class="brand"><div class="mark">T</div>Tracker</div>
+    <div class="nav"><span class="on">Today</span><span>Tasks</span><span>Questions</span><span>Capture</span></div>
+    <span class="grow"></span>
+    <button class="topbtn" id="aiBtn"><span class="dot" id="aiDot"></span>AI: off</button>
+    <button class="topbtn hl">↓ Install app</button>
+  </div>
+  <div class="board">
+    <div class="date">Sunday, October 18</div>
+    <h1 class="hello"><span id="helloName">Good afternoon.</span><br><span class="l2">Two moves today, one person to nudge.</span></h1>
+    <div class="label">Next actions</div>
+    <div class="item"><span class="circ"></span><div><div class="t">Update metric spec with Maya's cohort definition</div><div class="s">Lock success metric for referral test</div></div></div>
+    <div class="item"><span class="circ"></span><div><div class="t">Prep three questions for the design review</div><div class="s">Design review: referral entry point</div></div></div>
+  </div>
+
+  <div class="scrim" id="scrim"><div class="card" role="dialog" aria-labelledby="cardTitle">
+    <div class="steps" id="bars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <section data-step="0">
+      <div class="eyebrow">Welcome</div>
+      <h2 id="cardTitle">Congrats, you found your PM tracker.</h2>
+      <p>Built only for what a PM juggles: the scattered asks, answers, and follow-ups that pile up between meetings.</p>
+      <div class="pills"><span class="pill">Next actions</span><span class="pill">Who you're waiting on</span><span class="pill">Questions to ask</span><span class="pill">1:1 captures</span></div>
+      <div class="priv" data-privb hidden><b>Private by design.</b> Your board lives only on this device. No account, no server, nothing collected. Data leaves only when you use AI or live transcription, and only to the service you pick.
+        <details style="margin-top:8px;background:var(--surface)"><summary>Exactly where your data goes</summary><ol>
+          <li><b>Stays on this device:</b> tasks, questions, transcripts, and your API key.</li>
+          <li><b>AI requests</b> go straight from your browser to the provider you choose, with your key. Never through us.</li>
+          <li><b>Live transcription</b> uses your browser's speech service. Chrome may send audio to Google unless on-device recognition is available.</li>
+          <li><b>Never:</b> analytics, trackers, cookies, or a server of ours.</li></ol></details></div>
+      <div class="oss"><span>◇</span><span><b>Open source.</b> If it helps you, fork it and change anything to fit how you work.</span></div>
+      <div class="acts"><button class="btn pri" data-next>Get started</button></div>
+    </section>
+
+    <section data-step="1" hidden>
+      <div class="eyebrow">Before you start</div>
+      <h2>Your work stays with you.</h2>
+      <p>No account, no server, nothing collected. Here is exactly where your data goes.</p>
+      <div class="flow">
+        <div class="fl"><span class="ic" style="background:var(--ok-soft);color:var(--ok)">✓</span><div><div class="h">Stays on this device</div><div class="d">Tasks, questions, transcripts, and your API key live in this browser only.</div></div></div>
+        <div class="fl"><span class="ic" style="background:var(--accent-soft);color:var(--accent)">→</span><div><div class="h">Leaves only when you use AI</div><div class="d">Requests go straight from your browser to the AI provider you pick, with your own key.</div></div></div>
+        <div class="fl"><span class="ic" style="background:var(--warn-soft);color:var(--warn)">◐</span><div><div class="h">Live transcription</div><div class="d">Uses your browser's speech service. Chrome may send audio to Google unless on-device recognition is available.</div></div></div>
+        <div class="fl"><span class="ic" style="background:var(--surface-2);color:var(--ink-2)">✕</span><div><div class="h">Never</div><div class="d">No analytics, trackers, cookies, or server of ours. The page is locked to contact only your AI provider.</div></div></div>
+      </div>
+      <div class="trust"><span>Read the code on GitHub ↗</span><span>Export my data</span><span>Erase everything</span><span>Run it from a downloaded file</span></div>
+      <div class="acts"><button class="btn pri" data-next>Sounds good</button><span class="grow"></span><button class="skip" data-prev>Back</button></div>
+    </section>
+
+    <section data-step="2" hidden>
+      <div class="eyebrow">About you</div>
+      <h2>What should we call you?</h2>
+      <p>Your Today page greets you by name each morning.</p>
+      <input class="inp" id="nm" value="Justin" aria-label="Your name">
+      <div style="margin-top:12px"><div class="eyebrow" style="margin-bottom:6px">What are you working on?</div><input class="inp" value="Referral program v2" aria-label="Project name"></div>
+      <div class="acts"><button class="btn pri" data-next>Continue</button><span class="grow"></span><button class="skip" data-prev>Back</button></div>
+    </section>
+
+    <section data-step="3" hidden>
+      <div class="eyebrow">Optional</div>
+      <h2>Connect an AI model</h2>
+      <p>Recording and live transcription are free. AI turns what people said into answers, next steps, and follow-ups. Use any provider you already pay for.</p>
+      <div class="tabs" id="tabs"><button class="on" data-t="0">Capture</button><button data-t="1">Review</button><button data-t="2">Nudges</button><button data-t="3">Ask</button></div>
+      <div class="demo" id="demo"></div>
+      <div class="eyebrow" style="margin:14px 0 6px">Provider</div>
+      <div class="provs" id="provs"></div>
+      <details id="howto"><summary id="howtoT">How to get an Anthropic API key</summary><ol id="howtoL"></ol></details>
+      <div class="keyrow"><input class="inp" id="keyIn" placeholder="sk-ant-…" aria-label="API key"><button class="btn">Test</button></div>
+      <div class="ok">✓ Connected. 6 models found.</div>
+      <div class="two"><select class="sel" aria-label="Model for reviews"><option id="m1">claude-sonnet-5-5 · reviews</option></select><select class="sel" aria-label="Fast model"><option id="m2">claude-haiku-5-5 · quick notes</option></select></div>
+      <p class="hint">Your key is saved in this browser only and sent only to the provider above.</p>
+      <div class="acts"><button class="btn pri" data-next>Save and continue</button><span class="grow"></span><button class="skip" data-next>Skip for now</button></div>
+    </section>
+
+    <section data-step="4" hidden>
+      <div class="eyebrow">Almost done</div>
+      <h2>Keep it one click away</h2>
+      <p>Install the tracker as an app so it opens in its own window, first thing each morning.</p>
+      <div class="install"><div class="appicon">T</div><div><div style="font-weight:500">Tracker</div><div class="hint" style="margin:0">Works offline · no account needed</div></div><span class="grow"></span><button class="btn pri">Install</button></div>
+      <p class="hint">On Safari: Share, then Add to Dock.</p>
+      <div class="acts"><button class="btn pri" data-next>Continue</button><span class="grow"></span><button class="skip" data-next>Maybe later</button></div>
+    </section>
+
+    <section data-step="5" hidden>
+      <div class="eyebrow">All set</div>
+      <h2>You're ready, <span id="nm2">Justin</span>.</h2>
+      <p>A sample week is loaded so you can look around. Clear it from the banner when you're ready to add your own work.</p>
+      <div class="pills"><span class="pill">Tick a circle to log the next step</span><span class="pill">Add who you're waiting on</span></div>
+      <div class="acts"><button class="btn pri" data-close>Open my board</button></div>
+    </section>
+  </div></div>
+</div></div>
+<p class="note">Static preview · center card · switch Privacy A (its own step) or B (folded into Welcome) · in the AI step, click each provider</p>
+
+<script>
+const DEMOS=[
+ `<div class="live"><i></i>Recording · 12:47</div>
+  <div class="ln"><span class="sp" style="color:var(--violet)">Maya</span> Per signup cohort. <mark>Exclude reactivated users</mark>, otherwise the invite channel looks better.</div>
+  <div class="ln"><span class="sp" style="color:var(--accent)">You</span> I'll update the metric spec today.</div>
+  <div class="cap">Live transcript in your browser. AI highlights answers and promises as you talk.</div>`,
+ `<div class="row"><span class="ic" style="background:var(--ok-soft);color:var(--ok)">A</span>D7 retention = per signup cohort</div>
+  <div class="row"><span class="ic" style="background:var(--accent-soft);color:var(--accent)">N</span>Update metric spec, share Friday</div>
+  <div class="row"><span class="ic" style="background:var(--warn-soft);color:var(--warn)">W</span>Waiting on Maya: power calc, Thu</div>
+  <div class="cap">After the meeting, accept or skip each update. One click applies them to your board.</div>`,
+ `<div class="k" style="color:var(--warn)">Waiting on Leo · 3 days</div><div class="v">Tracking schema review</div>
+  <div class="bub">Hi Leo, could you look at the tracking schema today? It's holding up the event spec for the referral test.</div>
+  <div class="cap">AI drafts a friendly Slack nudge. Copy, tweak, send.</div>`,
+ `<div class="bub" style="color:var(--ink-2)">Why exclude reactivated users?</div>
+  <div class="bub">Maya said they come back through invite links at a higher rate, so they'd inflate the referral channel's retention.</div>
+  <div class="cap">Ask anything about a meeting you captured.</div>`];
+const PROVS=[
+ {id:"anthropic",n:"Anthropic",d:"Claude",ph:"sk-ant-…",m1:"claude-sonnet-5-5",m2:"claude-haiku-5-5",how:["Sign in at <code>console.anthropic.com</code>.","Open <b>API keys</b> and choose <b>Create key</b>.","Copy the key (starts with <code>sk-ant-</code>) and paste it below."]},
+ {id:"openai",n:"OpenAI",d:"GPT",ph:"sk-…",m1:"pick after Test",m2:"pick after Test",how:["Sign in at <code>platform.openai.com</code>.","Open <b>API keys</b> and choose <b>Create new secret key</b>.","Copy the key (starts with <code>sk-</code>) and paste it below."]},
+ {id:"gemini",n:"Google",d:"Gemini",ph:"AIza…",m1:"pick after Test",m2:"pick after Test",how:["Sign in at <code>aistudio.google.com</code>.","Choose <b>Get API key</b>, then <b>Create API key</b>.","Copy the key (starts with <code>AIza</code>) and paste it below."]},
+ {id:"deepseek",n:"DeepSeek",d:"DeepSeek",ph:"sk-…",m1:"pick after Test",m2:"pick after Test",how:["Sign in at <code>platform.deepseek.com</code>.","Open <b>API keys</b> and create one.","Copy the key and paste it below."]},
+ {id:"openrouter",n:"OpenRouter",d:"Any model",ph:"sk-or-…",m1:"pick after Test",m2:"pick after Test",how:["Sign in at <code>openrouter.ai</code>.","Open <b>Keys</b> and create one.","One key reaches models from many providers."]},
+ {id:"custom",n:"Other",d:"OpenAI-compatible",ph:"Key, if needed",m1:"pick after Test",m2:"pick after Test",how:["Works with any OpenAI-compatible endpoint: Groq, Together, local Ollama.","Enter the base URL, for example <code>http://localhost:11434/v1</code>.","Ollama needs <code>OLLAMA_ORIGINS</code> set so the browser can reach it."]}];
+let prov=0,step=0,privMode="step";
+function steps(){return privMode==="step"?[0,1,2,3,4,5]:[0,2,3,4,5];}
+function renderProv(){
+  document.getElementById("provs").innerHTML=PROVS.map((p,i)=>`<button class="prov${i===prov?" on":""}" data-p="${i}">${p.n}<small>${p.d}</small></button>`).join("");
+  const p=PROVS[prov];document.getElementById("howtoT").textContent="How to get "+(p.id==="custom"?"set up":"a "+p.n+" API key");
+  document.getElementById("howtoL").innerHTML=p.how.map(h=>"<li>"+h+"</li>").join("")+"<li>The key stays in this browser only. Usage bills to your own account, usually cents per meeting.</li>";
+  document.getElementById("keyIn").placeholder=p.ph;document.getElementById("m1").textContent=p.m1+" · reviews";document.getElementById("m2").textContent=p.m2+" · quick notes";
+}
+function show(){
+  const st=steps();
+  document.querySelectorAll("[data-step]").forEach(s=>s.hidden=+s.dataset.step!==step);
+  const bars=document.getElementById("bars");bars.innerHTML=st.map(i=>`<i class="${st.indexOf(i)<=st.indexOf(step)?"on":""}"></i>`).join("");
+  document.querySelectorAll("#stepSeg button").forEach(b=>{b.classList.toggle("on",+b.dataset.s===step);b.hidden=privMode!=="step"&&b.dataset.s==="1";});
+  document.querySelector("[data-privb]").hidden=privMode==="step";
+  document.getElementById("scrim").hidden=step<0;
+  const n=document.getElementById("nm").value.trim()||"there";
+  document.getElementById("nm2").textContent=n;
+  document.getElementById("helloName").textContent=st.indexOf(step)>st.indexOf(2)?"Good afternoon, "+n+".":"Good afternoon.";
+}
+document.addEventListener("click",e=>{
+  const st=steps(),i=st.indexOf(step);
+  if(e.target.closest("[data-next]")){step=st[Math.min(i+1,st.length-1)];show();}
+  if(e.target.closest("[data-prev]")){step=st[Math.max(i-1,0)];show();}
+  if(e.target.closest("[data-close]")){step=-1;show();}
+  const s=e.target.closest("#stepSeg button");if(s){step=+s.dataset.s;show();}
+  const pm=e.target.closest("#privMode button");if(pm){privMode=pm.dataset.v;document.querySelectorAll("#privMode button").forEach(b=>b.classList.toggle("on",b===pm));if(privMode!=="step"&&step===1)step=0;show();}
+  const t=e.target.closest("#tabs button");if(t){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b===t));document.getElementById("demo").innerHTML=DEMOS[+t.dataset.t];}
+  const p=e.target.closest(".prov");if(p){prov=+p.dataset.p;renderProv();}
+  if(e.target.closest("#aiBtn")){step=3;show();}
+});
+document.getElementById("demo").innerHTML=DEMOS[0];renderProv();
+const root=document.documentElement,tb=document.getElementById("theme");
+const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+const sync=()=>tb.textContent=isDark()?"Light":"Dark";
+tb.onclick=()=>{root.dataset.theme=isDark()?"light":"dark";sync();};sync();show();
+</script>
+</body>
+</html>

@@ -1,0 +1,2146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://api.deepseek.com https://openrouter.ai https://api.groq.com https://api.together.xyz https://api.mistral.ai http://localhost:* http://127.0.0.1:*; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="A daily tracker for work that runs through other people: next actions, who you're waiting on, and meeting notes turned into updates. Your work stays on your computer.">
+<meta name="theme-color" content="#f6f6f3">
+<title>Followthrough</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px/1.5 system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}
+/* Geist latin-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/Geist-latin-ext-001175.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Geist latin */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/Geist-latin-98bbbc.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Geist latin-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/Geist-latin-ext-001175.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Geist latin */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/Geist-latin-98bbbc.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Geist latin-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(fonts/Geist-latin-ext-001175.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Geist latin */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(fonts/Geist-latin-98bbbc.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Geist Mono latin-ext */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/GeistMono-latin-ext-447454.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Geist Mono latin */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/GeistMono-latin-013b2f.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Geist Mono latin-ext */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/GeistMono-latin-ext-447454.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Geist Mono latin */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/GeistMono-latin-013b2f.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Newsreader latin-ext */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/Newsreader-latin-ext-7a09be.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Newsreader latin */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/Newsreader-latin-f0c28d.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Newsreader latin-ext */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/Newsreader-latin-ext-7a09be.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Newsreader latin */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/Newsreader-latin-f0c28d.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Platform layer (web + Mac app): onboarding card, settings, AI setup, import, setup card, recording. */
+.tb-extra{display:flex;gap:6px;align-items:center;flex:none}
+.tb-btn{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none}
+.tb-btn:hover{border-color:var(--border-strong);color:var(--ink)}
+.tb-btn .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.tb-btn .dot.on{background:var(--ok)}
+.tb-btn.icon{width:30px;justify-content:center;padding:5px 0;font-size:14px}
+.ob-scrim{position:fixed;inset:0;background:rgba(20,18,15,.38);z-index:50;display:flex;align-items:flex-start;justify-content:center;overflow:auto;overscroll-behavior:contain;
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+/* margin:auto centers the card in the scrim; a card taller than the window scrolls instead of being clipped */
+.ob-card{width:min(640px,100%);margin:auto;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 24px 60px rgba(20,18,15,.22);padding:32px 34px 28px}
+.ob-card.wide{width:min(680px,100%)}
+.ob-bars{display:flex;gap:6px;margin-bottom:22px}
+.ob-bars i{height:4px;flex:1;border-radius:2px;background:var(--surface-2)}
+.ob-bars i.on{background:var(--ink)}
+.ob-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ob-eb{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em}
+.ob-x{margin-left:auto;border:0;background:none;color:var(--ink-3);font-size:20px;line-height:1;padding:2px 4px}
+.ob-x:hover{color:var(--ink)}
+.ob-card h2{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.2;letter-spacing:-.01em;margin:6px 0 10px}
+.ob-card p{margin:0 0 14px;color:var(--ink-2);font-size:14.5px}
+.ob-acts{display:flex;align-items:center;gap:8px;margin-top:18px;flex-wrap:wrap}
+.ob-skip{border:0;background:none;color:var(--ink-3);font-size:13px;padding:0}
+.ob-skip:hover{color:var(--ink)}
+.ob-lnk{border:0;background:none;padding:0;color:var(--accent);font-size:13px;font-weight:500;text-decoration:none}
+.ob-lnk:hover{text-decoration:underline}
+.ob-label{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin:12px 0 5px}
+.ob-req{color:var(--danger);margin-left:2px}
+.ob-err{font-size:12px;color:var(--danger);margin-top:5px}
+.inp.bad{border-color:var(--danger)}
+.ob-hint{font-size:12px;color:var(--ink-3);margin-top:6px}
+.ob-langs{display:inline-flex;background:var(--surface-2);border-radius:9px;padding:3px;gap:2px;margin-left:auto}
+.ob-langs button{border:0;background:none;border-radius:7px;padding:3px 10px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.ob-langs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.ob-pills{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
+.ob-pill{font-size:13px;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--ink-2);background:var(--surface);white-space:nowrap}
+.ob-even{display:grid!important}
+.ob-even>*{text-align:center}
+.ob-oss{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border-radius:10px;padding:12px 14px;font-size:13.5px;color:var(--ink-2)}
+.ob-oss b{color:var(--ink);font-weight:500}
+.ob-flow{display:grid;gap:8px;margin:6px 0 4px}
+.ob-fl{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:11px;padding:10px 12px}
+.ob-fl .ic{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.ob-fl .h{font-size:13px;font-weight:500}
+.ob-fl .d{font-size:12.5px;color:var(--ink-2)}
+.ob-tabs{display:flex;gap:2px;background:var(--surface-2);border-radius:9px;padding:3px;margin:4px 0 10px}
+.ob-tabs button{flex:1;border:0;background:none;border-radius:7px;padding:5px 6px;font-size:12px;font-weight:500;color:var(--ink-2)}
+.ob-tabs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.ob-demo{border:1px solid var(--border);border-radius:11px;padding:12px;background:var(--bg);min-height:132px}
+.ob-demo .ln{font-size:12.5px;padding:3px 0}
+.ob-demo .sp{font-weight:600;font-size:11.5px;margin-right:4px}
+.ob-demo mark{background:var(--ok-soft);color:inherit;border-radius:3px;padding:0 2px}
+.ob-demo .row{display:flex;gap:8px;align-items:center;font-size:12.5px;border:1px solid var(--border);border-radius:8px;padding:6px 8px;margin-bottom:5px;background:var(--surface)}
+.ob-demo .row .ic{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:10px;font-weight:600;flex:none}
+.ob-demo .bub{font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:7px 9px;margin-bottom:6px}
+.ob-demo .cap{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.ob-live{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--danger);font-weight:500;margin-bottom:6px}
+.ob-live i{width:6px;height:6px;border-radius:50%;background:var(--danger)}
+.ob-provs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 10px}
+.ob-prov{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:7px 8px;font-size:12.5px;font-weight:500;text-align:left}
+.ob-prov small{display:block;font-weight:400;color:var(--ink-3);font-size:11px}
+.ob-prov.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ob-card details{border:1px solid var(--border);border-radius:10px;margin-top:10px}
+.ob-card summary{cursor:pointer;padding:9px 12px;font-size:13px;font-weight:500;list-style:none;display:flex;align-items:center;gap:8px}
+.ob-card summary::-webkit-details-marker{display:none}
+.ob-card summary::after{content:"+";margin-left:auto;color:var(--ink-3);font-size:15px}
+.ob-card details[open] summary::after{content:"–"}
+.ob-card details ol{margin:0;padding:0 14px 12px 32px;font-size:12.5px;color:var(--ink-2)}
+.ob-card details li{margin:4px 0}
+.ob-card code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.ob-keyrow{display:flex;gap:8px;margin-top:10px}
+.ob-keyrow .inp{font-family:var(--mono);font-size:12.5px}
+.ob-ok{font-size:12px;color:var(--ok);margin-top:6px}
+.ob-two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.ob-perks{display:grid;gap:8px;margin:8px 0 6px}
+.ob-perk{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.ob-perk .ic{width:26px;height:26px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:13px}
+.ob-perk .h{font-weight:500}
+.ob-perk .d{font-size:12.5px;color:var(--ink-2)}
+.ob-dl{display:flex;gap:12px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px}
+.ob-appicon{width:44px;height:44px;flex:none}.ob-appicon svg{width:44px;height:44px;display:block}
+.ob-set{border-top:1px solid var(--border);padding:14px 0}
+.ob-set:first-of-type{border-top:0;padding-top:4px}
+.ob-set h3{font-size:13px;font-weight:600;margin:0 0 8px}
+.ob-setrow{display:flex;align-items:center;gap:8px;font-size:13px;padding:2px 0;flex-wrap:wrap}
+.ob-setrow .l{flex:1;min-width:140px;color:var(--ink-2)}
+.ob-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.ob-chip{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;border:1px solid var(--border);border-radius:999px;padding:3px 6px 3px 10px;background:var(--surface-2)}
+.ob-chip button{border:0;background:none;color:var(--ink-3);padding:0 2px}
+.ob-drop{border:1.5px dashed var(--border-strong);border-radius:12px;padding:22px;text-align:center;display:grid;gap:8px;justify-items:center;margin:6px 0 4px;background:var(--bg)}
+.ob-drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.ob-drop .big{font-size:22px;color:var(--ink-3)}
+.ob-kinds{display:grid;gap:6px;margin-top:10px}
+.ob-kind{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2)}
+.ob-kind b{color:var(--ink);font-weight:500}
+.ob-scan{border:1px solid var(--ok);background:var(--ok-soft);border-radius:12px;padding:12px 14px;margin:6px 0 4px}
+.ob-scan .f{font-size:12.5px;color:var(--ink-2);font-family:var(--mono);overflow-wrap:anywhere}
+.ob-counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.ob-cnt{background:var(--surface);border-radius:9px;padding:8px 10px}
+.ob-cnt .v{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.ob-cnt .l{font-size:11.5px;color:var(--ink-2)}
+.ob-seg{display:inline-flex;background:var(--surface-2);border-radius:9px;padding:3px;gap:2px}
+.ob-seg button{border:0;background:none;border-radius:7px;padding:3px 10px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.ob-seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.rec-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rec-bar .who-btn{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:3px 11px;font-size:12.5px;color:var(--ink-2)}
+.rec-bar .who-btn.on{border-color:var(--ink);color:var(--ink);font-weight:500}
+.interim{color:var(--ink-3);font-size:14px;padding:6px 0 0 64px;min-height:22px}
+.setup-cta{margin-top:14px}
+@media (max-width:640px){
+  .ob-provs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ob-two{grid-template-columns:1fr}
+  .ob-counts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ob-dl{flex-wrap:wrap}.ob-dl .grow{display:none}.ob-dl .btn{width:100%}
+  .tb-extra .tb-btn .lbl{display:none}
+  .interim{padding-left:0}
+}
+/* App chrome isn't selectable text (drags would highlight it); what you type and read stays selectable. */
+.top,.nav,.brand,.tb-extra,.btn,.ghost,.linkbtn,.fchip,.stat,.label,.tbl th,.check,.bx,.ob-langs,.ob-tabs,.ob-prov,.ob-pill,.ob-seg,.ob-bars,.ob-eb,.tag,.due,.pill,.who-btn,.banner button{-webkit-user-select:none;user-select:none}
+.ob-roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ob-role{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:8px 10px;text-align:left;font-size:13px;font-weight:500}
+.ob-role small{display:block;font-weight:400;font-size:11.5px;color:var(--ink-3)}
+.ob-role.sm{padding:5px 8px;font-size:12.5px;text-align:center}
+.ob-role.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ob-teams{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:7px}
+.ob-sug{border:1px dashed var(--border-strong);background:var(--surface);border-radius:999px;padding:4px 8px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ob-sug:hover,.ob-sug.on{border-style:solid;border-color:var(--ink);color:var(--ink)}
+.ob-choice{display:grid;gap:8px;margin-top:6px}
+.ob-opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;padding:12px 14px;text-align:left;background:var(--surface);width:100%}
+.ob-opt.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ob-opt .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--surface-2);font-size:14px}
+.ob-opt .h{display:block;font-weight:500;font-size:14px}.ob-opt .d{display:block;font-size:12.5px;color:var(--ink-2)}
+@media (max-width:640px){.ob-roles{grid-template-columns:repeat(2,minmax(0,1fr))}.ob-teams{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* mouse clicks don't leave a focus ring on these toggles; keyboard focus still shows one */
+.ob-langs button:focus:not(:focus-visible),.ob-seg button:focus:not(:focus-visible),.ob-tabs button:focus:not(:focus-visible){outline:none}
+.ob-langs button:focus-visible,.ob-seg button:focus-visible,.ob-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+@media (max-width:640px){.ob-card{padding:24px 20px 20px}.ob-card h2{font-size:26px}}
+.brand svg{width:22px;height:22px;display:block;flex:none}
+.ob-brand{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
+.ob-brand svg{width:44px;height:44px;flex:none}
+.ob-brand .nm{font-weight:600;font-size:16px}
+.ob-brand .tg{font-size:13px;color:var(--ink-3)}
+
+</style>
+</head>
+<body>
+<style>
+/* Layout: a morning briefing. Main column = what to do; right rail = who you're waiting on and what they said. */
+:root{
+  --bg:#f6f6f3;--surface:#ffffff;--surface-2:#f0efeb;--hover:#ecebe6;
+  --border:#e5e3dd;--border-strong:#d3d0c8;
+  --ink:#1c1b19;--ink-2:#67645e;--ink-3:#9c988f;
+  --accent:#2f56c9;--accent-soft:#e7ecfb;
+  --danger:#bd3f2e;--danger-soft:#fae9e5;
+  --warn:#9f6612;--warn-soft:#f8eedb;
+  --ok:#2a7a4e;--ok-soft:#e3f1e8;
+  --violet:#6548b3;--violet-soft:#eee9f9;
+  --clay:#b95d38;--clay-soft:#f7e9e2;
+  --on-ink:#ffffff;
+  --display:"Newsreader",Georgia,"Times New Roman",serif;
+  --body:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--hover:#2a2a27;
+  --border:#2e2d2a;--border-strong:#3e3d39;
+  --ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;
+  --accent:#88a5ff;--accent-soft:#1f2946;
+  --danger:#f0836f;--danger-soft:#3a1f1a;
+  --warn:#e2ab52;--warn-soft:#372a14;
+  --ok:#68c690;--ok-soft:#173122;
+  --violet:#b49df0;--violet-soft:#29223f;
+  --clay:#e68d66;--clay-soft:#38241b;
+  --on-ink:#131312;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--hover:#2a2a27;
+  --border:#2e2d2a;--border-strong:#3e3d39;
+  --ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;
+  --accent:#88a5ff;--accent-soft:#1f2946;
+  --danger:#f0836f;--danger-soft:#3a1f1a;
+  --warn:#e2ab52;--warn-soft:#372a14;
+  --ok:#68c690;--ok-soft:#173122;
+  --violet:#b49df0;--violet-soft:#29223f;
+  --clay:#e68d66;--clay-soft:#38241b;
+  --on-ink:#131312;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p,.t,.s,.d,.tx-t,.sum,.pv,.pd,.ans-r,.note-v{text-wrap:pretty}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.app{max-width:1100px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.top{display:flex;align-items:center;gap:18px;padding:13px 22px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.mark{width:20px;height:20px;border-radius:6px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font-size:11px;font-weight:600}
+.nav{display:flex;gap:2px}
+.nav a{padding:5px 11px;border-radius:7px;color:var(--ink-2);font-size:13px;font-weight:500;text-decoration:none}
+.nav a:hover{background:var(--hover);color:var(--ink)}
+.nav a.on{background:var(--surface-2);color:var(--ink)}
+.grow{flex:1}
+.ghost{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px}
+.ghost:hover{border-color:var(--border-strong);color:var(--ink)}
+
+.banner{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:9px 22px;background:var(--surface-2);border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink-2)}
+.banner b{color:var(--ink);font-weight:500}
+.linkbtn{border:0;background:none;padding:0;color:var(--accent);font-size:12.5px;font-weight:500}
+.linkbtn.danger{color:var(--danger)}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 320px}
+.main{padding:30px 32px 34px;min-width:0}
+.rail{border-left:1px solid var(--border);background:var(--bg);padding:26px 22px;min-width:0}
+.label{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em;margin:0 0 10px}
+.label .c{font-variant-numeric:tabular-nums}
+.label .act{margin-left:auto}
+.sec{margin-top:28px}
+
+.date{font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+.hello{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.18;letter-spacing:-.01em}
+.hello .l2{color:var(--ink-2)}
+.sub{color:var(--ink-2);margin:10px 0 0;font-size:13.5px}
+
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:1px 7px;border-radius:5px;white-space:nowrap;line-height:1.6}
+.P0{background:var(--danger-soft);color:var(--danger)}
+.P1{background:var(--warn-soft);color:var(--warn)}
+.P2{background:var(--surface-2);color:var(--ink-2)}
+.who{background:var(--violet-soft);color:var(--violet)}
+.okt{background:var(--ok-soft);color:var(--ok)}
+.blk{background:var(--danger-soft);color:var(--danger)}
+
+.item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface)}
+.item+.item{margin-top:8px}
+.item:hover{border-color:var(--border-strong)}
+.check{width:18px;height:18px;border:1.5px solid var(--border-strong);border-radius:50%;flex:none;margin-top:1px;background:var(--surface);padding:0;position:relative}
+.check:hover{border-color:var(--ok);background:var(--ok-soft)}
+.item .body{flex:1;min-width:0;cursor:pointer}
+.item .t{font-weight:500;font-size:14.5px}
+.item .s{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.item .src{font-size:11.5px;color:var(--ok);margin-top:5px}
+.item .tags{display:flex;gap:5px;flex:none;align-items:center}
+.due{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.due.late{color:var(--danger);font-weight:500}
+.adv{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.adv input{flex:1;min-width:180px}
+
+.inp,.sel,.ta{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:7px 10px;font-size:13.5px;width:100%}
+.inp:focus,.sel:focus,.ta:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.ta{min-height:90px;resize:vertical;line-height:1.55}
+.btn{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:500;white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.btn.pri:hover{opacity:.9}
+.btn.claude{background:var(--clay);border-color:var(--clay);color:#fff}
+.btn.claude:hover{opacity:.92}
+.btn.stop{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.sm{padding:3px 9px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:default}
+
+.row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px;align-items:baseline}
+.row:last-child{border-bottom:0}
+.row .d{width:64px;flex:none;color:var(--ink-3);font-size:12.5px;font-variant-numeric:tabular-nums}
+.row .t{flex:1;min-width:0}
+.row.click{cursor:pointer}.row.click:hover .t{color:var(--accent)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.card+.label{margin-top:22px}
+.wait{padding:8px 0;border-bottom:1px solid var(--border)}
+.wait:last-child{border-bottom:0}
+.wait .h{display:flex;justify-content:space-between;gap:8px}
+.wait .n{font-size:13.5px;font-weight:500}
+.wait .age{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.wait .age.late{color:var(--danger);font-weight:500}
+.wait .w{font-size:12.5px;color:var(--ink-2)}
+.wait .acts{display:flex;gap:12px;margin-top:4px}
+.draft{margin-top:8px;background:var(--surface-2);border-radius:8px;padding:9px 10px;font-size:13px;line-height:1.5;white-space:pre-wrap}
+.draft .acts{margin-top:6px}
+.ans{padding:8px 0;border-bottom:1px solid var(--border)}
+.ans:last-child{border-bottom:0}
+.ans .q{font-size:12px;color:var(--ink-2)}
+.ans .ans-r{font-size:13.5px;margin:2px 0 5px}
+.qgrp{font-size:12px;font-weight:500;color:var(--violet);margin:8px 0 2px}
+.qgrp:first-child{margin-top:0}
+.qline{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:13px}
+.qline .qt{flex:1;min-width:0}
+.qline .linkbtn{font-size:11.5px;flex:none}
+.empty{color:var(--ink-3);font-size:13px;padding:6px 0}
+.capcard{display:flex;align-items:center;gap:10px;border:1px dashed var(--border-strong);border-radius:var(--r);padding:11px 13px;color:var(--ink-2);font-size:13px;text-decoration:none;background:var(--surface)}
+.capcard:hover{border-color:var(--clay);color:var(--ink)}
+.rec{width:8px;height:8px;border-radius:50%;background:var(--danger);flex:none}
+.foot{max-width:1100px;margin:14px auto 0;color:var(--ink-3);font-size:12px;text-align:center}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(20,18,15,.38);z-index:40;display:flex;justify-content:flex-end}
+.drawer{width:min(440px,100%);height:100%;background:var(--surface);border-left:1px solid var(--border);overflow:auto;
+  padding:22px 22px calc(28px + env(safe-area-inset-bottom,0px));padding-right:max(22px,env(safe-area-inset-right,0px));padding-top:calc(22px + env(safe-area-inset-top,0px))}
+.drawer h2{font-size:17px;font-weight:600;margin-bottom:16px}
+.f{margin-bottom:13px}
+.f>label{display:block;font-size:11.5px;color:var(--ink-3);margin-bottom:5px;font-weight:500}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hist{border-left:2px solid var(--border);padding-left:12px}
+.hist .e{font-size:12.5px;margin-bottom:9px}
+.hist .m{color:var(--ink-3);font-size:11.5px}
+.dacts{display:flex;gap:8px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--on-ink);padding:9px 14px;border-radius:10px;font-size:13px;z-index:60;display:flex;gap:12px;align-items:center}
+.toast .linkbtn{color:var(--on-ink);text-decoration:underline}
+
+/* capture */
+.sess{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;padding:24px 28px 18px;border-bottom:1px solid var(--border)}
+.sess .meta{min-width:0;flex:1 1 360px}
+.sess h1{font-family:var(--display);font-weight:400;font-size:27px;line-height:1.2;letter-spacing:-.01em;margin:2px 0 8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-2)}
+.ctrl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.timer{font-family:var(--mono);font-size:19px;font-variant-numeric:tabular-nums}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--danger)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--danger);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.wave{display:flex;align-items:center;gap:3px;height:30px;padding:0 28px;margin-top:12px;overflow:hidden}
+.wave span{flex:1;max-width:4px;min-width:2px;border-radius:2px;background:var(--border-strong);transition:height .3s}
+.wave.on span.hot{background:var(--danger)}
+.setup{padding:22px 28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-bottom:1px solid var(--border)}
+.setup .wide{grid-column:1/-1}
+.tx{padding:16px 28px 26px;min-width:0}
+.line{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:8px 0}
+.line .ts{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:3px}
+.line .spn{font-size:12px;font-weight:600;margin-bottom:1px}
+.line .tx-t{font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
+.me{color:var(--accent)}.them{color:var(--violet)}
+mark{background:var(--ok-soft);color:inherit;border-radius:4px;padding:0 2px}
+mark.pr{background:var(--warn-soft)}
+.caret{display:inline-block;width:2px;height:15px;background:var(--ink-3);vertical-align:-2px;animation:pulse 1s steps(2) infinite;margin-left:2px}
+.txbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+.pill{font-size:12px;color:var(--ink-2);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+.hint{font-size:12.5px;color:var(--ink-3)}
+.emptytx{border:1px dashed var(--border-strong);border-radius:12px;padding:22px;text-align:center;display:grid;gap:12px;justify-items:center}
+.emptytx p{margin:0;color:var(--ink-2);max-width:46ch}
+.spark{width:18px;height:18px;border-radius:5px;background:var(--clay-soft);color:var(--clay);display:inline-grid;place-items:center;font-size:11px;font-weight:600;flex:none}
+.qbox{display:flex;gap:9px;padding:5px 0;font-size:13px;align-items:flex-start}
+.qbox .bx{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border-strong);flex:none;margin-top:2px;position:relative}
+.qbox.done .bx{background:var(--ok);border-color:var(--ok)}
+.qbox.done .bx::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.qbox.done .qt{color:var(--ink-2)}
+.qbox .a{font-size:12px;color:var(--ok);margin-top:1px}
+.note{border-top:1px solid var(--border);padding:9px 0 3px}
+.note:first-child{border-top:0;padding-top:0}
+.note .k{font-size:11px;font-weight:500;margin-bottom:2px}
+.note .note-v{font-size:13.5px;line-height:1.45}
+.note .to{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.thinking{font-size:12.5px;color:var(--ink-3);display:flex;align-items:center;gap:7px}
+.dots i{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--ink-3);margin-right:2px;animation:pulse 1.2s infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+.err{font-size:12.5px;color:var(--danger);margin-top:6px}
+.sum{font-family:var(--display);font-size:18.5px;line-height:1.55;margin:0 0 24px}
+.prop{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);border-radius:11px;padding:12px 14px;background:var(--surface)}
+.prop+.prop{margin-top:8px}
+.prop .ic{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:11.5px;font-weight:600;flex:none}
+.prop .b{flex:1;min-width:0}
+.prop .k{font-size:11.5px;color:var(--ink-3)}
+.prop .pv{font-size:14px;font-weight:500;margin:1px 0 2px}
+.prop .pd{font-size:12.5px;color:var(--ink-2)}
+.prop .acts{display:flex;gap:6px;flex:none;flex-wrap:wrap}
+.prop.added{border-color:var(--ok);background:var(--ok-soft)}
+.prop.skipped{opacity:.55}
+.prop .edit{display:grid;gap:6px;margin-top:6px}
+.applybar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;padding:12px 14px;border-radius:11px;background:var(--surface-2)}
+.chat .m{font-size:13px;line-height:1.5;padding:7px 0;border-bottom:1px solid var(--border);white-space:pre-wrap}
+.chat .m:last-child{border-bottom:0}
+.chat .m.u{color:var(--ink-2)}
+.ask{display:flex;gap:8px;margin-top:10px}
+.past .row .t{font-weight:500}
+
+/* tasks table + questions inbox */
+.phead{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;padding:26px 30px 14px}
+.phead h1{font-family:var(--display);font-weight:400;font-size:29px;line-height:1.2;letter-spacing:-.01em}
+.phead .sub{color:var(--ink-2);font-size:13px;margin:4px 0 0}
+.phead .inp{width:200px}
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:4px 30px 0}
+.stat{border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;background:var(--bg);text-align:left}
+.stat:hover{border-color:var(--border-strong)}
+.stat.on{border-color:var(--ink)}
+.stat .v{font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .l{font-size:12px;color:var(--ink-2)}
+.fbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:14px 30px;border-bottom:1px solid var(--border)}
+.fchip{font-size:12.5px;color:var(--ink-2);border:1px solid var(--border);border-radius:999px;padding:3px 11px;background:var(--surface)}
+.fchip:hover{border-color:var(--border-strong);color:var(--ink)}
+.fchip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.fbar .sel{width:auto;padding:4px 8px;font-size:12.5px}
+.tbl-wrap{padding:4px 30px 28px;overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:780px}
+.tbl th{text-align:left;font-size:11px;font-weight:500;color:var(--ink-3);padding:10px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl th button{border:0;background:none;padding:0;font:inherit;color:inherit}
+.tbl th button:hover{color:var(--ink)}
+.tbl th .ar{margin-left:3px}
+.tbl td{padding:11px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr.click{cursor:pointer}
+.tbl tr.click:hover td{background:var(--hover)}
+.tbl .t{font-weight:500}
+.tbl .n{font-size:12.5px;color:var(--ink-2);margin-top:1px}
+.tbl tr.done .t{color:var(--ink-2);text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;white-space:nowrap}
+.st i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.qmain{padding:18px 30px 28px;min-width:0}
+.addq{display:grid;grid-template-columns:minmax(0,1fr) 170px 200px auto;gap:8px;margin-bottom:12px}
+.addq .two{grid-column:1/-1}
+.qrow{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:12px;padding:12px 4px;border-bottom:1px solid var(--border);align-items:start}
+.qrow .bx{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-strong);margin-top:3px;background:var(--surface);padding:0;position:relative}
+.qrow .bx:hover{border-color:var(--ok)}
+.qrow.done .bx{background:var(--ok);border-color:var(--ok)}
+.qrow.done .bx::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.qrow .qt{font-weight:500}
+.qrow.done .qt{color:var(--ink-2)}
+.qrow .qm{font-size:12px;color:var(--ink-2);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.qrow .qa{font-size:13px;color:var(--ok);margin-top:4px}
+.qrow .r{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.qrow .ed{display:grid;gap:6px;margin-top:8px}
+.tasklink{border:0;background:none;padding:0;font-size:12px;color:var(--accent)}
+.tasklink:hover{text-decoration:underline}
+.srow{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;padding:6px 8px;border-radius:7px;font-size:13px;text-align:left}
+.srow:hover{background:var(--hover)}
+.srow.on{background:var(--surface-2);font-weight:500}
+.agenda .i{font-size:13px;padding:6px 0;border-bottom:1px solid var(--border)}
+.agenda .i:last-of-type{border-bottom:0}
+
+@media (max-width:880px){
+  .cols{grid-template-columns:1fr}
+  .rail{border-left:0;border-top:1px solid var(--border)}
+  .setup{grid-template-columns:1fr}
+  .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .addq{grid-template-columns:1fr}
+  .nav{order:3;width:100%;overflow-x:auto}
+}
+@media (max-width:520px){
+  .main,.tx,.sess,.setup,.phead,.strip,.fbar,.tbl-wrap,.qmain{padding-left:18px;padding-right:18px}
+  .phead .inp{width:100%}
+  .wave{padding:0 18px}
+  .hello{font-size:26px}
+  .two{grid-template-columns:1fr}
+  .item{flex-wrap:wrap}
+  .item .tags{width:100%;padding-left:30px}
+  .prop{flex-wrap:wrap}
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><div class="mark" aria-hidden="true">T</div>Tracker</div>
+    <nav class="nav" aria-label="Pages">
+      <a href="#today" id="nav-today">Today</a>
+      <a href="#tasks" id="nav-tasks">Tasks</a>
+      <a href="#questions" id="nav-questions">Questions</a>
+      <a href="#capture" id="nav-capture">Capture</a>
+    </nav>
+    <div class="grow"></div>
+    <button class="ghost" id="themeBtn" type="button">Dark</button>
+  </header>
+  <div id="banner"></div>
+  <main id="view" aria-live="polite"></main>
+</div>
+<p class="foot" id="foot">Loading your board…</p>
+<div id="overlay"></div>
+<div id="toast"></div>
+
+<script>
+/* ---------- utilities ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=p=>p+Math.random().toString(36).slice(2,9);
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const TODAY=()=>iso(new Date());
+const addDays=(n,base)=>{const d=base?new Date(base+"T12:00:00"):new Date();d.setDate(d.getDate()+n);return iso(d);};
+const diffDays=(a,b)=>Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5);
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDue(d){if(!d)return "";const n=diffDays(TODAY(),d);if(n<0)return n===-1?"Yesterday":Math.abs(n)+"d late";if(n===0)return "Today";if(n===1)return "Tomorrow";
+  const x=new Date(d+"T12:00:00");return n<7?DOW[x.getDay()]:MON[x.getMonth()]+" "+x.getDate();}
+function fmtLong(){const d=new Date();return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.getDay()]+", "+["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]+" "+d.getDate();}
+const PRI={P0:0,P1:1,P2:2};
+
+/* Keep the last two words of every text block together so no line ends with a lone word. */
+const GLUE_SEL="h1,h2,h3,p,.t,.s,.d,.w,.q,.qt,.ans-r,.tx-t,.sum,.pv,.pd,.note-v,.src,.hint";
+function glue(root){
+  (root||document).querySelectorAll(GLUE_SEL).forEach(el=>{
+    if(el.closest("[contenteditable],textarea,input"))return;
+    const words=el.textContent.trim().split(/\s+/);if(words.length<4)return;
+    const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let last=null,n;
+    while(n=w.nextNode())if(n.nodeValue.trim())last=n;
+    if(!last)return;
+    const v=last.nodeValue,m=v.match(/^([\s\S]*\S)[ \t]+(\S+\s*)$/);
+    if(m)last.nodeValue=m[1]+" "+m[2];
+  });
+}
+
+/* ---------- sample week (shown until you start your own board) ---------- */
+function sampleState(){
+  const D=addDays;
+  return {v:1,sample:true,project:"Referral program v2",updatedAt:Date.now(),
+    people:[
+      {id:"p_maya",name:"Maya",team:"Data science"},
+      {id:"p_priya",name:"Priya",team:"Data analytics"},
+      {id:"p_leo",name:"Leo",team:"Engineering"},
+      {id:"p_ana",name:"Ana",team:"Design"},
+      {id:"p_sam",name:"Sam",team:"Mentor, PM"}],
+    tasks:[
+      {id:"t_metric",title:"Lock success metric for referral test",prio:"P0",status:"open",next:"Update metric spec with Maya's cohort definition",due:D(0),waiting:null,
+        history:[{at:D(-4),text:"Created. Need one primary metric before PRD review."},{at:D(-3),text:"Asked Maya: cohort or rolling D7 retention?"},{at:D(-1),text:"Maya answered: per signup cohort, exclude reactivated users."}]},
+      {id:"t_prd",title:"Draft PRD for in-app referral entry",prio:"P1",status:"open",next:"Write the edge cases section",due:D(2),waiting:null,history:[{at:D(-5),text:"Created from kickoff with Sam."}]},
+      {id:"t_track",title:"Align event tracking spec with Eng",prio:"P0",status:"blocked",next:"Nudge Leo on the schema review",due:D(1),waiting:{personId:"p_leo",what:"Tracking schema review",since:D(-3)},history:[{at:D(-3),text:"Sent schema doc to Leo for review."}]},
+      {id:"t_base",title:"Baseline funnel numbers",prio:"P1",status:"open",next:"Fold the baseline into the metric spec once it lands",due:D(3),waiting:{personId:"p_priya",what:"Last 30 days of funnel data by channel",since:D(-1)},history:[{at:D(-1),text:"Asked Priya for the 30-day baseline."}]},
+      {id:"t_design",title:"Design review: referral entry point",prio:"P1",status:"open",next:"Prep three questions for the design review",due:D(1),waiting:null,history:[]},
+      {id:"t_sync",title:"Weekly sync deck",prio:"P1",status:"open",next:"Add a slide on the metric definition and baseline",due:D(3),waiting:null,history:[]},
+      {id:"t_ideas",title:"Collect ideas for the next iteration",prio:"P2",status:"open",next:"Skim support tickets tagged invite",due:null,waiting:null,history:[]},
+      {id:"t_kick",title:"Send kickoff notes to stakeholders",prio:"P1",status:"done",next:"",due:D(-4),waiting:null,history:[{at:D(-4),text:"Done."}]}],
+    questions:[
+      {id:"q_d7",personId:"p_maya",taskId:"t_metric",text:"Cohort or rolling D7 retention?",answer:"Per signup cohort; exclude reactivated users.",answeredAt:D(-1),created:D(-3)},
+      {id:"q_ss",personId:"p_maya",taskId:"t_metric",text:"Minimum sample size to detect a 2% lift?",answer:"",answeredAt:null,created:D(-3)},
+      {id:"q_gr",personId:"p_maya",taskId:"t_metric",text:"Should the guardrail include cancel rate?",answer:"",answeredAt:null,created:D(-3)},
+      {id:"q_dl",personId:"p_leo",taskId:"t_prd",text:"Can the referral entry deep link from SMS?",answer:"",answeredAt:null,created:D(-6)},
+      {id:"q_sh",personId:"p_ana",taskId:"t_design",text:"Is the share sheet native or custom?",answer:"",answeredAt:null,created:D(-5)}],
+    sessions:[],
+    draft:null};
+}
+function emptyState(){return {v:1,sample:false,project:"My project",updatedAt:Date.now(),people:[],tasks:[],questions:[],sessions:[],draft:null};}
+
+const SAMPLE_TRANSCRIPT=[
+  ["You","Thanks for making time. For the referral test, should D7 retention be per cohort or rolling? I want one number I can put in the PRD."],
+  ["Maya","Per signup cohort. And exclude reactivated users, otherwise the invite channel looks better than it really is."],
+  ["You","Makes sense. What sample size would we need to see a two percent lift?"],
+  ["Maya","Roughly forty thousand users per arm at current traffic. I'll send you the power calc by Thursday."],
+  ["You","Great. I'll update the metric spec today and share it in Friday's sync."],
+  ["Maya","Also check with Priya whether the baseline already splits by channel. If it doesn't, we can't compare invite against organic."],
+  ["You","Good call, I'll ask her this afternoon. One more thing, should we run it on Android first?"],
+  ["Maya","I'd run both platforms together. Splitting them halves the sample and we'd wait twice as long."],
+  ["You","Okay, both platforms. I'll note that in the PRD's rollout section."]
+];
+
+/* ---------- storage: private doc in your Claude account, else this browser ---------- */
+let S=null,mode="loading",dbRef=null,writing=false,dirty=false,saveTimer=0;
+const LS_KEY="pm-tracker-v1";
+function lsGet(){try{const s=localStorage.getItem(LS_KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
+function lsSet(o){try{localStorage.setItem(LS_KEY,JSON.stringify(o));}catch(e){}}
+function save(){S.updatedAt=Date.now();clearTimeout(saveTimer);saveTimer=setTimeout(flush,600);}
+async function flush(){
+  if(mode!=="cloud"){lsSet(S);return;}
+  if(writing){dirty=true;return;}
+  writing=true;dirty=false;
+  try{await dbRef.set(JSON.parse(JSON.stringify(S)));}
+  catch(e){if(e&&e.code==="unavailable"){setTimeout(()=>{dirty=true;},1500);}else{mode="local";lsSet(S);renderFoot();}}
+  writing=false;if(dirty)flush();
+}
+async function boot(){
+  S=lsGet()||sampleState();mode="local";render();
+  try{
+    const C=window.claude;if(!C||!C.use)return finishBoot();
+    const [db,user]=await Promise.all([C.use("db"),C.use("user")]);
+    USER=user;
+    if(user){try{const me=await user.me();ME=me.name||"";}catch(e){}}
+    const id=user?await user.id():null;
+    if(db&&id){
+      dbRef=db.doc("data/users/"+id+"/board");
+      const snap=await dbRef.get();
+      if(snap.exists){S=JSON.parse(JSON.stringify(snap.data()));}
+      mode="cloud";
+    }
+  }catch(e){mode="local";}
+  finishBoot();
+}
+function finishBoot(){normalize();render();renderFoot();initClaude();}
+function normalize(){["people","tasks","questions","sessions"].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[];});}
+function renderFoot(){$("#foot").textContent=mode==="cloud"?"Saved privately to your Claude account":"Saved in this browser only";}
+
+/* ---------- Claude ---------- */
+let CLAUDE=null,USER=null,ME="";
+async function initClaude(){try{CLAUDE=window.claude&&window.claude.use?await window.claude.use("sample"):null;}catch(e){CLAUDE=null;}render();}
+function claudeErr(e){const c=e&&e.code;
+  if(c==="not_granted"||c==="sampling_disabled"||c==="not_declared"||c==="capability_disabled"){CLAUDE=null;return "Claude isn't available for this page. You can still add everything by hand.";}
+  if(c==="rate_limited")return "Too many requests right now. Try again in a minute.";
+  if(c==="invalid_json")return "Claude's reply came back in the wrong shape. Try again.";
+  if(c==="prompt_too_large")return "That transcript is too long. Trim it and try again.";
+  if(c==="cancelled")return "";
+  return "Claude couldn't finish that. Try again.";}
+
+/* ---------- lookups ---------- */
+const person=id=>S.people.find(p=>p.id===id);
+const task=id=>S.tasks.find(t=>t.id===id);
+const pName=id=>{const p=person(id);return p?p.name:"Someone";};
+const pLabel=id=>{const p=person(id);return p?p.name+" · "+shortTeam(p.team):"Someone";};
+function shortTeam(t){const m={"data science":"DS","data analytics":"DA","engineering":"Eng","design":"Design","operations":"Ops","product":"PM","mentor, pm":"Mentor"};return m[(t||"").toLowerCase()]||t||"";}
+function openTasks(){return S.tasks.filter(t=>t.status!=="done");}
+function waitAge(t){return t.waiting?Math.max(0,diffDays(t.waiting.since,TODAY())):0;}
+function sortTasks(a,b){return PRI[a.prio]-PRI[b.prio]||((a.due||"9999")<(b.due||"9999")?-1:(a.due||"9999")>(b.due||"9999")?1:0);}
+
+/* ---------- UI state ---------- */
+const UI={advancing:null,drawer:null,confirmDel:false,nudge:{},nudgeBusy:{},nudgeErr:{},askQ:false,answering:null,toast:null,confirmFresh:false,
+  tFilter:"open",tSort:{k:"prio",dir:1},tSearch:"",qFilter:"ask",qPerson:"",agendaPerson:"",qEdit:null,qDel:null,qAnswer:null};
+const ROUTES=["today","tasks","questions","capture"];
+let ROUTE=(h=>ROUTES.includes(h)?h:"today")(location.hash.slice(1));
+function route(){return ROUTE;}
+function go(r){if(!ROUTES.includes(r))r="today";ROUTE=r;try{history.replaceState(null,"","#"+r);}catch(e){}render();window.scrollTo(0,0);}
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(ROUTES.includes(h)&&h!==ROUTE)go(h);});
+document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const r=a.getAttribute("href").slice(1);if(ROUTES.includes(r)){e.preventDefault();go(r);}},true);
+
+function render(){
+  if(!S)return;
+  const r=route();
+  ROUTES.forEach(x=>$("#nav-"+x).classList.toggle("on",r===x));
+  $("#banner").innerHTML=S.sample?`<div class="banner"><span><b>Sample week.</b> A made-up PM internship so you can try everything. Edits are saved.</span><span class="grow"></span>${UI.confirmFresh?`<span>Clear the sample and start empty?</span><button class="linkbtn danger" data-act="fresh-yes">Clear it</button><button class="linkbtn" data-act="fresh-no">Keep it</button>`:`<button class="linkbtn" data-act="fresh">Start my own board</button>`}</div>`:"";
+  $("#view").innerHTML=r==="capture"?viewCapture():r==="tasks"?viewTasks():r==="questions"?viewQuestions():viewToday();
+  renderOverlay();renderToast();glue();
+  if(r==="capture")afterCapture();
+  if(r==="tasks"||r==="questions")afterLists();
+}
+
+/* ---------- Today ---------- */
+function greeting(){const h=new Date().getHours();return h<12?"Good morning":h<18?"Good afternoon":"Good evening";}
+function viewToday(){
+  const open=openTasks().sort(sortTasks);
+  const now=open.filter(t=>t.status!=="blocked"&&(t.prio==="P0"||(t.due&&diffDays(TODAY(),t.due)<=1)));
+  const later=open.filter(t=>!now.includes(t)&&t.status!=="blocked");
+  const blocked=open.filter(t=>t.status==="blocked");
+  const waits=open.filter(t=>t.waiting).sort((a,b)=>waitAge(b)-waitAge(a));
+  const nudge=waits.filter(t=>waitAge(t)>=2).length;
+  const fresh=S.questions.filter(q=>q.answer&&q.answeredAt&&diffDays(q.answeredAt,TODAY())<=2).sort((a,b)=>a.answeredAt<b.answeredAt?1:-1);
+  const l2=now.length||nudge?`${now.length?`${now.length===1?"One move":cap(num(now.length))+" moves"} today`:"No urgent moves today"}${nudge?`, ${nudge===1?"one person":num(nudge)+" people"} to nudge`:""}.`:"Nothing urgent. A good day to get ahead.";
+  const name=ME?ME.split(" ")[0]:"";
+  const week=open.filter(t=>t.due&&diffDays(TODAY(),t.due)>=0&&diffDays(TODAY(),t.due)<7).sort((a,b)=>a.due<b.due?-1:1);
+  const sub=[S.project,open.length+" open",blocked.length?blocked.length+" blocked":"",fresh.length?fresh.length+(fresh.length===1?" answer":" answers")+" since yesterday":""].filter(Boolean).join(" · ");
+
+  return `<div class="cols"><section class="main">
+    <div class="date">${fmtLong()}</div>
+    <h1 class="hello"><span>${greeting()}${name?", "+esc(name):""}.</span><br><span class="l2">${l2}</span></h1>
+    <p class="sub">${esc(sub)}</p>
+
+    <div class="sec"><div class="label">Next actions <span class="c">${now.length}</span><span class="act"><button class="btn sm" data-act="new-task">Add task</button></span></div>
+      ${now.length?now.map(itemHTML).join(""):`<p class="empty">${open.length?"Nothing due today. Pick something from Later.":"Add your first task to see your next moves here."}</p>`}
+    </div>
+    ${blocked.length?`<div class="sec"><div class="label">Blocked <span class="c">${blocked.length}</span></div>${blocked.map(itemHTML).join("")}</div>`:""}
+    ${later.length?`<div class="sec"><div class="label">Later <span class="c">${later.length}</span></div>${later.map(itemHTML).join("")}</div>`:""}
+    <div class="sec"><div class="label">This week</div>
+      ${week.length?week.map(t=>`<div class="row click" data-act="open" data-id="${t.id}"><span class="d">${fmtDue(t.due)}</span><span class="t">${esc(t.title)}</span></div>`).join(""):`<p class="empty">No due dates in the next seven days.</p>`}
+    </div>
+    ${doneHTML()}
+  </section>
+  <aside class="rail">
+    <div class="label">Waiting on <span class="c">${waits.length}</span></div>
+    <div class="card">${waits.length?waits.map(waitHTML).join(""):`<p class="empty">Nobody owes you anything right now.</p>`}</div>
+    <div class="label">New answers</div>
+    <div class="card">${fresh.length?fresh.map(q=>`<div class="ans"><div class="q">${esc(pLabel(q.personId))} · ${esc(q.text)}</div><div class="ans-r">${esc(q.answer)}</div>${task(q.taskId)?`<span class="tag okt">${esc(task(q.taskId).title)}</span>`:""}</div>`).join(""):`<p class="empty">Answers you log or capture show up here.</p>`}</div>
+    <div class="label">Questions to ask <span class="c">${S.questions.filter(q=>!q.answer).length}</span><span class="act"><button class="linkbtn" data-act="ask-q">Add</button></span></div>
+    <div class="card">${questionsHTML()}</div>
+    <div class="label" style="margin-top:22px">Capture</div>
+    <a class="capcard" href="#capture"><span class="rec"></span>Capture a 1:1 and let Claude pull out answers</a>
+  </aside></div>`;
+}
+const NUMW=["zero","one","two","three","four","five","six","seven","eight","nine","ten"];
+const num=n=>NUMW[n]||String(n);const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function itemHTML(t){
+  const late=t.due&&diffDays(TODAY(),t.due)<0;
+  const lastAns=S.questions.filter(q=>q.taskId===t.id&&q.answer&&q.answeredAt&&diffDays(q.answeredAt,TODAY())<=2).sort((a,b)=>a.answeredAt<b.answeredAt?1:a.answeredAt>b.answeredAt?-1:S.questions.indexOf(b)-S.questions.indexOf(a))[0];
+  return `<div class="item">
+    <button class="check" data-act="advance" data-id="${t.id}" aria-label="Finish this step"></button>
+    <div class="body" data-act="open" data-id="${t.id}">
+      <div class="t">${esc(t.next||t.title)}</div>
+      <div class="s">${t.next?esc(t.title):"No next step yet"}${t.waiting?` · waiting on ${esc(pName(t.waiting.personId))}`:""}</div>
+      ${lastAns?`<div class="src">From ${esc(pName(lastAns.personId))}'s answer: ${esc(lastAns.answer)}</div>`:""}
+      ${UI.advancing===t.id?`<div class="adv" data-stop>
+        <input class="inp" id="advInput" placeholder="What's the next step?" aria-label="Next step">
+        <button class="btn pri" data-act="adv-save" data-id="${t.id}">Set next step</button>
+        <button class="btn" data-act="adv-done" data-id="${t.id}">Task is done</button>
+        <button class="btn" data-act="adv-cancel">Cancel</button></div>`:""}
+    </div>
+    <div class="tags">${t.status==="blocked"?`<span class="tag blk">Blocked</span>`:""}${t.due?`<span class="due${late?" late":""}">${fmtDue(t.due)}</span>`:""}<span class="tag ${t.prio}">${t.prio}</span></div>
+  </div>`;
+}
+function doneHTML(){const d=S.tasks.filter(t=>t.status==="done");if(!d.length)return "";
+  return `<div class="sec"><div class="label">Done <span class="c">${d.length}</span></div>${d.map(t=>`<div class="row click" data-act="open" data-id="${t.id}"><span class="d">Done</span><span class="t" style="color:var(--ink-2)">${esc(t.title)}</span></div>`).join("")}</div>`;}
+function waitHTML(t){
+  const a=waitAge(t),late=a>=3,w=t.waiting;
+  return `<div class="wait"><div class="h"><span class="n">${esc(pLabel(w.personId))}</span><span class="age${late?" late":""}">${a===0?"today":a+"d"}</span></div>
+    <div class="w">${esc(w.what)}</div>
+    <div class="acts">${CLAUDE?`<button class="linkbtn" data-act="nudge" data-id="${t.id}">${UI.nudgeBusy[t.id]?"Drafting…":"Draft a nudge"}</button>`:""}<button class="linkbtn" data-act="got-it" data-id="${t.id}">Got it</button></div>
+    ${UI.nudgeErr[t.id]?`<div class="err">${esc(UI.nudgeErr[t.id])}</div>`:""}
+    ${UI.nudge[t.id]?`<div class="draft">${esc(UI.nudge[t.id])}<div class="acts"><button class="linkbtn" data-act="copy-nudge" data-id="${t.id}">Copy</button> <button class="linkbtn" data-act="close-nudge" data-id="${t.id}">Close</button></div></div>`:""}
+  </div>`;
+}
+function questionsHTML(){
+  const open=S.questions.filter(q=>!q.answer);
+  let h="";
+  if(UI.askQ){h+=`<div style="display:grid;gap:6px;margin-bottom:10px">
+    <select class="sel" id="qPerson" aria-label="Who to ask">${S.people.map(p=>`<option value="${p.id}">${esc(pLabel(p.id))}</option>`).join("")}<option value="__new">New person…</option></select>
+    <div id="qNewPerson" hidden class="two"><input class="inp" id="qNewName" placeholder="Name"><input class="inp" id="qNewTeam" placeholder="Team"></div>
+    <input class="inp" id="qText" placeholder="Is the baseline split by channel?" aria-label="Question">
+    <select class="sel" id="qTask" aria-label="Related task"><option value="">No related task</option>${openTasks().map(t=>`<option value="${t.id}">${esc(t.title)}</option>`).join("")}</select>
+    <div style="display:flex;gap:6px"><button class="btn pri sm" data-act="q-save">Add question</button><button class="btn sm" data-act="q-cancel">Cancel</button></div></div>`;}
+  if(!open.length)return h+(UI.askQ?"":`<p class="empty">No open questions.</p>`);
+  const by={};open.forEach(q=>(by[q.personId]=by[q.personId]||[]).push(q));
+  h+=Object.keys(by).map(pid=>`<div class="qgrp">${esc(pLabel(pid))}</div>`+by[pid].map(q=>`<div class="qline"><span class="qt">${esc(q.text)}</span><button class="linkbtn" data-act="answer" data-id="${q.id}">Answer</button></div>`+
+    (UI.answering===q.id?`<div style="display:grid;gap:6px;margin:4px 0 8px"><input class="inp" id="ansText" placeholder="What did they say?"><div style="display:flex;gap:6px"><button class="btn pri sm" data-act="ans-save" data-id="${q.id}">Save answer</button><button class="btn sm" data-act="ans-cancel">Cancel</button></div></div>`:"")).join("")).join("");
+  return h;
+}
+
+/* ---------- task drawer ---------- */
+function renderOverlay(){
+  const o=$("#overlay");
+  if(!UI.drawer){o.innerHTML="";return;}
+  const isNew=UI.drawer==="new";
+  const t=isNew?{title:"",prio:"P1",status:"open",next:"",due:"",waiting:null,history:[]}:task(UI.drawer);
+  if(!t){UI.drawer=null;o.innerHTML="";return;}
+  const qs=isNew?[]:S.questions.filter(q=>q.taskId===t.id);
+  o.innerHTML=`<div class="scrim" data-act="close-drawer"><div class="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" data-stop>
+    <h2 id="dTitle">${isNew?"New task":"Task"}</h2>
+    <div class="f"><label for="fTitle">Task</label><input class="inp" id="fTitle" value="${esc(t.title)}" placeholder="Lock success metric for referral test"></div>
+    <div class="f"><label for="fNext">Next action</label><input class="inp" id="fNext" value="${esc(t.next)}" placeholder="Ask Maya how D7 retention is defined"></div>
+    <div class="two">
+      <div class="f"><label for="fPrio">Priority</label><select class="sel" id="fPrio">${["P0","P1","P2"].map(p=>`<option${p===t.prio?" selected":""}>${p}</option>`).join("")}</select></div>
+      <div class="f"><label for="fDue">Due</label><input class="inp" type="date" id="fDue" value="${esc(t.due||"")}"></div>
+    </div>
+    <div class="f"><label for="fStatus">Status</label><select class="sel" id="fStatus">${[["open","Open"],["blocked","Blocked"],["done","Done"]].map(([v,l])=>`<option value="${v}"${v===t.status?" selected":""}>${l}</option>`).join("")}</select></div>
+    <div class="f"><label for="fWaitWho">Waiting on</label>
+      <div class="two"><select class="sel" id="fWaitWho"><option value="">Nobody</option>${S.people.map(p=>`<option value="${p.id}"${t.waiting&&t.waiting.personId===p.id?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}<option value="__new">New person…</option></select>
+      <input class="inp" id="fWaitWhat" value="${esc(t.waiting?t.waiting.what:"")}" placeholder="What they owe you"></div>
+      <div id="fNewPerson" hidden class="two" style="margin-top:6px"><input class="inp" id="fNewName" placeholder="Name"><input class="inp" id="fNewTeam" placeholder="Team"></div>
+    </div>
+    ${qs.length?`<div class="f"><label>Questions</label>${qs.map(q=>`<div class="qline"><span class="qt">${esc(pName(q.personId))}: ${esc(q.text)}${q.answer?`<br><span style="color:var(--ok)">${esc(q.answer)}</span>`:""}</span></div>`).join("")}</div>`:""}
+    ${t.history&&t.history.length?`<div class="f"><label>History</label><div class="hist">${t.history.slice().reverse().map(e=>`<div class="e"><div class="m">${esc(fmtDue(e.at)||e.at)}</div>${esc(e.text)}</div>`).join("")}</div></div>`:""}
+    <div class="dacts">
+      <button class="btn pri" data-act="save-task">${isNew?"Add task":"Save"}</button>
+      <button class="btn" data-act="close-drawer">Cancel</button>
+      <span class="grow"></span>
+      ${isNew?"":UI.confirmDel?`<span class="hint">Delete this task?</span><button class="linkbtn danger" data-act="del-yes">Delete</button><button class="linkbtn" data-act="del-no">Keep</button>`:`<button class="linkbtn danger" data-act="del">Delete</button>`}
+    </div>
+    <p class="err" id="fErr" hidden></p>
+  </div></div>`;
+  const ww=$("#fWaitWho");ww.onchange=()=>{$("#fNewPerson").hidden=ww.value!=="__new";};
+  setTimeout(()=>{const f=$("#fTitle");if(f&&isNew)f.focus();},0);
+}
+function addPerson(name,team){const p={id:uid("p_"),name:name.trim(),team:team.trim()};S.people.push(p);return p.id;}
+function saveTask(){
+  const title=$("#fTitle").value.trim();
+  if(!title){const e=$("#fErr");e.textContent="Give the task a name first.";e.hidden=false;$("#fTitle").focus();return;}
+  let who=$("#fWaitWho").value;const what=$("#fWaitWhat").value.trim();
+  if(who==="__new"){const n=$("#fNewName").value.trim();if(!n){const e=$("#fErr");e.textContent="Add the new person's name.";e.hidden=false;return;}who=addPerson(n,$("#fNewTeam").value);}
+  const isNew=UI.drawer==="new";
+  const t=isNew?{id:uid("t_"),history:[{at:TODAY(),text:"Created."}]}:task(UI.drawer);
+  const oldNext=t.next;
+  Object.assign(t,{title,next:$("#fNext").value.trim(),prio:$("#fPrio").value,due:$("#fDue").value||null,status:$("#fStatus").value});
+  const prevWho=t.waiting&&t.waiting.personId;
+  t.waiting=who?{personId:who,what:what||"A reply",since:(t.waiting&&prevWho===who)?t.waiting.since:TODAY()}:null;
+  if(!isNew&&oldNext&&oldNext!==t.next)t.history.push({at:TODAY(),text:"Step done: "+oldNext});
+  if(isNew)S.tasks.push(t);
+  UI.drawer=null;UI.confirmDel=false;save();render();
+}
+
+/* ---------- Tasks (table) ---------- */
+const created=t=>t.created||(t.history&&t.history[0]&&t.history[0].at)||null;
+function tStatus(t){return t.status==="done"?"done":t.status==="blocked"?"blocked":t.waiting?"waiting":"open";}
+const ST={open:["Open","var(--accent)"],waiting:["Waiting","var(--warn)"],blocked:["Blocked","var(--danger)"],done:["Done","var(--ok)"]};
+const TFILTERS=[["open","All open"],["mine","Mine to do"],["waiting","Waiting"],["blocked","Blocked"],["done","Done"]];
+function tPass(t){const f=UI.tFilter,s=tStatus(t);
+  if(f==="open"&&s==="done")return false;if(f==="mine"&&s!=="open")return false;
+  if(f==="waiting"&&s!=="waiting")return false;if(f==="blocked"&&s!=="blocked")return false;if(f==="done"&&s!=="done")return false;
+  const q=UI.tSearch.trim().toLowerCase();if(q){const w=t.waiting?pName(t.waiting.personId)+" "+t.waiting.what:"";if(!(t.title+" "+t.next+" "+w).toLowerCase().includes(q))return false;}
+  return true;}
+function tCompare(a,b){const {k,dir}=UI.tSort;let x,y;
+  if(k==="prio"){x=PRI[a.prio];y=PRI[b.prio];if(x===y)return sortTasks(a,b);}
+  else if(k==="due"){x=a.due||"9999";y=b.due||"9999";}
+  else if(k==="age"){x=-(created(a)?diffDays(created(a),TODAY()):-1);y=-(created(b)?diffDays(created(b),TODAY()):-1);}
+  else if(k==="status"){const o={blocked:0,waiting:1,open:2,done:3};x=o[tStatus(a)];y=o[tStatus(b)];}
+  else if(k==="title"){x=a.title.toLowerCase();y=b.title.toLowerCase();}
+  else if(k==="wait"){x=a.waiting?-waitAge(a):1;y=b.waiting?-waitAge(b):1;}
+  return (x<y?-1:x>y?1:0)*dir;}
+function th(label,k){const on=UI.tSort.k===k;return `<th><button data-act="t-sort" data-id="${k}" aria-label="Sort by ${label}">${label}${on?`<span class="ar">${UI.tSort.dir>0?"↑":"↓"}</span>`:""}</button></th>`;}
+function viewTasks(){
+  const open=openTasks();
+  const soon=open.filter(t=>t.due&&diffDays(TODAY(),t.due)<=2).length;
+  const counts={open:open.length,blocked:open.filter(t=>tStatus(t)==="blocked").length,waiting:open.filter(t=>tStatus(t)==="waiting").length};
+  const rows=S.tasks.filter(tPass).sort(tCompare);
+  const stat=(f,v,l,c)=>`<button class="stat${UI.tFilter===f?" on":""}" data-act="t-filter" data-id="${f}"><div class="v"${c?` style="color:${c}"`:""}>${v}</div><div class="l">${l}</div></button>`;
+  return `<div class="phead"><div><h1>Tasks</h1><p class="sub">Every task, its next step, and who it depends on</p></div><span class="grow"></span>
+      <input class="inp" id="tSearch" type="search" placeholder="Search tasks" value="${esc(UI.tSearch)}" aria-label="Search tasks"><button class="btn pri" data-act="new-task">Add task</button></div>
+    <div class="strip">${stat("open",counts.open,"Open")}${stat("blocked",counts.blocked,"Blocked","var(--danger)")}${stat("waiting",counts.waiting,"Waiting on others","var(--warn)")}${stat("soon",soon,"Due in 2 days")}</div>
+    <div class="fbar">${TFILTERS.map(([f,l])=>`<button class="fchip${UI.tFilter===f?" on":""}" data-act="t-filter" data-id="${f}">${l}</button>`).join("")}</div>
+    <div class="tbl-wrap">${rows.length||UI.tFilter==="soon"?`<table class="tbl"><thead><tr><th style="width:34px"><span class="sr" hidden>Done</span></th>${th("Task → next action","title")}${th("Priority","prio")}${th("Status","status")}${th("Waiting on","wait")}${th("Due","due")}${th("Age","age")}</tr></thead>
+      <tbody>${(UI.tFilter==="soon"?S.tasks.filter(t=>t.status!=="done"&&t.due&&diffDays(TODAY(),t.due)<=2&&(!UI.tSearch||t.title.toLowerCase().includes(UI.tSearch.toLowerCase()))).sort(tCompare):rows).map(tRow).join("")}</tbody></table>
+      <p class="hint" style="margin-top:12px">Click a row to open the task. Click a column header to sort.</p>`:
+      `<p class="empty" style="padding:24px 0">${S.tasks.length?"No tasks match this filter.":"No tasks yet. Add your first one to get started."}</p>`}</div>`;
+}
+function tRow(t){
+  const s=tStatus(t),a=created(t)?diffDays(created(t),TODAY()):null,late=t.due&&t.status!=="done"&&diffDays(TODAY(),t.due)<0;
+  return `<tr class="click${s==="done"?" done":""}" data-act="open" data-id="${t.id}">
+    <td><button class="check" data-act="t-done" data-id="${t.id}" aria-label="${s==="done"?"Reopen":"Mark done"}"${s==="done"?` style="background:var(--ok);border-color:var(--ok)"`:""}></button></td>
+    <td><div class="t">${esc(t.title)}</div>${t.next&&s!=="done"?`<div class="n">→ ${esc(t.next)}</div>`:""}</td>
+    <td><span class="tag ${t.prio}">${t.prio}</span></td>
+    <td><span class="st"><i style="background:${ST[s][1]}"></i>${ST[s][0]}</span></td>
+    <td>${t.waiting?`${esc(pLabel(t.waiting.personId))} <span class="num ${waitAge(t)>=3?"late":"faint"}" style="${waitAge(t)>=3?"color:var(--danger);font-weight:500":"color:var(--ink-3)"}">${waitAge(t)}d</span>`:`<span class="faint" style="color:var(--ink-3)">—</span>`}</td>
+    <td class="num"${late?` style="color:var(--danger);font-weight:500"`:""}>${t.due?fmtDue(t.due):`<span style="color:var(--ink-3)">—</span>`}</td>
+    <td class="num" style="color:var(--ink-3)">${a==null?"—":a+"d"}</td></tr>`;
+}
+
+/* ---------- Questions (inbox + 1:1 agenda) ---------- */
+function qPass(q){if(UI.qFilter==="ask"&&q.answer)return false;if(UI.qFilter==="answered"&&!q.answer)return false;if(UI.qPerson&&q.personId!==UI.qPerson)return false;return true;}
+function agendaPerson(){
+  if(UI.agendaPerson&&person(UI.agendaPerson))return UI.agendaPerson;
+  if(UI.qPerson)return UI.qPerson;
+  const c={};S.questions.filter(q=>!q.answer).forEach(q=>c[q.personId]=(c[q.personId]||0)+1);
+  return Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||"";
+}
+function viewQuestions(){
+  const toAsk=S.questions.filter(q=>!q.answer),answered=S.questions.filter(q=>q.answer);
+  const list=S.questions.filter(qPass).sort((a,b)=>(!!a.answer-!!b.answer)||((b.answeredAt||"")>(a.answeredAt||"")?1:-1));
+  const byP={};toAsk.forEach(q=>byP[q.personId]=(byP[q.personId]||0)+1);
+  const ap=agendaPerson(),agenda=toAsk.filter(q=>q.personId===ap);
+  const chip=(f,l)=>`<button class="fchip${UI.qFilter===f?" on":""}" data-act="q-filter" data-id="${f}">${l}</button>`;
+  return `<div class="phead"><div><h1>Questions</h1><p class="sub">Everything you need to ask, and what people told you</p></div></div>
+    <div class="fbar">${chip("ask","To ask "+toAsk.length)}${chip("answered","Answered "+answered.length)}${chip("all","All "+S.questions.length)}<span class="grow"></span>
+      <label class="hint" for="qPersonFilter">Person</label><select class="sel" id="qPersonFilter"><option value="">Anyone</option>${S.people.map(p=>`<option value="${p.id}"${UI.qPerson===p.id?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}</select></div>
+    <div class="cols"><section class="qmain">
+      <form class="addq" id="addQ">
+        <input class="inp" id="nqText" placeholder="Does the baseline already split by channel?" aria-label="New question">
+        <select class="sel" id="nqPerson" aria-label="Ask whom">${S.people.map(p=>`<option value="${p.id}"${(UI.qPerson||ap)===p.id?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}<option value="__new"${S.people.length?"":" selected"}>New person…</option></select>
+        <select class="sel" id="nqTask" aria-label="Related task"><option value="">No related task</option>${openTasks().sort(sortTasks).map(t=>`<option value="${t.id}">${esc(t.title)}</option>`).join("")}</select>
+        <button class="btn pri" type="submit">Add</button>
+        <div class="two" id="nqNew"${S.people.length?" hidden":""}><input class="inp" id="nqName" placeholder="Name"><input class="inp" id="nqTeam" placeholder="Team"></div>
+      </form>
+      <p class="err" id="nqErr" hidden></p>
+      ${list.length?list.map(qRow).join(""):`<p class="empty" style="padding:18px 0">${S.questions.length?"Nothing here for this filter.":"No questions yet. Add one above, or capture a 1:1 and Claude will find follow-ups."}</p>`}
+    </section>
+    <aside class="rail">
+      <div class="label">By person</div>
+      <div class="card" style="padding:6px">${Object.keys(byP).length?Object.keys(byP).map(pid=>`<button class="srow${UI.qPerson===pid?" on":""}" data-act="q-person" data-id="${pid}"><span>${esc(pLabel(pid))}</span><span class="num" style="color:var(--ink-3)">${byP[pid]}</span></button>`).join("")+(UI.qPerson?`<button class="srow" data-act="q-person" data-id=""><span style="color:var(--accent)">Show everyone</span></button>`:""):`<p class="empty" style="padding:6px 8px">Nobody to ask right now.</p>`}</div>
+      <div class="label" style="margin-top:22px">Agenda for your next 1:1${ap?" with "+esc(pName(ap)):""}</div>
+      <div class="card agenda">${S.people.length?`<select class="sel" id="agendaPerson" aria-label="Agenda for" style="margin-bottom:8px">${S.people.map(p=>`<option value="${p.id}"${ap===p.id?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}</select>`:""}
+        ${agenda.length?agenda.map(q=>`<div class="i">${esc(q.text)}${task(q.taskId)?`<br><span class="hint">→ ${esc(task(q.taskId).title)}</span>`:""}</div>`).join(""):`<p class="empty">No open questions for ${ap?esc(pName(ap)):"this person"}.</p>`}
+        ${agenda.length?`<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn sm" data-act="copy-agenda">Copy agenda</button><button class="btn sm pri" data-act="start-capture" data-id="${ap}">Start capture</button></div>`:""}
+      </div>
+    </aside></div>`;
+}
+function qRow(q){
+  const t=task(q.taskId),age=q.answer?null:(q.created?diffDays(q.created,TODAY()):null);
+  if(UI.qEdit===q.id)return `<div class="qrow"><span></span><div class="ed">
+      <input class="inp" id="qeText" value="${esc(q.text)}" aria-label="Question">
+      <div class="two"><select class="sel" id="qePerson" aria-label="Ask whom">${S.people.map(p=>`<option value="${p.id}"${p.id===q.personId?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}</select>
+      <select class="sel" id="qeTask" aria-label="Related task"><option value="">No related task</option>${S.tasks.filter(x=>x.status!=="done"||x.id===q.taskId).map(x=>`<option value="${x.id}"${x.id===q.taskId?" selected":""}>${esc(x.title)}</option>`).join("")}</select></div>
+      ${q.answer?`<input class="inp" id="qeAnswer" value="${esc(q.answer)}" aria-label="Answer">`:""}
+      <div style="display:flex;gap:6px"><button class="btn pri sm" data-act="qe-save" data-id="${q.id}">Save</button><button class="btn sm" data-act="qe-cancel">Cancel</button></div></div><span></span></div>`;
+  return `<div class="qrow${q.answer?" done":""}">
+    <button class="bx" data-act="${q.answer?"q-reopen":"q-log"}" data-id="${q.id}" aria-label="${q.answer?"Mark as not answered":"Log answer"}"></button>
+    <div><div class="qt">${esc(q.text)}</div>
+      ${q.answer?`<div class="qa">${esc(q.answer)}</div>`:""}
+      <div class="qm"><span class="tag who">${esc(pLabel(q.personId))}</span>${t?`<button class="tasklink" data-act="open" data-id="${t.id}">→ ${esc(t.title)}</button>`:""}<span>${q.answer?(q.answeredAt?"answered "+esc(fmtDue(q.answeredAt).toLowerCase()):"answered"):age!=null?age+"d old":""}</span></div>
+      ${UI.qAnswer===q.id?`<div class="ed"><input class="inp" id="qaText" placeholder="What did ${esc(pName(q.personId))} say?" aria-label="Answer"><div style="display:flex;gap:6px"><button class="btn pri sm" data-act="qa-save" data-id="${q.id}">Save answer</button><button class="btn sm" data-act="qa-cancel">Cancel</button></div></div>`:""}
+    </div>
+    <div class="r">${UI.qDel===q.id?`<span class="hint">Delete?</span><button class="linkbtn danger" data-act="qd-yes" data-id="${q.id}">Delete</button><button class="linkbtn" data-act="qd-no">Keep</button>`:
+      `${q.answer?"":`<button class="linkbtn" data-act="q-log" data-id="${q.id}">Log answer</button>`}<button class="linkbtn" data-act="q-edit" data-id="${q.id}">Edit</button><button class="linkbtn danger" data-act="q-del" data-id="${q.id}">Delete</button>`}</div>
+  </div>`;
+}
+function afterLists(){
+  const ts=$("#tSearch");if(ts){ts.oninput=()=>{UI.tSearch=ts.value;const p=ts.selectionStart;render();const n=$("#tSearch");n.focus();try{n.setSelectionRange(p,p);}catch(e){}};}
+  const pf=$("#qPersonFilter");if(pf)pf.onchange=()=>{UI.qPerson=pf.value;UI.agendaPerson="";render();};
+  const ap=$("#agendaPerson");if(ap)ap.onchange=()=>{UI.agendaPerson=ap.value;render();};
+  const np=$("#nqPerson");if(np)np.onchange=()=>{$("#nqNew").hidden=np.value!=="__new";};
+}
+function addQuestion(){
+  const err=$("#nqErr"),txt=$("#nqText").value.trim();err.hidden=true;
+  if(!txt){err.textContent="Write the question first.";err.hidden=false;$("#nqText").focus();return;}
+  let pid=$("#nqPerson").value;
+  if(pid==="__new"){const n=$("#nqName").value.trim();if(!n){err.textContent="Add the person's name.";err.hidden=false;$("#nqName").focus();return;}pid=addPerson(n,$("#nqTeam").value);}
+  S.questions.push({id:uid("q_"),personId:pid,taskId:$("#nqTask").value,text:txt,answer:"",answeredAt:null,created:TODAY()});
+  save();render();setTimeout(()=>{const x=$("#nqText");if(x)x.focus();},0);
+}
+function startCaptureFor(pid){
+  if(CAP.replay)stopReplay();
+  const qs=S.questions.filter(q=>!q.answer&&q.personId===pid);
+  const tid=(qs.find(q=>task(q.taskId))||{}).taskId||"";
+  S.draft={id:uid("s_"),title:"1:1 with "+pName(pid),personId:pid,taskId:tid,transcript:"",phase:"setup",notes:null,review:null,chat:[]};
+  save();go("capture");
+}
+
+/* ---------- toast with undo ---------- */
+let toastTimer=0;
+function toast(msg,undo){UI.toast={msg,undo};clearTimeout(toastTimer);toastTimer=setTimeout(()=>{UI.toast=null;renderToast();},6000);renderToast();}
+function renderToast(){const t=UI.toast;$("#toast").innerHTML=t?`<div class="toast" role="status"><span>${esc(t.msg)}</span>${t.undo?`<button class="linkbtn" data-act="undo">Undo</button>`:""}</div>`:"";}
+
+/* ---------- Capture ---------- */
+const CAP={replay:null,elapsed:0,tick:0,liveBusy:false,liveErr:"",revBusy:false,revErr:"",ctl:null,chatBusy:false,chatErr:"",editing:false,stream:""};
+function draft(){if(!S.draft)S.draft={id:uid("s_"),title:"",personId:S.people[0]?S.people[0].id:"",taskId:"",transcript:"",phase:"setup",notes:null,review:null,chat:[]};return S.draft;}
+function parseLines(txt){
+  return txt.split(/\n+/).map(s=>s.trim()).filter(Boolean).map(s=>{
+    let ts="",m=s.match(/^\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?\s*/);if(m){ts=m[1];s=s.slice(m[0].length);}
+    const k=s.match(/^([A-Z][\w .'-]{0,24}):\s+(.*)$/);
+    return k?{ts,sp:k[1],text:k[2]}:{ts,sp:"",text:s};
+  });
+}
+const fmtClock=s=>pad(Math.floor(s/60))+":"+pad(s%60);
+function viewCapture(){
+  const d=draft();
+  if(d.phase==="review")return viewReview(d);
+  const p=person(d.personId),t=task(d.taskId);
+  const prepped=S.questions.filter(q=>q.personId===d.personId&&(!q.answer||(d.notes&&d.notes.answered&&d.notes.answered.includes(q.id))));
+  const lines=parseLines(d.transcript);
+  const live=!!CAP.replay;
+  const title=d.title||(p?"1:1 with "+p.name:"New capture");
+  return `<div class="sess">
+      <div class="meta"><div class="label" style="margin:0">Capture${live?" · live":""}</div>
+        <h1>${esc(title)}</h1>
+        <div class="chips">${p?`<span class="tag who">${esc(pLabel(p.id))}</span>`:""}${t?`<span class="tag ${t.prio}">${esc(t.title)}</span>`:""}<span>${lines.length} lines</span></div></div>
+      <div class="ctrl">
+        ${live?`<span class="live"><i></i>Replaying</span>`:""}
+        <span class="timer" id="timer">${fmtClock(CAP.elapsed)}</span>
+        ${live?`<button class="btn stop" data-act="replay-stop">Stop</button>`:`<button class="btn" data-act="replay">Replay sample 1:1</button>`}
+        <button class="btn pri" data-act="finish" ${lines.length?"":"disabled"}>${CLAUDE?"Finish and review":"Finish"}</button>
+      </div>
+    </div>
+    <div class="wave${live?" on":""}" id="wave" aria-hidden="true"></div>
+    <div class="setup">
+      <div><label class="label" for="cTitle">Meeting</label><input class="inp" id="cTitle" value="${esc(d.title)}" placeholder="${esc(title)}"></div>
+      <div><label class="label" for="cPerson">With</label><select class="sel" id="cPerson"><option value="">Group or no one</option>${S.people.map(x=>`<option value="${x.id}"${x.id===d.personId?" selected":""}>${esc(pLabel(x.id))}</option>`).join("")}</select></div>
+      <div><label class="label" for="cTask">About</label><select class="sel" id="cTask"><option value="">No specific task</option>${openTasks().map(x=>`<option value="${x.id}"${x.id===d.taskId?" selected":""}>${esc(x.title)}</option>`).join("")}</select></div>
+    </div>
+    <div class="cols">
+      <section class="tx">
+        ${lines.length&&!CAP.editing?`<div id="lines">${lines.map((l,i)=>lineHTML(l,i,live&&i===lines.length-1)).join("")}</div>`:
+          `<div class="emptytx"><p>Paste a transcript from Zoom, Otter, or Voice Memos, or type notes as you go. Use "Name: what they said" on each line so Claude knows who said what.</p>
+           <textarea class="ta" id="cText" style="min-height:220px;text-align:left" placeholder="Maya: Per signup cohort. Exclude reactivated users.">${esc(d.transcript)}</textarea>
+           ${lines.length?`<button class="btn" data-act="edit-done">Done editing</button>`:`<span class="hint">Or press Replay sample 1:1 to watch a meeting come in.</span>`}</div>`}
+        <div class="txbar">
+          <span class="pill">Speakers: ${esc([...new Set(lines.map(l=>l.sp).filter(Boolean))].join(", ")||"none yet")}</span>
+          ${lines.length&&!CAP.editing&&!live?`<button class="linkbtn" data-act="edit-tx">Edit transcript</button>`:""}
+          <span class="grow"></span>
+          ${lines.length&&!live?`<button class="linkbtn danger" data-act="clear-tx">Clear</button>`:""}
+        </div>
+        <p class="hint" style="margin-top:10px">Live microphone recording comes with the desktop app. In the browser, paste a transcript or type notes.</p>
+      </section>
+      <aside class="rail">
+        <div class="label">${p?"Questions for "+esc(p.name):"Questions"} <span class="c">${prepped.filter(q=>q.answer||(d.notes&&d.notes.answered&&d.notes.answered.includes(q.id))).length} of ${prepped.length}</span></div>
+        <div class="card">${prepped.length?prepped.map(q=>{const a=d.notes&&d.notes.answers&&d.notes.answers[q.id];const done=!!(a||q.answer);
+          return `<div class="qbox${done?" done":""}"><span class="bx"></span><div><div class="qt">${esc(q.text)}</div>${done?`<div class="a">${esc(a||q.answer)}</div>`:""}</div></div>`;}).join(""):`<p class="empty">${p?"No open questions for "+esc(p.name)+".":"Pick who you're meeting to see your prepared questions."}</p>`}</div>
+        <div class="label" style="margin-top:22px"><span class="spark">✳</span>Claude's notes</div>
+        <div class="card">
+          ${!CLAUDE?`<p class="empty">Claude isn't available in this view. Finish to add updates by hand.</p>`:
+            CAP.liveBusy?`<div class="thinking"><span class="dots"><i></i><i></i><i></i></span>Reading the transcript…</div>`:
+            d.notes&&d.notes.items.length?d.notes.items.map(noteHTML).join(""):`<p class="empty">Claude pulls answers, your next steps, and promises from the conversation.</p>`}
+          ${CAP.liveErr?`<div class="err">${esc(CAP.liveErr)}</div>`:""}
+          ${CLAUDE&&!CAP.liveBusy?`<div style="margin-top:10px"><button class="btn claude sm" data-act="live-extract" ${lines.length?"":"disabled"}>${d.notes?"Update notes":"Read so far"}</button></div>`:""}
+        </div>
+        ${pastHTML()}
+      </aside>
+    </div>`;
+}
+function hlText(text){
+  let h=esc(text);const d=S.draft;if(!d||!d.notes)return h;
+  d.notes.items.forEach(it=>{if(!it.quote)return;const q=esc(it.quote);if(q.length<6)return;const i=h.indexOf(q);
+    if(i>=0)h=h.slice(0,i)+`<mark${it.type==="answer"?"":` class="pr"`}>`+q+"</mark>"+h.slice(i+q.length);});
+  return h;
+}
+function lineHTML(l,i,caret){
+  const me=/^(you|me|i)$/i.test(l.sp)||(ME&&l.sp===ME.split(" ")[0]);
+  return `<div class="line"><span class="ts">${esc(l.ts||fmtClock(i*23))}</span><div>${l.sp?`<div class="spn ${me?"me":"them"}">${esc(l.sp)}</div>`:""}<div class="tx-t">${hlText(l.text)}${caret?`<span class="caret"></span>`:""}</div></div></div>`;
+}
+const KIND={answer:["Answer","var(--ok)"],next_action:["Your next step","var(--accent)"],waiting:["Waiting on them","var(--warn)"],question:["New question","var(--violet)"],task:["New task","var(--ink)"],still_open:["Still open","var(--ink-3)"]};
+function noteHTML(it){const k=KIND[it.type]||KIND.task;const tt=task(it.taskId);
+  return `<div class="note"><div class="k" style="color:${k[1]}">${k[0]}${it.personId&&it.type!=="next_action"?" · "+esc(pName(it.personId)):""}</div><div class="note-v">${esc(it.type==="answer"?it.detail:it.title)}</div>${tt?`<div class="to">→ ${esc(tt.title)}</div>`:""}</div>`;}
+function pastHTML(){const s=S.sessions.slice().reverse().slice(0,5);if(!s.length)return "";
+  return `<div class="label" style="margin-top:22px">Past captures</div><div class="card past">${s.map(x=>`<div class="row"><span class="d">${esc(fmtDue(x.date)||x.date)}</span><span class="t">${esc(x.title)}<br><span class="hint">${x.applied} updates applied</span></span></div>`).join("")}</div>`;}
+
+function afterCapture(){
+  const w=$("#wave");if(w&&!w.children.length){let h="";for(let i=0;i<110;i++){const v=Math.abs(Math.sin(i*.37)*Math.cos(i*.11))*.85+.12;h+=`<span class="${i>95?"hot":""}" style="height:${Math.round(v*30)}px"></span>`;}w.innerHTML=h;}
+  const d=S.draft;if(!d)return;
+  const ti=$("#cTitle");if(ti)ti.oninput=()=>{d.title=ti.value;save();};
+  const cp=$("#cPerson");if(cp)cp.onchange=()=>{d.personId=cp.value;d.notes=null;save();render();};
+  const ct=$("#cTask");if(ct)ct.onchange=()=>{d.taskId=ct.value;save();render();};
+  const tx=$("#cText");if(tx){tx.oninput=()=>{d.transcript=tx.value;save();};}
+  const ln=$("#lines");if(ln&&CAP.replay)ln.lastElementChild&&ln.lastElementChild.scrollIntoView({block:"nearest"});
+}
+function startReplay(){
+  const d=draft();
+  if(!d.personId||d.personId!=="p_maya"&&person("p_maya"))d.personId=person("p_maya")?"p_maya":d.personId;
+  if(task("t_metric")&&!d.taskId)d.taskId="t_metric";
+  if(!d.title)d.title="Metric definition sync with Maya";
+  d.transcript="";d.notes=null;CAP.elapsed=0;CAP.editing=false;let i=0;
+  CAP.replay=setInterval(()=>{
+    if(i>=SAMPLE_TRANSCRIPT.length){stopReplay();return;}
+    const [sp,text]=SAMPLE_TRANSCRIPT[i];d.transcript+=(d.transcript?"\n":"")+`[${fmtClock(CAP.elapsed)}] ${sp}: ${text}`;i++;CAP.elapsed+=Math.round(18+text.length/6);render();
+  },1700);
+  CAP.tick=setInterval(()=>{CAP.elapsed++;const t=$("#timer");if(t)t.textContent=fmtClock(CAP.elapsed);
+    document.querySelectorAll("#wave span").forEach((s,j)=>{if(j>95)s.style.height=Math.round(6+Math.random()*24)+"px";});},1000);
+  render();
+}
+function stopReplay(){clearInterval(CAP.replay);clearInterval(CAP.tick);CAP.replay=null;save();render();}
+
+function boardContext(d){
+  return JSON.stringify({
+    people:S.people.map(p=>({id:p.id,name:p.name,team:p.team})),
+    tasks:openTasks().map(t=>({id:t.id,title:t.title,next:t.next,waiting:t.waiting?{person:pName(t.waiting.personId),what:t.waiting.what}:null})),
+    open_questions:S.questions.filter(q=>!q.answer).map(q=>({id:q.id,person:pName(q.personId),personId:q.personId,taskId:q.taskId,text:q.text})),
+    meeting:{title:d.title||"",with:d.personId?pName(d.personId):"",withId:d.personId||null,taskId:d.taskId||null}
+  });
+}
+function extractPrompt(d,full){
+  return `You help someone who coordinates work with other people turn a meeting transcript into updates for their task tracker. Today is ${TODAY()}.
+
+Board and meeting context (JSON):
+${boardContext(d)}
+
+Transcript ("You" is the person whose board this is):
+"""
+${d.transcript.slice(0,60000)}
+"""
+
+Reply with only JSON in this shape:
+{"summary": "${full?"2-3 plain sentences: what was decided, who owes what":"one sentence"}", "items": [ ... ]}
+
+Each item:
+{"type": "answer" | "next_action" | "waiting" | "question" | "task" | "still_open",
+ "taskId": id of an existing task or null,
+ "questionId": id of an existing open question (for answer and still_open) or null,
+ "personId": id of an existing person or null,
+ "title": short, at most 70 characters,
+ "detail": one line, at most 110 characters,
+ "due": "YYYY-MM-DD" or null,
+ "quote": an exact phrase copied from the transcript, at most 80 characters, or null}
+
+Meaning of each type:
+- answer: an existing open question was answered. title = the question, detail = the answer in plain words.
+- next_action: what the PM should do next on an existing task. title = the action, verb first.
+- waiting: something another person promised to deliver. title = what, personId = who, due if a day was named.
+- question: a new follow-up question the PM should ask someone. title = the question, personId = who to ask.
+- task: new work that no existing task covers. title = the task, detail = its first step.
+- still_open: an open question for the person in this meeting that the transcript did not cover. title = the question.
+Use only ids from the context. Resolve weekday names to dates after today. ${full?"At most 8 items.":"At most 5 items, the most important first."}`;
+}
+function cleanItems(arr){
+  return (Array.isArray(arr)?arr:[]).filter(x=>x&&KIND[x.type]&&x.title).slice(0,8).map(x=>({
+    type:x.type,taskId:task(x.taskId)?x.taskId:null,questionId:S.questions.some(q=>q.id===x.questionId)?x.questionId:null,
+    personId:person(x.personId)?x.personId:null,title:String(x.title).slice(0,120),detail:String(x.detail||"").slice(0,200),
+    due:/^\d{4}-\d{2}-\d{2}$/.test(x.due||"")?x.due:null,quote:x.quote?String(x.quote).slice(0,120):null}));
+}
+async function liveExtract(){
+  const d=draft();if(!CLAUDE||!d.transcript.trim())return;
+  CAP.liveBusy=true;CAP.liveErr="";render();
+  try{const r=await CLAUDE.json(extractPrompt(d,false),{modelTier:"quick"});
+    const items=cleanItems(r&&r.items);
+    d.notes={items,answered:items.filter(i=>i.type==="answer"&&i.questionId).map(i=>i.questionId),answers:Object.fromEntries(items.filter(i=>i.type==="answer"&&i.questionId).map(i=>[i.questionId,i.detail]))};
+    save();
+  }catch(e){CAP.liveErr=claudeErr(e);}
+  CAP.liveBusy=false;render();
+}
+async function finish(){
+  const d=draft();if(CAP.replay)stopReplay();
+  d.phase="review";d.review={summary:"",items:[],state:{}};CAP.revErr="";save();
+  if(!CLAUDE){render();return;}
+  CAP.revBusy=true;render();
+  try{const r=await CLAUDE.json(extractPrompt(d,true),{modelTier:"default"});
+    d.review.summary=String(r&&r.summary||"");d.review.items=cleanItems(r&&r.items);
+    d.notes={items:d.review.items,answered:d.review.items.filter(i=>i.type==="answer"&&i.questionId).map(i=>i.questionId),answers:{}};
+  }catch(e){CAP.revErr=claudeErr(e);}
+  CAP.revBusy=false;save();render();
+}
+
+const ICON={answer:["A","okt"],next_action:["N",""],waiting:["W","P1"],question:["Q","who"],task:["T","P2"],still_open:["?","P2"]};
+function propTarget(it){
+  const t=task(it.taskId)||task(S.draft.taskId);
+  if(it.type==="answer")return "Answer → question";
+  if(it.type==="next_action")return "Next step → "+(t?t.title:"new task");
+  if(it.type==="waiting")return "Waiting on "+(it.personId?pName(it.personId):"someone")+" → "+(t?t.title:"new task");
+  if(it.type==="question")return "New question → "+(it.personId?pName(it.personId):"someone");
+  if(it.type==="task")return "New task";
+  return "Still open → keep for next time";
+}
+function viewReview(d){
+  const R=d.review||{items:[],state:{}};const p=person(d.personId);
+  const pending=R.items.map((_,i)=>i).filter(i=>!R.state[i]);
+  const added=R.items.filter((_,i)=>R.state[i]==="added").length;
+  return `<div class="sess"><div class="meta"><div class="label" style="margin:0">Capture · review</div><h1>${esc(d.title||(p?"1:1 with "+p.name:"Capture"))}</h1>
+    <div class="chips">${p?`<span class="tag who">${esc(pLabel(p.id))}</span>`:""}${task(d.taskId)?`<span class="tag ${task(d.taskId).prio}">${esc(task(d.taskId).title)}</span>`:""}<span>${parseLines(d.transcript).length} lines</span></div></div>
+    <div class="ctrl"><button class="btn" data-act="back-edit">Back to transcript</button><button class="btn" data-act="copy-summary" ${R.summary?"":"disabled"}>Copy summary</button><button class="btn pri" data-act="close-session">Done</button></div></div>
+  <div class="cols"><section class="main">
+    ${CAP.revBusy?`<div class="thinking" style="padding:20px 0"><span class="dots"><i></i><i></i><i></i></span>Claude is reading the whole meeting. This takes up to a minute.</div>`:""}
+    ${CAP.revErr?`<p class="err">${esc(CAP.revErr)}</p><button class="btn claude" data-act="retry-review">Try again</button>`:""}
+    ${!CLAUDE&&!CAP.revBusy?`<p class="empty">Claude isn't available in this view. Add answers and next steps on the Today page.</p>`:""}
+    ${R.summary?`<div class="label">Summary</div><p class="sum">${esc(R.summary)}</p>`:""}
+    ${R.items.length?`<div class="label">Proposed updates to your board <span class="c">${R.items.length}</span></div>
+      ${R.items.map((it,i)=>propHTML(it,i,R.state[i])).join("")}
+      <div class="applybar"><span class="hint">${added} added · ${pending.length} to review</span><span class="grow"></span>
+        ${pending.length?`<button class="btn" data-act="skip-rest">Skip the rest</button><button class="btn pri" data-act="apply-all">Apply all ${pending.length}</button>`:`<button class="btn pri" data-act="close-session">Back to Today</button>`}</div>`:
+      (!CAP.revBusy&&R.summary?`<p class="empty">No board updates found in this meeting.</p>`:"")}
+  </section>
+  <aside class="rail">
+    ${keyMoments(d)}
+    ${CLAUDE?`<div class="label" style="margin-top:22px"><span class="spark">✳</span>Ask about this meeting</div>
+    <div class="card chat">${(d.chat||[]).map(m=>`<div class="m ${m.role==="user"?"u":""}">${esc(m.content)}</div>`).join("")}
+      ${CAP.chatBusy?`<div class="m">${CAP.stream?esc(CAP.stream):`<span class="thinking"><span class="dots"><i></i><i></i><i></i></span>Thinking…</span>`}</div>`:""}
+      ${CAP.chatErr?`<div class="err">${esc(CAP.chatErr)}</div>`:""}
+      <form class="ask" id="askForm"><input class="inp" id="askInput" placeholder="Why exclude reactivated users?" aria-label="Ask about this meeting">${CAP.chatBusy?`<button class="btn" type="button" data-act="chat-stop">Stop</button>`:`<button class="btn claude" type="submit">Ask</button>`}</form></div>`:""}
+  </aside></div>`;
+}
+function keyMoments(d){
+  const qs=(d.review?d.review.items:[]).filter(i=>i.quote).slice(0,4);
+  if(!qs.length)return `<div class="label">Transcript</div><div class="card"><p class="empty">${parseLines(d.transcript).length} lines captured.</p></div>`;
+  return `<div class="label">Key moments</div><div class="card">${qs.map(i=>`<div class="note"><div class="k" style="color:${(KIND[i.type]||KIND.task)[1]}">${(KIND[i.type]||KIND.task)[0]}</div><div class="note-v">"${esc(i.quote)}"</div></div>`).join("")}</div>`;
+}
+function propHTML(it,i,st){
+  const ic=ICON[it.type]||ICON.task;const editing=UI.editProp===i;
+  return `<div class="prop${st?" "+st:""}"><div class="ic tag ${ic[1]}" style="${ic[1]?"":"background:var(--accent-soft);color:var(--accent)"}">${ic[0]}</div>
+    <div class="b"><div class="k">${esc(propTarget(it))}</div>
+      ${editing?`<div class="edit"><input class="inp" id="peTitle" value="${esc(it.title)}" aria-label="Title"><input class="inp" id="peDetail" value="${esc(it.detail)}" aria-label="Detail"><div style="display:flex;gap:6px"><button class="btn pri sm" data-act="pe-save" data-i="${i}">Save</button><button class="btn sm" data-act="pe-cancel">Cancel</button></div></div>`:
+      `<div class="pv">${esc(it.title)}</div>${it.detail||it.due?`<div class="pd">${esc(it.detail)}${it.due?(it.detail?" · ":"")+"due "+esc(fmtDue(it.due)):""}</div>`:""}`}
+    </div>
+    <div class="acts">${st==="added"?`<button class="btn sm" disabled>Added</button>`:st==="skipped"?`<button class="btn sm" data-act="unskip" data-i="${i}">Undo skip</button>`:editing?"":`<button class="btn sm" data-act="pe" data-i="${i}">Edit</button><button class="btn sm" data-act="skip" data-i="${i}">Skip</button><button class="btn sm pri" data-act="add" data-i="${i}">${it.type==="still_open"?"Keep":"Add"}</button>`}</div>
+  </div>`;
+}
+function applyItem(it,d){
+  const src="From "+(d.title||"capture");
+  const t=task(it.taskId)||task(d.taskId);
+  if(it.type==="answer"){
+    let q=S.questions.find(x=>x.id===it.questionId)||S.questions.find(x=>!x.answer&&x.text.toLowerCase()===it.title.toLowerCase());
+    if(!q){q={id:uid("q_"),personId:it.personId||d.personId||"",taskId:t?t.id:"",text:it.title,answer:"",answeredAt:null};S.questions.push(q);}
+    q.answer=it.detail||it.title;q.answeredAt=TODAY();
+    const qt=task(q.taskId);if(qt)qt.history.push({at:TODAY(),text:pName(q.personId)+" answered: "+q.answer});
+  }else if(it.type==="next_action"){
+    if(t){if(t.next)t.history.push({at:TODAY(),text:"Step done: "+t.next});t.next=it.title;if(it.due)t.due=it.due;if(t.status==="blocked"&&!t.waiting)t.status="open";t.history.push({at:TODAY(),text:src+": next step set."});}
+    else S.tasks.push({id:uid("t_"),title:it.title,prio:"P1",status:"open",next:it.detail||"",due:it.due,waiting:null,history:[{at:TODAY(),text:src}]});
+  }else if(it.type==="waiting"){
+    const w={personId:it.personId||d.personId||"",what:it.title,since:TODAY()};
+    if(t){t.waiting=w;if(it.due&&(!t.due||it.due<t.due))t.due=it.due;t.history.push({at:TODAY(),text:src+": waiting on "+pName(w.personId)+" for "+it.title});}
+    else S.tasks.push({id:uid("t_"),title:it.title,prio:"P1",status:"open",next:"Follow up when it arrives",due:it.due,waiting:w,history:[{at:TODAY(),text:src}]});
+  }else if(it.type==="question"){
+    S.questions.push({id:uid("q_"),personId:it.personId||d.personId||"",taskId:t?t.id:"",text:it.title,answer:"",answeredAt:null,created:TODAY()});
+  }else if(it.type==="task"){
+    S.tasks.push({id:uid("t_"),title:it.title,prio:"P1",status:"open",next:it.detail||"",due:it.due,waiting:null,history:[{at:TODAY(),text:src}]});
+  }
+}
+function closeSession(){
+  const d=S.draft;if(!d)return;
+  const applied=d.review?Object.values(d.review.state).filter(s=>s==="added").length:0;
+  if(d.transcript.trim())S.sessions.push({id:d.id,title:d.title||(person(d.personId)?"1:1 with "+pName(d.personId):"Capture"),personId:d.personId,taskId:d.taskId,date:TODAY(),summary:d.review?d.review.summary:"",applied});
+  S.sessions=S.sessions.slice(-30);S.draft=null;CAP.elapsed=0;save();go("today");render();
+}
+async function askMeeting(){
+  const d=S.draft,inp=$("#askInput");const q=inp.value.trim();if(!q||!CLAUDE||CAP.chatBusy)return;
+  d.chat=d.chat||[];d.chat.push({role:"user",content:q});CAP.chatBusy=true;CAP.chatErr="";CAP.stream="";CAP.ctl=new AbortController();render();
+  const rules=`Answer questions about this meeting transcript in two or three plain sentences. Cite the speaker. If the transcript doesn't say, say so.\n\nMeeting: ${d.title}\nTranscript:\n"""\n${d.transcript.slice(0,60000)}\n"""`;
+  try{const r=await CLAUDE([{role:"user",content:rules},...d.chat.slice(-8)],{cache:false,modelTier:"quick",signal:CAP.ctl.signal,onText:({text})=>{CAP.stream=text;const last=document.querySelector(".chat .m:last-of-type");if(last)last.textContent=text;}});
+    d.chat.push({role:"assistant",content:r.text});save();
+  }catch(e){if(e&&e.text)d.chat.push({role:"assistant",content:e.text});CAP.chatErr=claudeErr(e);if(!e||e.code!=="cancelled")d.chat=d.chat;}
+  CAP.chatBusy=false;CAP.stream="";render();setTimeout(()=>{const i=$("#askInput");if(i)i.focus();},0);
+}
+async function draftNudge(id){
+  const t=task(id);if(!t||!CLAUDE||UI.nudgeBusy[id])return;const p=person(t.waiting.personId);
+  UI.nudgeBusy[id]=true;UI.nudgeErr[id]="";render();
+  try{const r=await CLAUDE(`Write a short, friendly Slack message from a colleague to ${p?p.name:"a teammate"} (${p?p.team:""}). Nudge them about: ${t.waiting.what}. It has been ${waitAge(t)} days. It blocks: ${t.title}. Two sentences at most, warm and specific, no greeting line, no sign-off. Plain text only.`,{modelTier:"quick"});
+    UI.nudge[id]=r.text.trim();
+  }catch(e){UI.nudgeErr[id]=claudeErr(e);}
+  UI.nudgeBusy[id]=false;render();
+}
+async function copy(text,btn){try{await navigator.clipboard.writeText(text);toast("Copied");}catch(e){toast("Couldn't copy. Select the text and copy it instead.");}}
+
+/* ---------- events ---------- */
+let undoSnap=null;
+document.addEventListener("click",e=>{
+  const stopper=e.target.closest("[data-stop]");
+  const el=e.target.closest("[data-act]");if(!el)return;
+  if(el.dataset.act==="close-drawer"&&stopper&&el.classList.contains("scrim"))return;
+  const a=el.dataset.act,id=el.dataset.id,i=+el.dataset.i;
+  const D=S.draft;
+  switch(a){
+    case "fresh":UI.confirmFresh=true;render();break;
+    case "fresh-no":UI.confirmFresh=false;render();break;
+    case "fresh-yes":undoSnap=JSON.stringify(S);S=emptyState();UI.confirmFresh=false;save();render();toast("Sample cleared",true);break;
+    case "undo":if(undoSnap){S=JSON.parse(undoSnap);undoSnap=null;save();UI.toast=null;render();}break;
+    case "new-task":UI.drawer="new";UI.confirmDel=false;renderOverlay();break;
+    case "open":if(e.target.closest(".adv"))return;UI.drawer=id;UI.confirmDel=false;renderOverlay();glue($("#overlay"));break;
+    case "close-drawer":UI.drawer=null;UI.confirmDel=false;renderOverlay();break;
+    /* tasks table */
+    case "t-filter":UI.tFilter=id;render();break;
+    case "t-sort":UI.tSort=UI.tSort.k===id?{k:id,dir:-UI.tSort.dir}:{k:id,dir:1};render();break;
+    case "t-done":{undoSnap=JSON.stringify(S);const t=task(id);if(t.status==="done"){t.status="open";t.history.push({at:TODAY(),text:"Reopened."});save();render();toast("Reopened",true);}
+      else{t.status="done";t.waiting=null;t.history.push({at:TODAY(),text:"Done."});save();render();toast("Marked done",true);}break;}
+    /* questions inbox */
+    case "q-filter":UI.qFilter=id;render();break;
+    case "q-person":UI.qPerson=id;UI.agendaPerson="";render();break;
+    case "q-log":UI.qAnswer=id;UI.qEdit=null;render();setTimeout(()=>{const x=$("#qaText");if(x)x.focus();},0);break;
+    case "qa-cancel":UI.qAnswer=null;render();break;
+    case "qa-save":{const v=$("#qaText").value.trim();if(!v){$("#qaText").focus();return;}const q=S.questions.find(x=>x.id===id);q.answer=v;q.answeredAt=TODAY();const t=task(q.taskId);if(t)t.history.push({at:TODAY(),text:pName(q.personId)+" answered: "+v});UI.qAnswer=null;save();render();toast("Answer saved");break;}
+    case "q-reopen":{undoSnap=JSON.stringify(S);const q=S.questions.find(x=>x.id===id);q.answer="";q.answeredAt=null;save();render();toast("Moved back to To ask",true);break;}
+    case "q-edit":UI.qEdit=id;UI.qAnswer=null;render();setTimeout(()=>{const x=$("#qeText");if(x)x.focus();},0);break;
+    case "qe-cancel":UI.qEdit=null;render();break;
+    case "qe-save":{const q=S.questions.find(x=>x.id===id),v=$("#qeText").value.trim();if(!v){$("#qeText").focus();return;}q.text=v;q.personId=$("#qePerson").value;q.taskId=$("#qeTask").value;const an=$("#qeAnswer");if(an)q.answer=an.value.trim()||q.answer;UI.qEdit=null;save();render();break;}
+    case "q-del":UI.qDel=id;render();break;
+    case "qd-no":UI.qDel=null;render();break;
+    case "qd-yes":{undoSnap=JSON.stringify(S);S.questions=S.questions.filter(x=>x.id!==id);UI.qDel=null;save();render();toast("Question deleted",true);break;}
+    case "copy-agenda":{const ap=agendaPerson();const items=S.questions.filter(q=>!q.answer&&q.personId===ap);copy("1:1 with "+pName(ap)+"\n"+items.map(q=>"- "+q.text).join("\n"));break;}
+    case "start-capture":startCaptureFor(id);break;
+    case "save-task":saveTask();break;
+    case "del":UI.confirmDel=true;renderOverlay();break;
+    case "del-no":UI.confirmDel=false;renderOverlay();break;
+    case "del-yes":{undoSnap=JSON.stringify(S);const t=task(UI.drawer);S.tasks=S.tasks.filter(x=>x.id!==UI.drawer);UI.drawer=null;UI.confirmDel=false;save();render();toast("Deleted "+(t?t.title:"task"),true);break;}
+    case "advance":UI.advancing=id;render();setTimeout(()=>{const x=$("#advInput");if(x)x.focus();},0);break;
+    case "adv-cancel":UI.advancing=null;render();break;
+    case "adv-save":{const t=task(id),v=$("#advInput").value.trim();if(!v){$("#advInput").focus();return;}if(t.next)t.history.push({at:TODAY(),text:"Step done: "+t.next});t.next=v;UI.advancing=null;save();render();toast("Next step set");break;}
+    case "adv-done":{undoSnap=JSON.stringify(S);const t=task(id);t.status="done";t.waiting=null;t.history.push({at:TODAY(),text:"Done."});UI.advancing=null;save();render();toast("Marked done",true);break;}
+    case "nudge":draftNudge(id);break;
+    case "copy-nudge":copy(UI.nudge[id]);break;
+    case "close-nudge":delete UI.nudge[id];render();break;
+    case "got-it":{undoSnap=JSON.stringify(S);const t=task(id);t.history.push({at:TODAY(),text:"Got "+t.waiting.what+" from "+pName(t.waiting.personId)+"."});t.waiting=null;if(t.status==="blocked")t.status="open";save();render();toast("Cleared",true);break;}
+    case "ask-q":UI.askQ=true;render();setTimeout(()=>{const s=$("#qPerson");if(s){s.onchange=()=>{$("#qNewPerson").hidden=s.value!=="__new";};if(!S.people.length){s.value="__new";$("#qNewPerson").hidden=false;}}const x=$("#qText");if(x)x.focus();},0);break;
+    case "q-cancel":UI.askQ=false;render();break;
+    case "q-save":{const txt=$("#qText").value.trim();if(!txt){$("#qText").focus();return;}let pid=$("#qPerson").value;
+      if(pid==="__new"){const n=$("#qNewName").value.trim();if(!n){$("#qNewName").focus();return;}pid=addPerson(n,$("#qNewTeam").value);}
+      S.questions.push({id:uid("q_"),personId:pid,taskId:$("#qTask").value,text:txt,answer:"",answeredAt:null,created:TODAY()});UI.askQ=false;save();render();break;}
+    case "answer":UI.answering=id;render();setTimeout(()=>{const x=$("#ansText");if(x)x.focus();},0);break;
+    case "ans-cancel":UI.answering=null;render();break;
+    case "ans-save":{const v=$("#ansText").value.trim();if(!v)return;const q=S.questions.find(x=>x.id===id);q.answer=v;q.answeredAt=TODAY();const t=task(q.taskId);if(t)t.history.push({at:TODAY(),text:pName(q.personId)+" answered: "+v});UI.answering=null;save();render();break;}
+    /* capture */
+    case "replay":startReplay();break;
+    case "replay-stop":stopReplay();break;
+    case "edit-tx":CAP.editing=true;render();break;
+    case "edit-done":CAP.editing=false;render();break;
+    case "clear-tx":undoSnap=JSON.stringify(S);D.transcript="";D.notes=null;CAP.elapsed=0;save();render();toast("Transcript cleared",true);break;
+    case "live-extract":liveExtract();break;
+    case "finish":finish();break;
+    case "retry-review":finish();break;
+    case "back-edit":D.phase="setup";save();render();break;
+    case "copy-summary":copy(D.review.summary);break;
+    case "close-session":closeSession();break;
+    case "add":applyItem(D.review.items[i],D);D.review.state[i]="added";save();render();break;
+    case "skip":D.review.state[i]="skipped";save();render();break;
+    case "unskip":delete D.review.state[i];save();render();break;
+    case "pe":UI.editProp=i;render();break;
+    case "pe-cancel":UI.editProp=null;render();break;
+    case "pe-save":{const it=D.review.items[i];it.title=$("#peTitle").value.trim()||it.title;it.detail=$("#peDetail").value.trim();UI.editProp=null;save();render();break;}
+    case "apply-all":D.review.items.forEach((it,j)=>{if(!D.review.state[j]){applyItem(it,D);D.review.state[j]="added";}});save();render();toast("Board updated");break;
+    case "skip-rest":D.review.items.forEach((it,j)=>{if(!D.review.state[j])D.review.state[j]="skipped";});save();render();break;
+    case "chat-stop":if(CAP.ctl)CAP.ctl.abort();break;
+  }
+});
+document.addEventListener("submit",e=>{if(e.target.id==="askForm"){e.preventDefault();askMeeting();}if(e.target.id==="addQ"){e.preventDefault();addQuestion();}});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&UI.drawer){UI.drawer=null;renderOverlay();}
+  if(e.key==="Enter"&&!e.isComposing){
+    if(e.target.id==="advInput"){e.preventDefault();document.querySelector('[data-act="adv-save"]').click();}
+    if(e.target.id==="ansText"){e.preventDefault();document.querySelector('[data-act="ans-save"]').click();}
+    if(e.target.id==="qText"){e.preventDefault();document.querySelector('[data-act="q-save"]').click();}
+  }
+});
+
+/* ---------- theme ---------- */
+const root=document.documentElement,tb=$("#themeBtn");
+const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+const syncTheme=()=>{tb.textContent=isDark()?"Light":"Dark";};
+tb.onclick=()=>{root.dataset.theme=isDark()?"light":"dark";syncTheme();try{localStorage.setItem("pm-tracker-theme",root.dataset.theme);}catch(e){}};
+try{const t=localStorage.getItem("pm-tracker-theme");if(t)root.dataset.theme=t;}catch(e){}
+syncTheme();
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",syncTheme);}catch(e){}
+/* boot() is called by the build: directly for the Artifact, after the platform layer for web and Mac. */
+</script>
+<script>window.TRACKER_CONFIG={"version":"1.0.0","repo":"https://github.com/xfshan1014-boop/followthrough","signupUrl":"","signupKey":""};</script>
+<script>
+/* Sample weeks per role (the product week lives in tracker.html). Made-up people and work.
+   tasks: [id, title, next, prio, dueInDays|null, status, waiting:[personId, what, sinceDaysAgo]|null]
+   questions: [id, personId, taskId, text, answer, answeredDaysAgo|null, createdDaysAgo]
+   replay: the 1:1 that "Replay sample 1:1" plays on the Capture page. */
+window.TRACKER_SAMPLES={
+ops:{
+ en:{label:"Operations",people:[["p_lina","Lina","Agency"],["p_priya","Priya","Data analytics"],["p_omar","Omar","Legal"],["p_kai","Kai","Finance"]],
+  tasks:[["t_assets","Lock the holiday campaign assets","Confirm the banner deadline with Lina","P0",0,"open",null],
+   ["t_contract","Renew the SMS vendor contract","Nudge Omar on the redline","P0",1,"blocked",["p_omar","Contract redline review",3]],
+   ["t_activation","Report week-one merchant activation","Put the numbers into Friday's update","P1",3,"open",["p_priya","Week-one activation by city",1]],
+   ["t_budget","Get the Q4 promo budget signed off","Draft the budget split by channel","P1",2,"open",null],
+   ["t_faq","Update the merchant FAQ","Collect the top five support questions","P2",null,"open",null],
+   ["t_brief","Send the campaign brief to the agency","","P1",-3,"done",null]],
+  questions:[["q_banner","p_lina","t_assets","Can the agency deliver banners by Thursday?","Yes, if we approve the copy by Tuesday.",1,3],
+   ["q_shift","p_kai","t_budget","Is there room to move 10% from search to social?","",null,2],
+   ["q_dpa","p_omar","t_contract","Does the new SMS contract need a data processing addendum?","",null,4],
+   ["q_channel","p_priya","t_activation","Can activation be split by acquisition channel?","",null,1]],
+  replay:{person:"p_kai",task:"t_budget",title:"Budget check-in with Kai",lines:[["You","Quick one on the Q4 promo budget. Is there room to move ten percent from search to social?"],["Kai","Yes, up to ten percent. Keep search above forty percent of the total though."],["You","Got it. I'll draft the channel split today."],["Kai","Send it over and I'll approve the final split by Wednesday."],["You","Will do. Anything else you need from me?"],["Kai","Check with Lina that the social assets come in the right sizes before we commit."],["You","Good call, I'll ask her this afternoon."]]}},
+ zh:{label:"运营",people:[["p_lina","Lina","代理商"],["p_priya","Priya","数据分析"],["p_omar","Omar","法务"],["p_kai","Kai","财务"]],
+  tasks:[["t_assets","敲定节日活动物料","和 Lina 确认 banner 截止时间","P0",0,"open",null],
+   ["t_contract","续签短信服务商合同","催 Omar 看合同修订稿","P0",1,"blocked",["p_omar","合同修订稿审核",3]],
+   ["t_activation","汇报第一周商家激活数据","把数字放进周五的周报","P1",3,"open",["p_priya","分城市的第一周激活数据",1]],
+   ["t_budget","让 Q4 促销预算过审","按渠道起草预算拆分","P1",2,"open",null],
+   ["t_faq","更新商家常见问题","收集客服最常见的五个问题","P2",null,"open",null],
+   ["t_brief","把活动 brief 发给代理商","","P1",-3,"done",null]],
+  questions:[["q_banner","p_lina","t_assets","代理商周四前能交 banner 吗？","可以，前提是周二前确认文案。",1,3],
+   ["q_shift","p_kai","t_budget","能把 10% 预算从搜索挪到社交吗？","",null,2],
+   ["q_dpa","p_omar","t_contract","新的短信合同需要数据处理附录吗？","",null,4],
+   ["q_channel","p_priya","t_activation","激活数据能按获客渠道拆分吗？","",null,1]],
+  replay:{person:"p_kai",task:"t_budget",title:"和 Kai 对一下预算",lines:[["我","Q4 促销预算想问一下，能把 10% 从搜索挪到社交吗？"],["Kai","可以，最多 10%。但搜索要保持在总预算的 40% 以上。"],["我","明白，我今天起草渠道拆分。"],["Kai","发我，我周三前批最终版本。"],["我","好的，还需要我准备什么吗？"],["Kai","跟 Lina 确认一下社交物料的尺寸对不对，再定下来。"],["我","好，我下午问她。"]]}}},
+design:{
+ en:{label:"Design",people:[["p_jon","Jon","Product"],["p_mei","Mei","Engineering"],["p_ria","Ria","Research"],["p_sam","Sam","Brand"]],
+  tasks:[["t_review","Run the checkout design review","Send the agenda to Jon","P0",1,"open",null],
+   ["t_handoff","Hand off the onboarding screens","Nudge Mei on the animation check","P0",0,"blocked",["p_mei","Feasibility check on the animation",2]],
+   ["t_research","Synthesize the usability test notes","Tag quotes by theme","P1",3,"open",["p_ria","Session recordings",1]],
+   ["t_empty","Refresh the empty-state illustrations","Ask Sam for the new brand palette","P1",4,"open",null],
+   ["t_tokens","Clean up color tokens","List the tokens nobody uses","P2",null,"open",null],
+   ["t_mocks","Share v2 mocks with the team","","P1",-2,"done",null]],
+  questions:[["q_fps","p_mei","t_handoff","Can the confetti animation run smoothly on older phones?","Only on newer phones; use a static fallback.",1,3],
+   ["q_guest","p_jon","t_review","Is guest checkout in scope for v1?","",null,2],
+   ["q_address","p_ria","t_research","How many participants struggled with the address step?","",null,1],
+   ["q_palette","p_sam","t_empty","Is the new palette final?","",null,4]],
+  replay:{person:"p_jon",task:"t_review",title:"Checkout scope sync with Jon",lines:[["You","Before the review, is guest checkout in scope for v1?"],["Jon","Yes. Guest checkout is v1, saved cards move to v2."],["You","Great, that simplifies the flow. I'll update it and send it before the review."],["Jon","I'll confirm the payment copy with legal by Thursday."],["You","Should the Apple Pay button sit above the card form?"],["Jon","Probably, but check with Mei whether it's easy to build."],["You","I'll ask her today."]]}},
+ zh:{label:"设计",people:[["p_jon","Jon","产品"],["p_mei","Mei","研发"],["p_ria","Ria","用户研究"],["p_sam","Sam","品牌"]],
+  tasks:[["t_review","组织结算页设计评审","把议程发给 Jon","P0",1,"open",null],
+   ["t_handoff","交付新手引导页面","催 Mei 评估动效可行性","P0",0,"blocked",["p_mei","动效可行性评估",2]],
+   ["t_research","整理可用性测试笔记","按主题给原话打标签","P1",3,"open",["p_ria","测试录屏",1]],
+   ["t_empty","更新空状态插画","找 Sam 要新的品牌色板","P1",4,"open",null],
+   ["t_tokens","整理颜色 token","列出没人用的 token","P2",null,"open",null],
+   ["t_mocks","把 v2 设计稿分享给团队","","P1",-2,"done",null]],
+  questions:[["q_fps","p_mei","t_handoff","彩带动效在旧手机上能流畅吗？","只有新机型可以，旧机型用静态兜底。",1,3],
+   ["q_guest","p_jon","t_review","游客结算在 v1 范围内吗？","",null,2],
+   ["q_address","p_ria","t_research","有多少参与者卡在填地址这一步？","",null,1],
+   ["q_palette","p_sam","t_empty","新色板定稿了吗？","",null,4]],
+  replay:{person:"p_jon",task:"t_review",title:"和 Jon 对结算页范围",lines:[["我","评审前确认一下，游客结算在 v1 范围内吗？"],["Jon","在。游客结算是 v1，保存银行卡放到 v2。"],["我","太好了，流程能简化不少。我改完在评审前发你。"],["Jon","支付相关文案我周四前和法务确认。"],["我","Apple Pay 按钮要放在银行卡表单上面吗？"],["Jon","应该是，不过先问问 Mei 好不好做。"],["我","我今天问她。"]]}}},
+marketing:{
+ en:{label:"Marketing",people:[["p_zoe","Zoe","Product"],["p_ben","Ben","Agency"],["p_ana","Ana","Sales"],["p_raj","Raj","Data analytics"]],
+  tasks:[["t_email","Plan the referral launch email","Confirm the launch date with Zoe","P0",0,"open",null],
+   ["t_landing","Ship the launch landing page","Nudge Ben on the hero visuals","P0",1,"blocked",["p_ben","Final hero visuals",3]],
+   ["t_partners","Line up two partner posts","Draft the partner brief","P1",3,"open",null],
+   ["t_results","Report the last campaign's results","Write the summary once numbers land","P1",2,"open",["p_raj","Conversion by channel",1]],
+   ["t_onepager","Prep a one-pager for sales","Ask Ana which objections come up most","P2",null,"open",null],
+   ["t_msg","Finalize the launch messaging","","P1",-3,"done",null]],
+  questions:[["q_date","p_zoe","t_email","Is the launch still on the 24th?","Yes, unless QA slips past Wednesday.",1,3],
+   ["q_split","p_raj","t_results","Can we split conversions by new and returning users?","",null,2],
+   ["q_video","p_ben","t_landing","Will the hero work as a short video too?","",null,3],
+   ["q_obj","p_ana","t_onepager","Which objection comes up most on sales calls?","",null,1]],
+  replay:{person:"p_ana",task:"t_onepager",title:"Sales input with Ana",lines:[["You","For the sales one-pager, which objection comes up most on calls?"],["Ana","Price first, then setup time. People think setup takes days."],["You","That's useful. I'll draft the one-pager tomorrow."],["Ana","I'll send you three call recordings by Friday so you can hear it."],["You","Perfect. Do we know how long setup really takes?"],["Ana","Ask Zoe, I think it's under ten minutes now."],["You","I'll check with her."]]}},
+ zh:{label:"市场",people:[["p_zoe","Zoe","产品"],["p_ben","Ben","代理商"],["p_ana","Ana","销售"],["p_raj","Raj","数据分析"]],
+  tasks:[["t_email","规划 referral 上线邮件","和 Zoe 确认上线日期","P0",0,"open",null],
+   ["t_landing","上线活动落地页","催 Ben 要主视觉","P0",1,"blocked",["p_ben","最终主视觉",3]],
+   ["t_partners","约两篇合作方推文","起草合作 brief","P1",3,"open",null],
+   ["t_results","汇报上一次活动效果","数据到了就写总结","P1",2,"open",["p_raj","分渠道转化数据",1]],
+   ["t_onepager","给销售准备一页纸","问 Ana 最常遇到哪些顾虑","P2",null,"open",null],
+   ["t_msg","敲定上线信息","","P1",-3,"done",null]],
+  questions:[["q_date","p_zoe","t_email","还是 24 号上线吗？","是的，除非测试拖过周三。",1,3],
+   ["q_split","p_raj","t_results","转化能按新老用户拆分吗？","",null,2],
+   ["q_video","p_ben","t_landing","主视觉能出一个短视频版吗？","",null,3],
+   ["q_obj","p_ana","t_onepager","销售电话里最常见的顾虑是什么？","",null,1]],
+  replay:{person:"p_ana",task:"t_onepager",title:"和 Ana 聊销售反馈",lines:[["我","给销售做一页纸，电话里客户最常提的顾虑是什么？"],["Ana","先是价格，然后是上手时间。大家以为要配置好几天。"],["我","很有用，我明天起草一页纸。"],["Ana","我周五前发你三段通话录音，你可以听听。"],["我","太好了。我们知道实际配置要多久吗？"],["Ana","问问 Zoe，我记得现在不到十分钟。"],["我","我去问她。"]]}}},
+program:{
+ en:{label:"Program",people:[["p_li","Li","Engineering"],["p_dev","Dev","Design"],["p_eva","Eva","Legal"],["p_tom","Tom","Leadership"]],
+  tasks:[["t_plan","Publish the Q4 launch plan","Confirm milestone owners","P0",0,"open",null],
+   ["t_security","Close the security review","Nudge Eva on the privacy sign-off","P0",1,"blocked",["p_eva","Privacy sign-off",3]],
+   ["t_payments","Resolve the payments dependency","Update the plan once Li sends a date","P1",2,"open",["p_li","API ready date",1]],
+   ["t_status","Send the weekly status update","Collect updates from each team","P1",3,"open",null],
+   ["t_retro","Schedule the mid-project retro","Find a slot for all leads","P2",null,"open",null],
+   ["t_kickoff","Kick off with all workstream leads","","P1",-4,"done",null]],
+  questions:[["q_api","p_li","t_payments","Is the payments API on track for the 30th?","Two days late; staging by the 2nd.",1,3],
+   ["q_cut","p_tom","t_plan","Can we cut scope to hit the date?","",null,2],
+   ["q_beta","p_eva","t_security","Does the privacy review block the beta?","",null,3],
+   ["q_freeze","p_dev","t_plan","Is the design freeze still Friday?","",null,1]],
+  replay:{person:"p_tom",task:"t_plan",title:"Scope check with Tom",lines:[["You","With payments two days late, can we cut scope to keep the launch date?"],["Tom","Yes. Cut the rewards badges, keep referral codes."],["You","Okay. I'll update the plan and the owners today."],["Tom","I'll tell the exec group on Monday."],["You","Should the design freeze move too?"],["Tom","Check with Dev, but I'd rather keep Friday."],["You","I'll ask him this afternoon."]]}},
+ zh:{label:"项目管理",people:[["p_li","Li","研发"],["p_dev","Dev","设计"],["p_eva","Eva","法务"],["p_tom","Tom","管理层"]],
+  tasks:[["t_plan","发布 Q4 上线计划","确认各里程碑负责人","P0",0,"open",null],
+   ["t_security","完成安全评审","催 Eva 隐私审批","P0",1,"blocked",["p_eva","隐私审批",3]],
+   ["t_payments","解决支付依赖","Li 给日期后更新计划","P1",2,"open",["p_li","接口可用日期",1]],
+   ["t_status","发每周进度","收集各团队进展","P1",3,"open",null],
+   ["t_retro","安排项目中期复盘","找一个所有负责人都有空的时间","P2",null,"open",null],
+   ["t_kickoff","和各模块负责人开 kickoff","","P1",-4,"done",null]],
+  questions:[["q_api","p_li","t_payments","支付接口能在 30 号前好吗？","晚两天，2 号上预发。",1,3],
+   ["q_cut","p_tom","t_plan","能砍范围保住上线日期吗？","",null,2],
+   ["q_beta","p_eva","t_security","隐私评审会卡住内测吗？","",null,3],
+   ["q_freeze","p_dev","t_plan","设计冻结还是周五吗？","",null,1]],
+  replay:{person:"p_tom",task:"t_plan",title:"和 Tom 对范围",lines:[["我","支付晚两天，能砍范围保住上线日期吗？"],["Tom","可以。砍掉奖励徽章，保留邀请码。"],["我","好，我今天更新计划和负责人。"],["Tom","我周一跟高管同步。"],["我","设计冻结要跟着挪吗？"],["Tom","问问 Dev，不过我倾向保持周五。"],["我","我下午问他。"]]}}}
+};
+
+/* ===== Platform layer: web version and Mac app. The claude.ai Artifact boots without this file. =====
+   Adds onboarding, settings, bring-your-own AI provider, import/export, board setup, Chinese UI,
+   and live transcription. Everything is stored on the user's device; only an email is sent at sign-up. */
+(function(){
+const CFG=window.TRACKER_CONFIG||{};
+const IS_MAC=!!(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.tracker);
+const REPO_URL=CFG.repo||"https://github.com/xfshan1014-boop/followthrough";
+const DOWNLOAD_URL=REPO_URL+"/releases/latest";
+const ICON_SVG='<svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#1c1b19"/><path d="M118 330 C 170 330, 190 170, 270 170 C 345 170, 345 270, 280 270 C 220 270, 230 340, 360 340" fill="none" stroke="#f6f6f3" stroke-width="40" stroke-linecap="round"/><circle cx="376" cy="340" r="38" fill="#e68d66"/></svg>';
+const VERSION=CFG.version||"1.0.0";
+
+/* ---------- preferences (this device only) ---------- */
+const PREF_KEY="pm-tracker-prefs";
+const P=Object.assign({lang:(navigator.language||"").toLowerCase().startsWith("zh")?"zh":"en",theme:"system",onboarded:false,email:"",signupPending:false,name:"",project:"",role:"",ai:null});
+/* Mac app: data is kept in files under ~/Library/Application Support/Followthrough (the app injects them at start).
+   Web: browser storage. Same keys either way. */
+const MACSTORE=IS_MAC&&window.__trackerStore?window.__trackerStore:null;
+function kvGet(k){if(MACSTORE){if(k in MACSTORE)return MACSTORE[k];try{const v=localStorage.getItem(k);if(v!=null){kvSet(k,v);return v;}}catch(e){}return null;}try{return localStorage.getItem(k);}catch(e){return null;}}
+function kvSet(k,v){if(MACSTORE){if(v==null)delete MACSTORE[k];else MACSTORE[k]=v;native("store.set",{key:k,value:v==null?null:String(v)}).catch(()=>{});return;}try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v);}catch(e){}}
+function readPrefs(){try{return JSON.parse(kvGet(PREF_KEY)||"{}");}catch(e){return {};}}
+function savePrefs(){kvSet(PREF_KEY,JSON.stringify(P));}
+const L=()=>P.lang;
+
+/* ---------- native bridge (Mac app) ---------- */
+const pending={};let seq=0;
+function native(kind,payload){return new Promise((resolve,reject)=>{const id="n"+(++seq);pending[id]={resolve,reject};
+  window.webkit.messageHandlers.tracker.postMessage(Object.assign({id,kind},payload||{}));});}
+window.__trackerNative={
+  reply(id,ok,data){const p=pending[id];if(!p)return;delete pending[id];ok?p.resolve(data):p.reject(data);},
+  speech(ev){REC.onNative(ev);}
+};
+
+Object.assign(P,readPrefs());
+
+/* ---------- AI providers (the user's own key; requests go straight to the provider) ---------- */
+const PROVIDERS={
+  anthropic:{label:"Anthropic",sub:"Claude",name:"Claude",base:"https://api.anthropic.com/v1",ph:"sk-ant-…",site:"console.anthropic.com",main:"claude-sonnet-5-5",fast:"claude-haiku-5-5"},
+  openai:{label:"OpenAI",sub:"GPT",name:"GPT",base:"https://api.openai.com/v1",ph:"sk-…",site:"platform.openai.com"},
+  gemini:{label:"Google",sub:"Gemini",name:"Gemini",base:"https://generativelanguage.googleapis.com/v1beta",ph:"AIza…",site:"aistudio.google.com"},
+  deepseek:{label:"DeepSeek",sub:"DeepSeek",name:"DeepSeek",base:"https://api.deepseek.com",ph:"sk-…",site:"platform.deepseek.com"},
+  openrouter:{label:"OpenRouter",sub:"Any model",name:"AI",base:"https://openrouter.ai/api/v1",ph:"sk-or-…",site:"openrouter.ai"},
+  custom:{label:"Other",sub:"OpenAI-compatible",name:"AI",base:"",ph:"Key, if needed",site:""}
+};
+const PROV_ORDER=["anthropic","openai","gemini","deepseek","openrouter","custom"];
+function aiName(){return P.ai&&P.ai.ok?(PROVIDERS[P.ai.provider]||{}).name||"AI":"AI";}
+async function http(url,opts){
+  if(IS_MAC)return native("fetch",{url,method:opts.method||"GET",headers:opts.headers||{},body:opts.body||null});
+  let r;try{r=await fetch(url,opts);}catch(e){throw {code:"network",message:String(e&&e.message||e)};}
+  return {status:r.status,text:await r.text()};
+}
+function headersFor(a){
+  if(a.provider==="anthropic")return {"x-api-key":a.key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true","content-type":"application/json"};
+  if(a.provider==="gemini")return {"x-goog-api-key":a.key,"content-type":"application/json"};
+  const h={"content-type":"application/json"};if(a.key)h.Authorization="Bearer "+a.key;
+  if(a.provider==="openrouter"){h["HTTP-Referer"]=REPO_URL;h["X-Title"]="Followthrough";}
+  return h;
+}
+function baseFor(a){return (a.provider==="custom"?(a.base||""):PROVIDERS[a.provider].base).replace(/\/+$/,"");}
+function failFrom(res){
+  let msg="";try{const j=JSON.parse(res.text);msg=(j.error&&(j.error.message||j.error))||j.message||"";}catch(e){msg=res.text.slice(0,200);}
+  const c=res.status===401||res.status===403?"auth":res.status===429?"rate_limited":res.status===413?"prompt_too_large":res.status===404?"no_model":"upstream_error";
+  return {code:c,message:String(msg),status:res.status};
+}
+async function listModels(a){
+  const b=baseFor(a);if(!b)throw {code:"no_base",message:"Missing base URL"};
+  const res=await http(b+"/models",{headers:headersFor(a)});
+  if(res.status>=300)throw failFrom(res);
+  let j;try{j=JSON.parse(res.text);}catch(e){throw {code:"upstream_error",message:"Unexpected reply"};}
+  if(a.provider==="gemini")return (j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes("generateContent")).map(m=>m.name.replace(/^models\//,""));
+  return (j.data||[]).map(m=>m.id).filter(Boolean);
+}
+function pickModels(provider,ids){
+  const pv=PROVIDERS[provider];const has=id=>ids.includes(id);
+  if(pv.main&&has(pv.main))return [pv.main,has(pv.fast)?pv.fast:pv.main];
+  const chat=ids.filter(id=>!/embed|whisper|tts|dall|image|audio|moderation|realtime|transcribe|search|vision-preview/i.test(id));
+  const pool=chat.length?chat:ids;
+  const fast=pool.find(id=>/mini|flash|haiku|lite|small|chat/i.test(id))||pool[0];
+  const main=pool.find(id=>!/mini|flash-lite|lite|small|nano/i.test(id))||pool[0];
+  return [main,fast||main];
+}
+async function complete(a,messages,model){
+  const b=baseFor(a),h=headersFor(a);let res,j;
+  if(a.provider==="anthropic"){
+    res=await http(b+"/messages",{method:"POST",headers:h,body:JSON.stringify({model,max_tokens:4096,messages})});
+    if(res.status>=300)throw failFrom(res);j=JSON.parse(res.text);
+    return {text:(j.content||[]).filter(c=>c.type==="text").map(c=>c.text).join(""),truncated:j.stop_reason==="max_tokens"};
+  }
+  if(a.provider==="gemini"){
+    res=await http(b+"/models/"+encodeURIComponent(model)+":generateContent",{method:"POST",headers:h,body:JSON.stringify({contents:messages.map(m=>({role:m.role==="assistant"?"model":"user",parts:[{text:m.content}]}))})});
+    if(res.status>=300)throw failFrom(res);j=JSON.parse(res.text);
+    const c=(j.candidates||[])[0]||{};return {text:((c.content||{}).parts||[]).map(p=>p.text||"").join(""),truncated:c.finishReason==="MAX_TOKENS"};
+  }
+  res=await http(b+"/chat/completions",{method:"POST",headers:h,body:JSON.stringify({model,messages})});
+  if(res.status>=300)throw failFrom(res);j=JSON.parse(res.text);
+  const ch=(j.choices||[])[0]||{};return {text:(ch.message&&ch.message.content)||"",truncated:ch.finish_reason==="length"};
+}
+function parseJSONLoose(t){
+  try{return JSON.parse(t);}catch(e){}
+  const f=t.match(/```(?:json)?\s*([\s\S]*?)```/);if(f){try{return JSON.parse(f[1]);}catch(e){}}
+  const i=Math.min(...["{","["].map(c=>{const k=t.indexOf(c);return k<0?1e9:k;})),k=Math.max(t.lastIndexOf("}"),t.lastIndexOf("]"));
+  if(i<1e9&&k>i){try{return JSON.parse(t.slice(i,k+1));}catch(e){}}
+  throw {code:"invalid_json",message:"No JSON in reply",text:t};
+}
+function langNote(json){return L()==="zh"?(json?"\n\nKeep JSON keys and the \"type\" values in English. Write every human-readable value (summary, title, detail) in Simplified Chinese.":"\n\nReply in Simplified Chinese."):"";}
+function makeAdapter(a){
+  const run=async(input,opts,json)=>{opts=opts||{};
+    let msgs=typeof input==="string"?[{role:"user",content:input}]:input.map(m=>({role:m.role,content:m.content}));
+    msgs[0]={role:"user",content:msgs[0].content+langNote(json)};
+    const model=opts.modelTier==="quick"?(a.fast||a.model):a.model;
+    if(opts.signal&&opts.signal.aborted)throw {code:"cancelled"};
+    const r=await complete(a,msgs,model);
+    if(opts.signal&&opts.signal.aborted)throw {code:"cancelled"};
+    if(!r.text.trim())throw {code:"empty_completion"};
+    if(opts.onText)opts.onText({text:r.text,delta:r.text});
+    return r;
+  };
+  const fn=(input,opts)=>run(input,opts,false);
+  fn.json=async(input,opts)=>parseJSONLoose((await run(input,opts,true)).text);
+  return fn;
+}
+
+/* ---------- strings ---------- */
+const T={
+en:{ai_off:"AI: off",ai_on:n=>"AI: "+n,mac:"Mac app",settings:"Settings",
+ back:"Back",cont:"Continue",skip:"Skip for now",cancel:"Cancel",save:"Save",done:"Done",
+ err_req:"Fill this in to continue.",err_email:"Enter a valid email, like you@example.com.",err_people:"Add at least one person, then press Enter.",
+ w_eb:"Welcome",tagline:"Every ask, answer, and follow-up in one place.",w_h:"Congrats, you found Followthrough.",w_p:"Built for anyone whose work runs through other people: the asks, answers, and follow-ups that pile up between meetings.",
+ w_pills:["Next actions","Who you're waiting on","Questions to ask","1:1 captures"],w_oss:"<b>Open source.</b> If it helps you, fork it and change anything to fit how you work.",w_go:"Get started",imp_link:"Used Followthrough before? Import your data",
+ p_eb:"Before you start",p_h:"Your work stays with you.",p_p:"Here is exactly what happens to your data.",
+ p_rows:mac=>[["✓","ok","Your work stays on your computer","Tasks, questions, transcripts, and your API key never reach us."],
+  ["@","acc","We store one thing: your email","Only so we know who signed up and can send product updates. Never shared or sold."],
+  ["→","acc","AI requests go straight to your provider","Sent from your computer to the AI provider you pick, with your own key."],
+  ["◐","warn",mac?"Transcription runs on your Mac":"Transcription uses your browser",mac?"The Mac app uses Apple's on-device speech recognition.":"The browser's speech service is used. The Mac app transcribes on-device with Apple's speech recognition."],
+  ["✕","mute","Never","No analytics, trackers, or ads."]],
+ p_more:"Export or erase your data anytime in Settings.",p_code:"Read the code ↗",p_go:"Sounds good",
+ s_eb:"Sign up",s_h:"Sign up with your email",s_p:"Your email is the only thing we store. It tells us who uses Followthrough, and we send an update when a new version ships.",s_email:"Email",s_note:"Never shared or sold. Your board stays on this computer.",s_go:"Sign up",s_busy:"Signing up…",
+ ab_eb:"About you",ab_h:"Tell us a little about you",ab_p:"This stays on your computer. It sets your greeting and the sample week.",ab_name:"Your name",ab_role:"Your role",ab_hint:"Sets your sample week and team options. Change it in Settings.",err_role:"Pick the role closest to yours.",
+ a_eb:"Optional",a_title:"AI settings",a_h:"Connect an AI model",a_p:"AI turns what people said into answers, next steps, and follow-ups. Use any provider you already pay for.",
+ a_tabs:["Capture","Review","Nudges","Ask"],a_prov:"Provider",a_how:p=>p==="Other"?"How to set up a custom endpoint":`How to get ${/^[AEIOU]/.test(p)?"an":"a"} ${p} API key`,
+ a_steps:s=>[`Sign in at <code>${s}</code>.`,"Open API keys and create a new key.","Copy the key and paste it below."],
+ a_custom:["Works with any OpenAI-compatible endpoint, such as Groq, Together, or local Ollama.","Enter the base URL, for example <code>http://localhost:11434/v1</code>.","Ollama in a browser needs <code>OLLAMA_ORIGINS</code> set; the Mac app works without it."],
+ a_tail:"Usage bills to your own account, usually cents per meeting.",a_key:"API key",a_base:"Base URL",a_test:"Test",a_testing:"Testing…",a_ok:n=>`Connected. ${n} models found.`,a_m1:"Model for reviews",a_m2:"Model for quick notes",
+ a_keynote:"Your key stays on this computer and is sent only to the provider above.",a_save:"Save and continue",a_off:"Disconnect",a_need:"Test the key first, or skip for now.",
+ a_errs:{auth:"That key was rejected. Check it and try again.",network:"Couldn't reach the provider. Check your connection.",no_base:"Add the base URL first.",rate_limited:"The provider is rate limiting. Try again in a minute.",no_model:"The provider didn't recognize that model.",other:"The provider returned an error."},
+ m_eb:"Recommended",m_h:"Get the Mac app",m_p:"Same board, always one glance away.",
+ m_perks:[["▣","Floats on your desktop","Keep it on top of other windows, or open it from the menu bar."],["◐","Apple's on-device transcription","Record a 1:1 and transcribe it privately on your Mac."],["↻","Opens when you log in","Your day's moves are waiting before your first meeting."]],
+ m_dl:"Download for Mac",m_meta:["Free","macOS 13+","Apple silicon or Intel"],m_first:"First launch: right-click the app and choose Open.",m_later:"Keep using the browser",
+ d_eb:"All set",d_h:n=>`You're ready, ${n}.`,d_p:"How do you want to start?",o1h:"Set up my board",o1d:"Add the people you work with. Takes a minute.",o2h:"Look around a sample week first",o2d:r=>`A made-up ${r} week. Switch to your own board anytime.`,d_go:"Continue",
+ st_lang:"Language",st_theme:"Appearance",st_themes:[["system","System"],["light","Light"],["dark","Dark"]],st_ai:"AI",st_aiOff:"Not connected",st_aiOn:(p,m)=>`${p} · ${m}`,st_aiBtn:"Set up",st_aiEdit:"Change",
+ st_data:"Your data",st_dataL:IS_MAC?"Saved on this Mac only":"Saved in this browser only",st_exp:"Export",st_imp:"Import",st_erase:"Erase everything",st_eraseQ:"Erase your board, settings, and key from this device?",st_eraseYes:"Erase",
+ st_acct:"Account",st_noAcct:"Not signed up",st_signup:"Sign up",st_help:"Help",st_tour:"Show the welcome tour again",st_ver:v=>"Version "+v,
+ su_eb:"Your own board",su_h:"Set up your board",su_p:"Add the people you work with most. Type a name, then tap their team.",su_people:"People you work with",su_name:"Name, like Maya",su_team:"Their team",su_other:"Other team…",su_otherPh:"Team name",su_add:"Add",su_after:"You'll add tasks and questions on your board, as many as you need.",su_go:"Create my board",su_cta:"Set up your board",err_name:"Type a name first.",b_sample:r=>`<b>Sample ${r.toLowerCase()} week.</b> Made-up data so you can try everything. Edits are saved.`,st_role:"Role",
+ imp_eb:"Import",imp_h:"Bring your board back",imp_p:"Choose a backup you exported from Followthrough. The file is checked on this computer before anything is added.",imp_drop:"Drop a file here",imp_pick:"Choose file",
+ imp_kinds:[["Followthrough backup (.json)","Read instantly on this computer. No AI needed."],["Other notes or exports (.csv, .md, .txt)","AI sorts them into tasks and questions. Needs an AI model connected."]],
+ imp_found:"Looks good. Here's what we found:",imp_c:["Tasks","Questions","People","Captures"],imp_from:(d,v)=>`Exported ${d} · Followthrough ${v}`,imp_ai:n=>`Sorted by ${n} from your notes`,imp_replace:"This replaces your current board. You can undo right after.",imp_go:n=>`Import ${n} items`,imp_other:"Choose another file",
+ imp_bad:"That file isn't a Followthrough backup. Try another file, or connect an AI model to import notes.",imp_reading:"Reading your notes…",imp_none:"Nothing to import was found in that file.",imp_done:"Board imported",
+ exp_done:"Backup saved",rec:"Record",rec_stop:"Stop recording",rec_who:"Speaking:",rec_me:"You",rec_them:"Them",rec_web:"Live transcription uses your browser's speech service.",rec_local:"Transcribing on this device.",rec_mac:"Transcribing on your Mac with Apple's on-device speech recognition.",rec_none:"This browser can't transcribe live. Use Chrome or Safari, or paste a transcript.",rec_denied:"Microphone access was denied. Allow it in system settings, then try again.",rec_hint:"Press Record to transcribe the meeting as it happens, or paste a transcript.",
+ signed:"Thanks for signing up"},
+zh:{ai_off:"AI：未连接",ai_on:n=>"AI："+n,mac:"Mac 应用",settings:"设置",
+ back:"返回",cont:"继续",skip:"先跳过",cancel:"取消",save:"保存",done:"完成",
+ err_req:"填写后才能继续。",err_email:"请输入有效邮箱，例如 you@example.com。",err_people:"至少添加一位对接人，输入后按回车。",
+ w_eb:"欢迎",tagline:"所有请求、答复和待跟进，都在一处。",w_h:"恭喜，你找到了 Followthrough。",w_p:"为所有需要和别人协作推进工作的人而做：会议之间那些零散的需求、答复和待跟进事项，都在这里接住。",
+ w_pills:["下一步行动","在等谁","要问的问题","1:1 记录"],w_oss:"<b>开源项目。</b>用得顺手的话，欢迎 fork，按你的工作方式随意改。",w_go:"开始",imp_link:"以前用过？导入你的数据",
+ p_eb:"开始之前",p_h:"你的工作内容，只属于你。",p_p:"你的数据去了哪里，一条一条说清楚。",
+ p_rows:mac=>[["✓","ok","工作内容只存在你的电脑上","任务、问题、转写稿和 API key，都不会传给我们。"],
+  ["@","acc","我们只存一样东西：你的邮箱","只用来统计注册人数和发送产品更新。不分享，不出售。"],
+  ["→","acc","AI 请求直接发给你选的服务商","从你的电脑直接发出，使用你自己的 key。"],
+  ["◐","warn",mac?"转写在你的 Mac 本地完成":"转写使用浏览器的语音服务",mac?"Mac 应用使用苹果的本地语音识别。":"浏览器版使用浏览器自带的语音服务；Mac 应用则用苹果的本地语音识别。"],
+  ["✕","mute","绝不会有","没有数据分析、追踪器或广告。"]],
+ p_more:"随时可以在设置里导出或清除你的数据。",p_code:"查看源代码 ↗",p_go:"明白了",
+ s_eb:"注册",s_h:"用邮箱注册",s_p:"邮箱是我们唯一会保存的信息，用来了解有多少人在用 Followthrough，并在新版本发布时通知你。",s_email:"邮箱",s_note:"绝不分享或出售。看板内容只留在这台电脑上。",s_go:"注册",s_busy:"注册中…",
+ ab_eb:"关于你",ab_h:"简单介绍一下你自己",ab_p:"这些只保存在你的电脑上，用来设置问候语和示例周。",ab_name:"你的名字",ab_role:"你的角色",ab_hint:"决定示例周和团队选项，可在设置里修改。",err_role:"选一个最接近你的角色。",
+ a_eb:"可选",a_title:"AI 设置",a_h:"连接 AI 模型",a_p:"AI 会把对话内容整理成答复、下一步和待跟进事项。用你已经在付费的任意服务商都可以。",
+ a_tabs:["记录","整理","催办","提问"],a_prov:"服务商",a_how:p=>p==="Other"?"如何设置自定义接口":`如何获取 ${p} API key`,
+ a_steps:s=>[`登录 <code>${s}</code>。`,"进入 API keys，新建一个 key。","复制 key，粘贴到下面。"],
+ a_custom:["支持任何 OpenAI 兼容接口，例如 Groq、Together 或本地 Ollama。","填入接口地址，例如 <code>http://localhost:11434/v1</code>。","在浏览器里用 Ollama 需要设置 <code>OLLAMA_ORIGINS</code>；Mac 应用不需要。"],
+ a_tail:"费用记在你自己的账户上，一次会议通常只要几分钱。",a_key:"API key",a_base:"接口地址",a_test:"测试",a_testing:"测试中…",a_ok:n=>`已连接，找到 ${n} 个模型。`,a_m1:"整理用的模型",a_m2:"速记用的模型",
+ a_keynote:"key 只保存在这台电脑上，只会发给上面选的服务商。",a_save:"保存并继续",a_off:"断开连接",a_need:"请先测试 key，或者先跳过。",
+ a_errs:{auth:"key 被拒绝了，检查一下再试。",network:"连不上服务商，检查一下网络。",no_base:"请先填写接口地址。",rate_limited:"服务商限流了，一分钟后再试。",no_model:"服务商不认识这个模型。",other:"服务商返回了错误。"},
+ m_eb:"推荐",m_h:"下载 Mac 应用",m_p:"同一个看板，抬眼就能看到。",
+ m_perks:[["▣","悬浮在桌面上","可以置顶在其他窗口之上，也可以从菜单栏打开。"],["◐","苹果本地语音转写","录下 1:1，在你的 Mac 上私密转写。"],["↻","开机自动打开","第一个会议之前，今天要推的事已经摆在眼前。"]],
+ m_dl:"下载 Mac 版",m_meta:["免费","macOS 13+","Apple 芯片或 Intel"],m_first:"首次打开：右键点应用，选择「打开」。",m_later:"继续用浏览器",
+ d_eb:"准备好了",d_h:n=>`一切就绪，${n}。`,d_p:"你想怎么开始？",o1h:"搭建我的看板",o1d:"添加你常对接的人，一分钟就好。",o2h:"先看看示例周",o2d:r=>`一周虚构的${r}工作，随时可以切换到你自己的看板。`,d_go:"继续",
+ st_lang:"语言",st_theme:"外观",st_themes:[["system","跟随系统"],["light","浅色"],["dark","深色"]],st_ai:"AI",st_aiOff:"未连接",st_aiOn:(p,m)=>`${p} · ${m}`,st_aiBtn:"去设置",st_aiEdit:"更改",
+ st_data:"你的数据",st_dataL:IS_MAC?"只保存在这台 Mac 上":"只保存在这个浏览器里",st_exp:"导出",st_imp:"导入",st_erase:"清除全部数据",st_eraseQ:"从这台设备上清除看板、设置和 key？",st_eraseYes:"清除",
+ st_acct:"账号",st_noAcct:"还没注册",st_signup:"注册",st_help:"帮助",st_tour:"重新查看欢迎引导",st_ver:v=>"版本 "+v,
+ su_eb:"你自己的看板",su_h:"搭建你的看板",su_p:"添加你最常对接的人：输入名字，再点选 TA 的团队。",su_people:"常对接的人",su_name:"名字，比如 Maya",su_team:"TA 的团队",su_other:"其他团队…",su_otherPh:"团队名称",su_add:"添加",su_after:"任务和问题之后在看板上添加，想加多少都行。",su_go:"创建我的看板",su_cta:"搭建你的看板",err_name:"请先输入名字。",b_sample:r=>`<b>${r}示例周。</b>虚构数据，方便你把功能都试一遍。改动会被保存。`,st_role:"角色",
+ imp_eb:"导入",imp_h:"把你的看板搬回来",imp_p:"选择你之前从 Followthrough 导出的备份。文件会先在这台电脑上检查，确认无误再导入。",imp_drop:"把文件拖到这里",imp_pick:"选择文件",
+ imp_kinds:[["Followthrough 备份（.json）","在这台电脑上直接读取，不需要 AI。"],["其他笔记或导出文件（.csv、.md、.txt）","由 AI 整理成任务和问题，需要先连接 AI 模型。"]],
+ imp_found:"检查通过，识别到以下内容：",imp_c:["任务","问题","对接人","会议记录"],imp_from:(d,v)=>`${d} 导出 · Followthrough ${v}`,imp_ai:n=>`由 ${n} 从你的笔记整理`,imp_replace:"导入会替换当前看板，导入后可以立即撤销。",imp_go:n=>`导入 ${n} 项`,imp_other:"换一个文件",
+ imp_bad:"这不是 Followthrough 备份文件。换一个文件，或者连接 AI 模型来导入笔记。",imp_reading:"正在阅读你的笔记…",imp_none:"这个文件里没有找到可导入的内容。",imp_done:"看板已导入",
+ exp_done:"备份已保存",rec:"录音",rec_stop:"停止录音",rec_who:"正在说话：",rec_me:"我",rec_them:"对方",rec_web:"实时转写使用浏览器的语音服务。",rec_local:"正在本设备上转写。",rec_mac:"正在用苹果的本地语音识别在你的 Mac 上转写。",rec_none:"这个浏览器不支持实时转写，请用 Chrome 或 Safari，或者粘贴转写稿。",rec_denied:"麦克风权限被拒绝了，请在系统设置里允许后再试。",rec_hint:"点「录音」边开会边转写，或者直接粘贴转写稿。",
+ signed:"注册成功，谢谢"}};
+const t=k=>T[L()][k];
+const ROLES={en:[["product","Product","PRDs, launches, metrics"],["ops","Operations","Vendors, campaigns, approvals"],["design","Design","Reviews, feedback, handoff"],["marketing","Marketing","Launches, content, partners"],["program","Program / project","Timelines, owners, risks"],["other","Something else","Start general"]],
+ zh:[["product","产品","PRD、上线、指标"],["ops","运营","供应商、活动、审批"],["design","设计","评审、反馈、交付"],["marketing","市场","发布、内容、合作方"],["program","项目管理","排期、负责人、风险"],["other","其他","通用模板"]]};
+const TEAMS={en:{product:["Engineering","Design","Data science","Data analytics","QA","Marketing","Operations","Sales","Support","Legal","Leadership"],
+  ops:["Data analytics","Product","Engineering","Marketing","Sales","Support","Finance","Legal","Agency","Vendors","Leadership"],
+  design:["Product","Engineering","Research","Brand","Content","Marketing","Data analytics","QA","Support","Accessibility","Leadership"],
+  marketing:["Product","Sales","Agency","Brand","Content","Data analytics","Design","Partnerships","Support","Legal","Leadership"],
+  program:["Engineering","Product","Design","Data analytics","QA","Security","Legal","Finance","Operations","Vendors","Leadership"]},
+ zh:{product:["研发","设计","数据科学","数据分析","测试","市场","运营","销售","客服","法务","管理层"],
+  ops:["数据分析","产品","研发","市场","销售","客服","财务","法务","代理商","供应商","管理层"],
+  design:["产品","研发","用户研究","品牌","内容","市场","数据分析","测试","客服","无障碍","管理层"],
+  marketing:["产品","销售","代理商","品牌","内容","数据分析","设计","商务合作","客服","法务","管理层"],
+  program:["研发","产品","设计","数据分析","测试","安全","法务","财务","运营","供应商","管理层"]}};
+const roleKey=()=>P.role&&P.role!=="other"?P.role:(P.role==="other"?"program":"product");
+const roleLabel=()=>{const r=ROLES[L()].find(x=>x[0]===roleKey());return r?r[1]:"";};
+
+/* ---------- Chinese for the board UI (the board's own strings are English) ---------- */
+const ZH={"A made-up PM internship so you can try everything. Edits are saved.":"一段虚构的 PM 实习经历，方便你把功能都试一遍。改动会被保存。","Sample week.":"示例周。","Start my own board":"开始我自己的看板","Clear the sample and start empty?":"清除示例数据，从空白开始？","Clear it":"清除","Keep it":"保留",
+"Today":"今天","Tasks":"任务","Questions":"问题","Capture":"记录","Next actions":"下一步","Blocked":"受阻","Later":"稍后","This week":"本周","Done":"已完成","Add task":"添加任务",
+"Nothing due today. Pick something from Later.":"今天没有到期的事，可以从「稍后」里挑一件。","Add your first task to see your next moves here.":"添加第一个任务，这里就会出现你的下一步。","No due dates in the next seven days.":"未来七天没有截止日期。",
+"Waiting on":"在等","Nobody owes you anything right now.":"现在没有人欠你东西。","New answers":"新答复","Answers you log or capture show up here.":"你记录的答复会出现在这里。","Questions to ask":"要问的问题","Add":"添加","No open questions.":"没有待问的问题。",
+"Capture a 1:1 and let Claude pull out answers":"记录一次 1:1，让 Claude 提炼出答复","Draft a nudge":"起草催办","Drafting…":"起草中…","Got it":"收到了","Copy":"复制","Close":"关闭","Finish this step":"完成这一步","What's the next step?":"下一步是什么？","Set next step":"设为下一步","Task is done":"任务已完成","Cancel":"取消","No next step yet":"还没有下一步",
+"Answer":"答复","What did they say?":"对方怎么说？","Save answer":"保存答复","Who to ask":"问谁","New person…":"新的人…","Name":"名字","Team":"团队","Is the baseline split by channel?":"基线数据有按渠道拆分吗？","Question":"问题","Related task":"相关任务","No related task":"无相关任务","Add question":"添加问题",
+"New task":"新任务","Task":"任务","Next action":"下一步","Priority":"优先级","Due":"截止","Status":"状态","Open":"进行中","Nobody":"无","What they owe you":"对方要给你什么","History":"历史","Save":"保存","Delete":"删除","Delete this task?":"删除这个任务？","Keep":"保留","Give the task a name first.":"先给任务起个名字。","Add the new person's name.":"填写新对接人的名字。","Ask Maya how D7 retention is defined":"问 Maya D7 留存怎么定义","Lock success metric for referral test":"锁定 referral 实验的成功指标",
+"Copied":"已复制","Couldn't copy. Select the text and copy it instead.":"复制失败，请手动选中文字复制。","Sample cleared":"示例已清除","Undo":"撤销","Next step set":"下一步已设置","Marked done":"已标记完成","Cleared":"已清除","Reopened":"已重新打开","Answer saved":"答复已保存","Moved back to To ask":"已移回待问","Question deleted":"问题已删除","Transcript cleared":"转写已清除","Board updated":"看板已更新",
+"Every task, its next step, and who it depends on":"每个任务、它的下一步，以及在等谁","Search tasks":"搜索任务","Waiting on others":"在等别人","Due in 2 days":"两天内到期","All open":"全部进行中","Mine to do":"我来做","Waiting":"等待中","Task → next action":"任务 → 下一步","Age":"天数","Click a row to open the task. Click a column header to sort.":"点一行打开任务，点列标题排序。","No tasks match this filter.":"没有符合筛选条件的任务。","No tasks yet. Add your first one to get started.":"还没有任务，先添加第一个吧。","Mark done":"标记完成","Reopen":"重新打开","Waiting on others ":"在等别人",
+"Everything you need to ask, and what people told you":"所有要问的问题，以及大家的答复","Anyone":"所有人","Person":"对接人","Ask whom":"问谁","Does the baseline already split by channel?":"基线数据已经按渠道拆分了吗？","New question":"新问题","Log answer":"记录答复","Edit":"编辑","Delete?":"删除？","Mark as not answered":"标为未答复","By person":"按人","Show everyone":"显示全部","Nobody to ask right now.":"现在没有要问的人。","Copy agenda":"复制议程","Start capture":"开始记录","Nothing here for this filter.":"这个筛选下没有内容。",
+"No questions yet. Add one above, or capture a 1:1 and Claude will find follow-ups.":"还没有问题。可以在上面添加，或者记录一次 1:1，Claude 会帮你找出待跟进事项。","Write the question first.":"先写下问题。","Add the person's name.":"填写对方的名字。","Agenda for your next 1:1":"下次 1:1 的议程",
+"Meeting":"会议","With":"和谁","About":"关于","Group or no one":"多人或无","No specific task":"无特定任务","New capture":"新记录","Replay sample 1:1":"回放示例 1:1","Replaying":"回放中","Stop":"停止","Finish and review":"结束并整理","Finish":"结束",
+"Paste a transcript from Zoom, Otter, or Voice Memos, or type notes as you go. Use \"Name: what they said\" on each line so Claude knows who said what.":"粘贴 Zoom、Otter 或语音备忘录的转写，或者边开会边记。每行用「名字: 说的话」的格式，Claude 就知道是谁说的。","Or press Replay sample 1:1 to watch a meeting come in.":"也可以点「回放示例 1:1」看一场会议如何被记录。",
+"Done editing":"完成编辑","Edit transcript":"编辑转写","Clear":"清除","Claude's notes":"Claude 的笔记","Read so far":"整理目前内容","Update notes":"更新笔记","Reading the transcript…":"正在阅读转写…","Claude pulls answers, your next steps, and promises from the conversation.":"Claude 会从对话中提炼答复、你的下一步和对方的承诺。",
+"Claude isn't available in this view. Finish to add updates by hand.":"还没连接 AI，结束后可以手动添加更新。","Pick who you're meeting to see your prepared questions.":"选择和谁开会，就能看到你准备好的问题。","Past captures":"过往记录","Your next step":"你的下一步","Waiting on them":"在等对方","Still open":"仍待解决",
+"Capture · review":"记录 · 整理","Back to transcript":"返回转写","Copy summary":"复制摘要","Summary":"摘要","Proposed updates to your board":"建议的看板更新","Skip the rest":"跳过其余","Back to Today":"返回今天","No board updates found in this meeting.":"这次会议没有找到需要更新看板的内容。","Claude is reading the whole meeting. This takes up to a minute.":"Claude 正在阅读整场会议，最多需要一分钟。","Try again":"重试","Key moments":"关键时刻","Transcript":"转写","Ask about this meeting":"询问这场会议","Why exclude reactivated users?":"为什么要排除回流用户？","Ask":"提问","Thinking…":"思考中…","Added":"已添加","Undo skip":"撤销跳过","Skip":"跳过","Still open → keep for next time":"仍待解决 → 留到下次","Answer → question":"答复 → 问题","New task ":"新任务","Title":"标题","Detail":"详情",
+"Claude isn't available in this view. Add answers and next steps on the Today page.":"还没连接 AI，可以在「今天」页面手动添加答复和下一步。","Claude couldn't finish that. Try again.":"Claude 没能完成，请重试。","Too many requests right now. Try again in a minute.":"请求太多了，请一分钟后再试。","Claude's reply came back in the wrong shape. Try again.":"Claude 的回复格式不对，请重试。","That transcript is too long. Trim it and try again.":"转写太长了，删减一些后再试。","Claude isn't available for this page. You can still add everything by hand.":"当前无法使用 AI，你仍然可以手动添加所有内容。",
+"Saved in this browser only":"只保存在这个浏览器里","Saved on this Mac only":"只保存在这台 Mac 上","Loading your board…":"正在加载看板…","Live microphone recording comes with the desktop app. In the browser, paste a transcript or type notes.":"","Edit":"编辑","Add ":"添加","Detail ":"详情","Sort":"排序"};
+const NUM={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+const toN=w=>NUM[String(w).toLowerCase()]||w;
+const ZDOW={Sun:"周日",Mon:"周一",Tue:"周二",Wed:"周三",Thu:"周四",Fri:"周五",Sat:"周六"};
+const ZMON={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12,January:1,February:2,March:3,April:4,June:6,July:7,August:8,September:9,October:10,November:11,December:12};
+const ZDAY={Sunday:"星期日",Monday:"星期一",Tuesday:"星期二",Wednesday:"星期三",Thursday:"星期四",Friday:"星期五",Saturday:"星期六"};
+const RULES=[
+ [/^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), (\w+) (\d+)$/,(m,d,mo,dd)=>`${ZMON[mo]} 月 ${dd} 日 ${ZDAY[d]}`],
+ [/^Good (morning|afternoon|evening)(?:, (.+))?\.$/,(m,p,n)=>({morning:"早上好",afternoon:"下午好",evening:"晚上好"}[p])+(n?"，"+n:"")+"。"],
+ [/^(One move|\w+ moves|No urgent moves) today(?:, (one person|\w+ people) to nudge)?\.$/,(m,a,b)=>{const mv=/^No urgent moves$/.test(a)?"今天没有紧急的事":`今天有 ${toN(a.replace(/ moves?$/i,""))} 件要推进`;return mv+(b?`，${toN(b.replace(/ (person|people)$/,""))} 个人要催`:"")+"。";}],
+ [/^Nothing urgent\. A good day to get ahead\.$/,()=>"今天不急，正好提前推进。"],
+ [/^(\d+)d late$/,(m,n)=>`逾期 ${n} 天`],[/^(\d+)d$/,(m,n)=>`${n} 天`],[/^(\d+)d old$/,(m,n)=>`${n} 天前`],
+ [/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)$/,(m,d)=>ZDOW[d]],[/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d+)$/,(m,mo,d)=>`${ZMON[mo]} 月 ${d} 日`],
+ [/^Yesterday$/,()=>"昨天"],[/^Tomorrow$/,()=>"明天"],[/^today$/,()=>"今天"],
+ [/^answered (.+)$/,(m,w)=>`${zhDay(w)}答复`],
+ [/^(\d+) open$/,(m,n)=>`${n} 项进行中`],[/^(\d+) blocked$/,(m,n)=>`${n} 项受阻`],[/^(\d+) answers? since yesterday$/,(m,n)=>`昨天以来 ${n} 条答复`],
+ [/^Questions for (.+)$/,(m,n)=>`要问 ${n} 的问题`],[/^Agenda for your next 1:1 with (.+)$/,(m,n)=>`下次和 ${n} 1:1 的议程`],[/^No open questions for (.+)\.$/,(m,n)=>`没有要问 ${n} 的问题。`],
+ [/^To ask (\d+)$/,(m,n)=>`待问 ${n}`],[/^Answered (\d+)$/,(m,n)=>`已答复 ${n}`],[/^All (\d+)$/,(m,n)=>`全部 ${n}`],[/^(\d+) of (\d+)$/,(m,a,b)=>`${a} / ${b}`],
+ [/^(\d+) lines?$/,(m,n)=>`${n} 行`],[/^Speakers: (.+)$/,(m,n)=>`发言人：${n==="none yet"?"暂无":n}`],
+ [/^Waiting on (.+?) → (.+)$/,(m,a,b)=>`在等 ${a==="someone"?"某人":a} → ${b==="new task"?"新任务":b}`],[/^Next step → (.+)$/,(m,b)=>`下一步 → ${b==="new task"?"新任务":b}`],[/^New question → (.+)$/,(m,b)=>`新问题 → ${b}`],
+ [/^(Answer|Your next step|Waiting on them|New question|New task|Still open) · (.+)$/,(m,k,n)=>`${ZH[k]||k} · ${n}`],
+ [/^From (.+?)'s answer: (.*)$/,(m,n,a)=>`来自 ${n} 的答复：${a}`],[/^Deleted (.+)$/,(m,n)=>`已删除「${n}」`],[/^1:1 with (.+)$/,(m,n)=>`与 ${n} 的 1:1`],
+ [/^(\d+) updates applied$/,(m,n)=>`已应用 ${n} 项更新`],[/^(\d+) added · (\d+) to review$/,(m,a,b)=>`已添加 ${a} · 待处理 ${b}`],[/^Apply all (\d+)$/,(m,n)=>`全部应用（${n}）`],
+ [/^Step done: (.+)$/,(m,n)=>`完成一步：${n}`],[/^Capture · live$/,()=>"记录 · 进行中"],[/^due (.+)$/,(m,d)=>`截止 ${zhDay(d)}`],
+ [/^(.*) · waiting on (.+)$/,(m,a,n)=>`${a} · 在等 ${n}`],[/^Nobody\. It's your move\.$/,()=>"无，轮到你了。"],[/^Questions$/,()=>"问题"]
+];
+function zhDay(w){const k=w.charAt(0).toUpperCase()+w.slice(1);return ZDOW[k]||({Today:"今天",Yesterday:"昨天",Tomorrow:"明天"}[k])||(/^\w{3} \d+$/.test(k)?`${ZMON[k.slice(0,3)]} 月 ${k.slice(4)} 日`:w);}
+function zh1(s){if(Object.prototype.hasOwnProperty.call(ZH,s))return ZH[s];for(const [re,f] of RULES){const m=s.match(re);if(m)return f(...m);}return null;}
+/* a line like "7 open · 1 blocked" is translated part by part */
+function zh(s){const one=zh1(s);if(one!=null)return one;if(!s.includes(" · "))return null;const parts=s.split(" · "),out=parts.map(x=>zh1(x));return out.some(x=>x!=null)?parts.map((x,i)=>out[i]!=null?out[i]:x).join(" · "):null;}
+const ORIG=new WeakMap();
+function localize(root){
+  const nm=aiName();
+  const fix=v=>v.replace(/\bClaude\b/g,nm);
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentNode&&n.parentNode.closest&&n.parentNode.closest("textarea,script,style,[data-raw]")?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+  const nodes=[];let n;while(n=w.nextNode())nodes.push(n);
+  nodes.forEach(n=>{if(!ORIG.has(n))ORIG.set(n,n.nodeValue);const raw=ORIG.get(n);if(!raw.trim())return;const key=raw.replace(/\u00a0/g," ").trim();
+    let out=L()==="zh"?zh(key):null;if(out==null)out=raw;else{const lead=raw.match(/^\s*/)[0],trail=raw.match(/\s*$/)[0];out=lead+out+trail;}
+    out=fix(out);if(out!==n.nodeValue)n.nodeValue=out;});
+  root.querySelectorAll&&root.querySelectorAll("[placeholder],[aria-label],[title]").forEach(el=>["placeholder","aria-label","title"].forEach(a=>{const k="data-en-"+a;if(!el.hasAttribute(k)&&el.hasAttribute(a))el.setAttribute(k,el.getAttribute(a));const v=el.getAttribute(k);if(!v)return;let o=L()==="zh"?zh(v):null;o=fix(o==null?v:o);if(o!==el.getAttribute(a))el.setAttribute(a,o);}));
+}
+
+/* ---------- Chinese sample week ---------- */
+const enSample=sampleState;
+function zhSample(){const D=addDays;return {v:1,sample:true,pristine:true,project:"Referral 项目 v2",updatedAt:Date.now(),
+  people:[{id:"p_maya",name:"Maya",team:"Data science"},{id:"p_priya",name:"Priya",team:"Data analytics"},{id:"p_leo",name:"Leo",team:"Engineering"},{id:"p_ana",name:"Ana",team:"Design"},{id:"p_sam",name:"Sam",team:"Mentor, PM"}],
+  tasks:[{id:"t_metric",title:"锁定 referral 实验的成功指标",prio:"P0",status:"open",next:"按 Maya 的 cohort 口径更新指标文档",due:D(0),waiting:null,history:[{at:D(-4),text:"创建。PRD 评审前需要定一个主指标。"},{at:D(-3),text:"问 Maya：D7 留存按 cohort 还是滚动计算？"},{at:D(-1),text:"Maya 答复：按注册 cohort，排除回流用户。"}]},
+   {id:"t_prd",title:"写 App 内 referral 入口的 PRD",prio:"P1",status:"open",next:"补上边界情况一节",due:D(2),waiting:null,history:[{at:D(-5),text:"和 Sam 开完 kickoff 后创建。"}]},
+   {id:"t_track",title:"和研发对齐埋点文档",prio:"P0",status:"blocked",next:"催 Leo 评审埋点 schema",due:D(1),waiting:{personId:"p_leo",what:"埋点 schema 评审",since:D(-3)},history:[{at:D(-3),text:"把 schema 文档发给 Leo 评审。"}]},
+   {id:"t_base",title:"漏斗基线数据",prio:"P1",status:"open",next:"数据到了就合进指标文档",due:D(3),waiting:{personId:"p_priya",what:"近 30 天分渠道漏斗数据",since:D(-1)},history:[{at:D(-1),text:"找 Priya 要 30 天基线。"}]},
+   {id:"t_design",title:"设计评审：referral 入口",prio:"P1",status:"open",next:"为设计评审准备三个问题",due:D(1),waiting:null,history:[]},
+   {id:"t_sync",title:"周会材料",prio:"P1",status:"open",next:"加一页指标定义和基线",due:D(3),waiting:null,history:[]},
+   {id:"t_ideas",title:"收集下一轮迭代的想法",prio:"P2",status:"open",next:"翻一遍带 invite 标签的客服工单",due:null,waiting:null,history:[]},
+   {id:"t_kick",title:"给相关方发 kickoff 纪要",prio:"P1",status:"done",next:"",due:D(-4),waiting:null,history:[{at:D(-4),text:"完成。"}]}],
+  questions:[{id:"q_d7",personId:"p_maya",taskId:"t_metric",text:"D7 留存按 cohort 还是滚动计算？",answer:"按注册 cohort；排除回流用户。",answeredAt:D(-1),created:D(-3)},
+   {id:"q_ss",personId:"p_maya",taskId:"t_metric",text:"检测 2% 提升最少需要多少样本？",answer:"",answeredAt:null,created:D(-3)},
+   {id:"q_gr",personId:"p_maya",taskId:"t_metric",text:"护栏指标要不要包含取消率？",answer:"",answeredAt:null,created:D(-3)},
+   {id:"q_dl",personId:"p_leo",taskId:"t_prd",text:"referral 入口能从短信深链跳转吗？",answer:"",answeredAt:null,created:D(-6)},
+   {id:"q_sh",personId:"p_ana",taskId:"t_design",text:"分享面板用系统原生的还是自定义？",answer:"",answeredAt:null,created:D(-5)}],
+  sessions:[],draft:null};}
+const EN_TRANSCRIPT=SAMPLE_TRANSCRIPT.slice();
+const ZH_TRANSCRIPT=[["我","谢谢抽时间。referral 实验的 D7 留存，按 cohort 算还是滚动算？PRD 里我想放一个数。"],["Maya","按注册 cohort 算。回流用户要排除，不然邀请渠道会显得比实际好。"],["我","明白。要看到 2% 的提升，需要多少样本？"],["Maya","按现在的流量，每组大概四万人。周四前我把样本量计算发你。"],["我","好，我今天更新指标文档，周五周会上同步。"],["Maya","另外问下 Priya，基线是不是已经按渠道拆了。没拆的话没法比较邀请和自然流量。"],["我","好的，我下午问她。还有，要不要先在 Android 上跑？"],["Maya","建议双端一起跑。拆开的话样本减半，要等两倍时间。"],["我","好，双端一起。我写进 PRD 的上线方案里。"]];
+function roleSpec(){const r=roleKey();return r==="product"?null:(window.TRACKER_SAMPLES||{})[r]?.[L()]||null;}
+function buildSample(sp){const D=addDays,me=L()==="zh"?"我":"You";return {v:1,sample:true,pristine:true,sampleRole:roleKey(),project:"",updatedAt:Date.now(),
+  people:sp.people.map(([id,name,team])=>({id,name,team})),
+  tasks:sp.tasks.map(([id,title,next,prio,due,status,w])=>({id,title,next,prio,status,due:due==null?null:D(due),waiting:w?{personId:w[0],what:w[1],since:D(-w[2])}:null,history:[{at:D(-4),text:L()==="zh"?"创建。":"Created."}],created:D(-4)})),
+  questions:sp.questions.map(([id,personId,taskId,text,answer,ans,cr])=>({id,personId,taskId,text,answer,answeredAt:ans==null?null:D(-ans),created:D(-cr)})),
+  sessions:[],draft:null,replay:{person:sp.replay.person,task:sp.replay.task,title:sp.replay.title}};}
+function applySampleLang(){const sp=roleSpec();SAMPLE_TRANSCRIPT.splice(0,SAMPLE_TRANSCRIPT.length,...(sp?sp.replay.lines:(L()==="zh"?ZH_TRANSCRIPT:EN_TRANSCRIPT)));}
+sampleState=function(){const sp=roleSpec();const s=sp?buildSample(sp):(L()==="zh"?zhSample():enSample());s.pristine=true;s.project="";s.sampleRole=roleKey();return s;};
+const _startReplay=startReplay;
+startReplay=function(){const d=draft();if(S.replay&&person(S.replay.person)){d.personId=S.replay.person;d.taskId=S.replay.task;d.title=S.replay.title;}applySampleLang();_startReplay();};
+const _save=save;save=function(){if(S&&S.pristine)S.pristine=false;_save();};
+
+/* ---------- hooks into the board ---------- */
+lsGet=function(){try{const v=kvGet(LS_KEY);return v?JSON.parse(v):null;}catch(e){return null;}};
+lsSet=function(o){kvSet(LS_KEY,JSON.stringify(o));};
+window.addEventListener("pagehide",()=>{if(S)lsSet(S);});
+if(IS_MAC)copy=async function(text){try{await native("copy",{text:String(text)});toast("Copied");}catch(e){toast("Couldn't copy. Select the text and copy it instead.");}};
+renderFoot=function(){$("#foot").textContent=IS_MAC?"Saved on this Mac only":"Saved in this browser only";localize($("#foot"));};
+initClaude=async function(){CLAUDE=P.ai&&P.ai.ok?makeAdapter(P.ai):null;render();};
+const _err=claudeErr;
+claudeErr=function(e){const c=e&&e.code,E=t("a_errs");
+  if(c==="auth")return E.auth;if(c==="network")return E.network;if(c==="no_model")return E.no_model;if(c==="empty_completion")return E.other;return _err(e);};
+const _render=render,_overlay=renderOverlay,_toast=renderToast;
+render=function(){_render();chrome();localize(document.body);glue();evenRows(document);};
+renderOverlay=function(){_overlay();localize($("#overlay"));glue($("#overlay"));};
+renderToast=function(){_toast();localize($("#toast"));};
+
+function chrome(){
+  const tb=$("#themeBtn");if(tb)tb.hidden=true;
+  const br=$(".brand");if(br&&!br.dataset.ft){br.dataset.ft="1";br.setAttribute("data-raw","");br.innerHTML=ICON_SVG+"<span>Followthrough</span>";}
+  const bn=$(".banner > span");if(bn&&S.sample){bn.setAttribute("data-raw","");bn.innerHTML=t("b_sample")(roleLabel());}
+  let x=$("#tbExtra");
+  if(!x){x=document.createElement("div");x.id="tbExtra";x.className="tb-extra";$(".top").appendChild(x);}
+  const on=!!(P.ai&&P.ai.ok);
+  x.innerHTML=`<button class="tb-btn" data-ob="ai" type="button"><span class="dot${on?" on":""}"></span><span class="lbl" data-raw>${esc(on?t("ai_on")(aiName()):t("ai_off"))}</span></button>${IS_MAC?"":`<a class="tb-btn" href="${DOWNLOAD_URL}" target="_blank" rel="noopener" data-raw>↓ <span class="lbl">${t("mac")}</span></a>`}<button class="tb-btn icon" data-ob="settings" type="button" aria-label="${t("settings")}" data-raw>⚙</button>`;
+  const r=route();
+  if(r==="capture")captureChrome();
+  if(r==="today"&&!S.sample&&!S.tasks.length){const m=$(".main .sec");if(m&&!$("#setupCta")){m.insertAdjacentHTML("beforeend",`<div class="setup-cta" id="setupCta" data-raw><button class="btn pri" data-ob="setup" type="button">${t("su_cta")}</button></div>`);}}
+}
+
+/* ---------- even rows: never leave one chip or button alone on a line ---------- */
+function rowsOf(kids){const rows=[];let bottom=-1e9;kids.map(k=>[k,k.getBoundingClientRect()]).sort((a,b)=>a[1].top-b[1].top).forEach(([k,r])=>{if(r.top>=bottom-1){rows.push([k]);bottom=r.bottom;}else{rows[rows.length-1].push(k);bottom=Math.max(bottom,r.bottom);}});return rows;}
+function evenRows(root){(root||document).querySelectorAll(".ob-pills,.ob-chips,.ob-setrow,.fbar,.chips,.txbar,.ob-provs").forEach(el=>{
+  el.classList.remove("ob-even");el.style.gridTemplateColumns="";
+  const kids=[...el.children].filter(k=>k.getBoundingClientRect().width>0&&!k.classList.contains("grow")&&!k.classList.contains("l"));if(kids.length<3)return;
+  const rows=rowsOf(kids);if(rows.length<2||rows[rows.length-1].length!==1)return;
+  el.classList.add("ob-even");el.style.gridTemplateColumns=`repeat(${Math.ceil(kids.length/rows.length)},minmax(0,auto))`;});}
+window.addEventListener("resize",()=>evenRows(document));
+
+/* ---------- theme ---------- */
+function applyTheme(){const r=document.documentElement;if(P.theme==="system")delete r.dataset.theme;else r.dataset.theme=P.theme;}
+
+/* ---------- onboarding and panels ---------- */
+const OB={start:"own",role:"",pplName:"",otherTeam:false,screen:null,tab:0,prov:P.ai?P.ai.provider:"anthropic",key:P.ai?P.ai.key:"",base:P.ai?P.ai.base||"":"",models:P.ai&&P.ai.models||[],main:P.ai?P.ai.model:"",fast:P.ai?P.ai.fast:"",tested:!!(P.ai&&P.ai.ok),testing:false,testErr:"",people:[],vals:{},imp:null,impBusy:false,impErr:"",erase:false,busy:false};
+const STEPS=()=>IS_MAC?["welcome","privacy","signup","about","ai","done"]:["welcome","privacy","signup","about","ai","mac","done"];
+const DEMO={en:[
+ `<div class="ob-live"><i></i>Recording · 12:47</div><div class="ln"><span class="sp" style="color:var(--violet)">Maya</span>Per signup cohort. <mark>Exclude reactivated users</mark>, otherwise the invite channel looks better.</div><div class="ln"><span class="sp" style="color:var(--accent)">You</span>I'll update the metric spec today.</div><div class="cap">Transcribed live. AI highlights answers and promises.</div>`,
+ `<div class="row"><span class="ic" style="background:var(--ok-soft);color:var(--ok)">A</span>D7 retention = per signup cohort</div><div class="row"><span class="ic" style="background:var(--accent-soft);color:var(--accent)">N</span>Update metric spec, share Friday</div><div class="row"><span class="ic" style="background:var(--warn-soft);color:var(--warn)">W</span>Waiting on Maya: power calc, Thu</div><div class="cap">Accept or skip each update. One click applies them.</div>`,
+ `<div class="bub">Hi Leo, could you look at the tracking schema today? It's holding up the event spec for the referral test.</div><div class="cap">AI drafts a friendly Slack nudge. Copy, tweak, send.</div>`,
+ `<div class="bub" style="color:var(--ink-2)">Why exclude reactivated users?</div><div class="bub">Maya said they return through invite links more often, which would inflate the referral channel's retention.</div><div class="cap">Ask anything about a meeting you captured.</div>`],
+zh:[
+ `<div class="ob-live"><i></i>录音中 · 12:47</div><div class="ln"><span class="sp" style="color:var(--violet)">Maya</span>按注册 cohort 算。<mark>回流用户要排除</mark>，不然邀请渠道会显得更好。</div><div class="ln"><span class="sp" style="color:var(--accent)">我</span>我今天就更新指标文档。</div><div class="cap">实时转写，AI 标出答复和承诺。</div>`,
+ `<div class="row"><span class="ic" style="background:var(--ok-soft);color:var(--ok)">答</span>D7 留存按注册 cohort 计算</div><div class="row"><span class="ic" style="background:var(--accent-soft);color:var(--accent)">下</span>更新指标文档，周五同步</div><div class="row"><span class="ic" style="background:var(--warn-soft);color:var(--warn)">等</span>等 Maya：样本量计算，周四</div><div class="cap">每条更新可以接受或跳过，一键写进看板。</div>`,
+ `<div class="bub">Leo，今天能帮忙看下埋点 schema 吗？referral 实验的事件文档在等它。</div><div class="cap">AI 帮你起草一条友好的 Slack 催办，复制、改改就能发。</div>`,
+ `<div class="bub" style="color:var(--ink-2)">为什么要排除回流用户？</div><div class="bub">Maya 说回流用户更常通过邀请链接回来，会抬高 referral 渠道的留存。</div><div class="cap">对任何一次记录过的会议提问。</div>`]};
+
+function openOB(s){OB.screen=s;OB.testErr="";OB.impErr="";OB.erase=false;if(s==="setup"){OB.people=S.sample?[]:S.people.map(p=>p.name+(p.team?" · "+p.team:""));OB.pplName="";OB.otherTeam=false;}if(s==="about"){OB.role=P.role||"";if(!OB.vals.name&&!P.name&&window.__trackerUser)OB.vals.name=window.__trackerUser;}drawOB();}
+function closeOB(){OB.screen=null;drawOB();}
+function bars(){const st=STEPS(),i=st.indexOf(OB.screen);return i<0?"":`<div class="ob-bars">${st.map((s,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>`;}
+function head(eb,close){return `<div class="ob-head"><span class="ob-eb">${eb}</span>${close?`<button class="ob-x" data-obclose aria-label="${t("cancel")}">×</button>`:""}</div>`;}
+function langSeg(){return `<div class="ob-langs" role="group" aria-label="${t("st_lang")}"><button type="button" data-lang="en" class="${L()==="en"?"on":""}">English</button><button type="button" data-lang="zh" class="${L()==="zh"?"on":""}">中文</button></div>`;}
+function field(id,label,type,ph){const v=OB.vals[id]!=null?OB.vals[id]:"";return `<label><span class="ob-label">${label}<span class="ob-req">*</span></span><input class="inp" id="ob-${id}" type="${type}" placeholder="${esc(ph)}" value="${esc(v)}" data-obf="${id}" autocomplete="${type==="email"?"email":"off"}"></label><div class="ob-err" id="oberr-${id}" hidden></div>`;}
+function nextStep(){const st=STEPS();return st[st.indexOf(OB.screen)+1];}
+function prevStep(){const st=STEPS();return st[Math.max(0,st.indexOf(OB.screen)-1)];}
+function aiBlock(){const pv=PROVIDERS[OB.prov];
+  const how=OB.prov==="custom"?t("a_custom"):t("a_steps")(pv.site);
+  return `<div class="ob-tabs">${t("a_tabs").map((x,i)=>`<button type="button" class="${i===OB.tab?"on":""}" data-obtab="${i}">${x}</button>`).join("")}</div><div class="ob-demo">${DEMO[L()][OB.tab]}</div>
+   <span class="ob-label" style="margin-top:14px">${t("a_prov")}</span><div class="ob-provs">${PROV_ORDER.map(k=>`<button type="button" class="ob-prov${k===OB.prov?" on":""}" data-obprov="${k}">${PROVIDERS[k].label}<small>${PROVIDERS[k].sub}</small></button>`).join("")}</div>
+   <details><summary>${t("a_how")(pv.label)}</summary><ol>${how.map(h=>`<li>${h}</li>`).join("")}<li>${t("a_tail")}</li></ol></details>
+   ${OB.prov==="custom"?`<label><span class="ob-label">${t("a_base")}</span><input class="inp" id="ob-base" value="${esc(OB.base)}" placeholder="http://localhost:11434/v1" style="font-family:var(--mono);font-size:12.5px"></label>`:""}
+   <div class="ob-keyrow"><input class="inp" id="ob-key" type="password" value="${esc(OB.key)}" placeholder="${pv.ph}" aria-label="${t("a_key")}" autocomplete="off" spellcheck="false"><button class="btn" type="button" data-obtest ${OB.testing?"disabled":""}>${OB.testing?t("a_testing"):t("a_test")}</button></div>
+   ${OB.testErr?`<div class="ob-err">${esc(OB.testErr)}</div>`:OB.tested&&OB.models.length?`<div class="ob-ok">✓ ${t("a_ok")(OB.models.length)}</div>`:""}
+   ${OB.tested&&OB.models.length?`<div class="ob-two"><label><span class="ob-label" style="margin-top:6px">${t("a_m1")}</span><select class="sel" id="ob-main">${OB.models.map(m=>`<option${m===OB.main?" selected":""}>${esc(m)}</option>`).join("")}</select></label><label><span class="ob-label" style="margin-top:6px">${t("a_m2")}</span><select class="sel" id="ob-fast">${OB.models.map(m=>`<option${m===OB.fast?" selected":""}>${esc(m)}</option>`).join("")}</select></label></div>`:""}
+   <p class="ob-hint">${t("a_keynote")}</p>`;}
+function cardHTML(){const s=OB.screen;
+  if(s==="welcome")return `${bars()}<div class="ob-head"><span class="ob-eb">${t("w_eb")}</span>${langSeg()}</div><div class="ob-brand">${ICON_SVG}<div><div class="nm">Followthrough</div><div class="tg">${t("tagline")}</div></div></div>
+    <h2>${t("w_h")}</h2><p>${t("w_p")}</p>
+    <div class="ob-pills">${t("w_pills").map(x=>`<span class="ob-pill">${x}</span>`).join("")}</div>
+    <div class="ob-oss"><span aria-hidden="true">◇</span><span>${t("w_oss")}</span></div>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obgo="next">${t("w_go")}</button><span class="grow"></span><button class="ob-lnk" type="button" data-obgo="import">${t("imp_link")}</button></div>`;
+  if(s==="privacy")return `${bars()}${head(t("p_eb"))}<h2>${t("p_h")}</h2><p>${t("p_p")}</p>
+    <div class="ob-flow">${t("p_rows")(IS_MAC).map(([ic,k,h,d])=>{const c={ok:"var(--ok-soft);color:var(--ok)",acc:"var(--accent-soft);color:var(--accent)",warn:"var(--warn-soft);color:var(--warn)",mute:"var(--surface-2);color:var(--ink-2)"}[k];return `<div class="ob-fl"><span class="ic" style="background:${c}">${ic}</span><div><div class="h">${h}</div><div class="d">${d}</div></div></div>`;}).join("")}</div>
+    <p class="ob-hint" style="margin-top:10px">${t("p_more")} <a class="ob-lnk" style="font-size:12px" href="${REPO_URL}" target="_blank" rel="noopener">${t("p_code")}</a></p>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obgo="next">${t("p_go")}</button><span class="grow"></span><button class="ob-skip" type="button" data-obgo="prev">${t("back")}</button></div>`;
+  if(s==="signup"||s==="signupOnly")return `${s==="signup"?bars():""}${head(t("s_eb"),s==="signupOnly")}<h2>${t("s_h")}</h2><p>${t("s_p")}</p>
+    ${field("email",t("s_email"),"email","you@example.com")}<p class="ob-hint">${t("s_note")}</p>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obsignup ${OB.busy?"disabled":""}>${OB.busy?t("s_busy"):t("s_go")}</button><span class="grow"></span>${s==="signup"?`<button class="ob-skip" type="button" data-obgo="prev">${t("back")}</button>`:""}</div>`;
+  if(s==="about")return `${bars()}${head(t("ab_eb"))}<h2>${t("ab_h")}</h2><p>${t("ab_p")}</p>
+    ${field("name",t("ab_name"),"text","Justin")}
+    <span class="ob-label">${t("ab_role")}<span class="ob-req">*</span></span>
+    <div class="ob-roles">${ROLES[L()].map(([k,n,d])=>`<button type="button" class="ob-role${OB.role===k?" on":""}" data-obrole="${k}">${n}<small>${d}</small></button>`).join("")}</div>
+    <div class="ob-err" id="oberr-role" hidden>${t("err_role")}</div>
+    <p class="ob-hint">${t("ab_hint")}</p>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obabout>${t("cont")}</button><span class="grow"></span><button class="ob-skip" type="button" data-obgo="prev">${t("back")}</button></div>`;
+  if(s==="ai")return `${bars()}${head(t("a_eb"))}<h2>${t("a_h")}</h2><p>${t("a_p")}</p>${aiBlock()}
+    <div class="ob-acts"><button class="btn pri" type="button" data-obaisave="next">${t("a_save")}</button><span class="grow"></span><button class="ob-skip" type="button" data-obgo="next">${t("skip")}</button></div>`;
+  if(s==="aiPanel")return `${head(t("a_title"),true)}<h2>${t("a_h")}</h2><p>${t("a_p")}</p>${aiBlock()}
+    <div class="ob-acts"><button class="btn pri" type="button" data-obaisave="close">${t("save")}</button><button class="btn" type="button" data-obclose>${t("cancel")}</button><span class="grow"></span>${P.ai&&P.ai.ok?`<button class="ob-skip" type="button" data-obaioff>${t("a_off")}</button>`:""}</div>`;
+  if(s==="mac")return `${bars()}${head(t("m_eb"))}<h2>${t("m_h")}</h2><p>${t("m_p")}</p>
+    <div class="ob-perks">${t("m_perks").map(([ic,h,d])=>`<div class="ob-perk"><span class="ic" aria-hidden="true">${ic}</span><div><div class="h">${h}</div><div class="d">${d}</div></div></div>`).join("")}</div>
+    <div class="ob-dl"><div class="ob-appicon">${ICON_SVG}</div><div style="min-width:0"><div style="font-weight:500">Followthrough</div><div class="ob-hint" style="margin:0">${t("m_meta").map(x=>`<span style="white-space:nowrap">${x}</span>`).join(" · ")}</div></div><span class="grow"></span><a class="btn pri" href="${DOWNLOAD_URL}" target="_blank" rel="noopener">${t("m_dl")}</a></div>
+    <p class="ob-hint">${t("m_first")}</p>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obgo="next">${t("cont")}</button><span class="grow"></span><button class="ob-skip" type="button" data-obgo="next">${t("m_later")}</button></div>`;
+  if(s==="done")return `${bars()}${head(t("d_eb"))}<h2>${t("d_h")(esc(P.name||""))}</h2><p>${t("d_p")}</p>
+    <div class="ob-choice"><button type="button" class="ob-opt${OB.start!=="sample"?" on":""}" data-obstart="own"><span class="ic" aria-hidden="true">＋</span><span><span class="h">${t("o1h")}</span><span class="d">${t("o1d")}</span></span></button>
+    <button type="button" class="ob-opt${OB.start==="sample"?" on":""}" data-obstart="sample"><span class="ic" aria-hidden="true">◎</span><span><span class="h">${t("o2h")}</span><span class="d">${t("o2d")(roleLabel())}</span></span></button></div>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obfinish>${t("d_go")}</button></div>`;
+  if(s==="settings"){const pv=P.ai&&P.ai.ok?PROVIDERS[P.ai.provider]:null;
+    return `${head(t("settings"),true)}
+    <div class="ob-set"><h3>${t("st_lang")}</h3>${langSeg().replace("margin-left:auto","")}</div>
+    <div class="ob-set"><h3>${t("st_role")}</h3><div class="ob-roles">${ROLES[L()].map(([k,n])=>`<button type="button" class="ob-role sm${(P.role||"product")===k?" on":""}" data-obsetrole="${k}">${n}</button>`).join("")}</div></div>
+    <div class="ob-set"><h3>${t("st_theme")}</h3><div class="ob-seg">${t("st_themes").map(([k,l])=>`<button type="button" data-obtheme="${k}" class="${P.theme===k?"on":""}">${l}</button>`).join("")}</div></div>
+    <div class="ob-set"><h3>${t("st_ai")}</h3><div class="ob-setrow"><span class="l">${pv?esc(t("st_aiOn")(pv.label,P.ai.model)):t("st_aiOff")}</span><button class="btn sm" type="button" data-ob="ai">${pv?t("st_aiEdit"):t("st_aiBtn")}</button></div></div>
+    <div class="ob-set"><h3>${t("st_data")}</h3><div class="ob-setrow"><span class="l">${t("st_dataL")}</span><button class="btn sm" type="button" data-obexport>${t("st_exp")}</button><button class="btn sm" type="button" data-obgo="import">${t("st_imp")}</button><button class="btn sm" type="button" data-oberase style="color:var(--danger)">${t("st_erase")}</button></div>
+      ${OB.erase?`<div class="ob-setrow" style="margin-top:8px"><span class="l" style="color:var(--danger)">${t("st_eraseQ")}</span><button class="btn sm" type="button" data-oberaseyes style="color:var(--danger);border-color:var(--danger)">${t("st_eraseYes")}</button><button class="btn sm" type="button" data-oberaseno>${t("cancel")}</button></div>`:""}</div>
+    <div class="ob-set"><h3>${t("st_acct")}</h3><div class="ob-setrow"><span class="l">${P.email?esc(P.email):t("st_noAcct")}</span>${P.email?"":`<button class="btn sm" type="button" data-obgo="signupOnly">${t("st_signup")}</button>`}</div></div>
+    <div class="ob-set"><h3>${t("st_help")}</h3><div class="ob-setrow"><button class="ob-lnk" type="button" data-obtour>${t("st_tour")}</button><span class="grow"></span><a class="ob-lnk" href="${REPO_URL}" target="_blank" rel="noopener">${t("p_code")}</a></div><p class="ob-hint">${t("st_ver")(VERSION)}</p></div>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obclose>${t("done")}</button></div>`;}
+  if(s==="setup")return `${head(t("su_eb"),true)}<h2>${t("su_h")}</h2><p>${t("su_p")}</p>
+    <span class="ob-label">${t("su_people")}<span class="ob-req">*</span></span>
+    <input class="inp" id="ob-ppl" placeholder="${esc(t("su_name"))}" value="${esc(OB.pplName||"")}" autocomplete="off">
+    <div class="ob-hint">${t("su_team")}</div>
+    <div class="ob-teams">${TEAMS[L()][roleKey()].map(x=>`<button type="button" class="ob-sug" data-obteam="${esc(x)}">${esc(x)}</button>`).join("")}<button type="button" class="ob-sug${OB.otherTeam?" on":""}" data-obteam="__other">${t("su_other")}</button></div>
+    ${OB.otherTeam?`<div class="ob-keyrow"><input class="inp" id="ob-otherteam" placeholder="${esc(t("su_otherPh"))}" style="font-family:inherit"><button class="btn" type="button" data-obaddother>${t("su_add")}</button></div>`:""}
+    <div class="ob-err" id="oberr-ppl" hidden></div>
+    <div class="ob-chips">${OB.people.map((p,i)=>`<span class="ob-chip">${esc(p)}<button type="button" data-obrm="${i}" aria-label="×">×</button></span>`).join("")}</div>
+    <p class="ob-hint" style="margin-top:12px">${t("su_after")}</p>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obsetup>${t("su_go")}</button></div>`;
+  if(s==="import")return `${head(t("imp_eb"),true)}<h2>${t("imp_h")}</h2><p>${t("imp_p")}</p>
+    <div class="ob-drop" id="obDrop"><span class="big" aria-hidden="true">⇪</span><span>${t("imp_drop")}</span><label class="btn sm" style="cursor:pointer">${t("imp_pick")}<input type="file" id="obFile" accept=".json,.csv,.md,.markdown,.txt,application/json,text/plain,text/csv,text/markdown" hidden></label></div>
+    ${OB.impBusy?`<div class="thinking" style="margin-top:8px"><span class="dots"><i></i><i></i><i></i></span>${t("imp_reading")}</div>`:""}
+    ${OB.impErr?`<div class="ob-err">${esc(OB.impErr)}</div>`:""}
+    <div class="ob-kinds">${t("imp_kinds").map(([h,d])=>`<div class="ob-kind"><span aria-hidden="true">•</span><span><b>${h}</b><br>${d}</span></div>`).join("")}</div>`;
+  if(s==="scanned"){const im=OB.imp,c=[im.board.tasks.length,im.board.questions.length,im.board.people.length,(im.board.sessions||[]).length],total=c[0]+c[1]+c[2]+c[3];
+    return `${head(t("imp_eb"),true)}<h2>${t("imp_h")}</h2>
+    <div class="ob-scan"><div class="f">${esc(im.file)}</div><div style="margin-top:6px;font-size:13px">✓ ${t("imp_found")}</div>
+      <div class="ob-counts">${t("imp_c").map((l,i)=>`<div class="ob-cnt"><div class="v">${c[i]}</div><div class="l">${l}</div></div>`).join("")}</div>
+      <div class="ob-hint">${im.ai?esc(t("imp_ai")(aiName())):esc(t("imp_from")(im.date,im.version))}</div></div>
+    <p class="ob-hint">${t("imp_replace")}</p>
+    <div class="ob-acts"><button class="btn pri" type="button" data-obimport>${t("imp_go")(total)}</button><span class="grow"></span><button class="ob-skip" type="button" data-obgo="import">${t("imp_other")}</button></div>`;}
+  return "";
+}
+function drawOB(){
+  let root=$("#obRoot");if(!root){root=document.createElement("div");root.id="obRoot";document.body.appendChild(root);}
+  if(!OB.screen){root.innerHTML="";return;}
+  const wide=OB.screen==="settings"||OB.screen==="aiPanel";
+  root.innerHTML=`<div class="ob-scrim" data-obscrim><div class="ob-card${wide?" wide":""}" role="dialog" aria-modal="true" data-obstop>${cardHTML()}</div></div>`;
+  wireOB();glue(root);evenRows(root);
+  const first=root.querySelector("input.inp:not([type=password])");if(first&&!first.value)setTimeout(()=>first.focus(),0);
+}
+function wireOB(){
+  document.querySelectorAll("[data-obf]").forEach(el=>el.addEventListener("input",()=>{OB.vals[el.dataset.obf]=el.value;el.classList.remove("bad");const e=$("#oberr-"+el.dataset.obf);if(e)e.hidden=true;}));
+  const k=$("#ob-key");if(k)k.addEventListener("input",()=>{OB.key=k.value.trim();OB.tested=false;OB.models=[];});
+  const b=$("#ob-base");if(b)b.addEventListener("input",()=>{OB.base=b.value.trim();OB.tested=false;});
+  const m=$("#ob-main");if(m)m.onchange=()=>OB.main=m.value;const f=$("#ob-fast");if(f)f.onchange=()=>OB.fast=f.value;
+  const p=$("#ob-ppl");if(p){p.addEventListener("input",()=>{OB.pplName=p.value;$("#oberr-ppl").hidden=true;});p.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();addPerson2("");}});}
+  const ot=$("#ob-otherteam");if(ot){setTimeout(()=>ot.focus(),0);ot.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();addPerson2(ot.value.trim());}});}
+  const file=$("#obFile");if(file)file.onchange=()=>{if(file.files[0])readImport(file.files[0]);};
+  const drop=$("#obDrop");if(drop){drop.ondragover=e=>{e.preventDefault();drop.classList.add("over");};drop.ondragleave=()=>drop.classList.remove("over");drop.ondrop=e=>{e.preventDefault();drop.classList.remove("over");const f=e.dataTransfer.files[0];if(f)readImport(f);};}
+}
+function check(ids){let ok=true,first=null;ids.forEach(([id,kind])=>{
+  if(id==="ppl"){const bad=!OB.people.length;const e=$("#oberr-ppl");e.textContent=t("err_people");e.hidden=!bad;if(bad){ok=false;first=first||$("#ob-ppl");}return;}
+  if(id==="role"){const bad=!OB.role;$("#oberr-role").hidden=!bad;if(bad)ok=false;return;}
+  const el=$("#ob-"+id),e=$("#oberr-"+id),v=el.value.trim();let msg="";
+  if(!v)msg=t("err_req");else if(kind==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v))msg=t("err_email");
+  el.classList.toggle("bad",!!msg);e.textContent=msg;e.hidden=!msg;if(msg){ok=false;first=first||el;}});
+  if(first)first.focus();return ok;}
+
+async function sendSignup(){
+  /* No sign-up backend configured yet: keep the email on this device and send it once a later version has one. */
+  if(!CFG.signupUrl||!CFG.signupKey){P.signupPending=true;savePrefs();return true;}
+  try{const res=await http(CFG.signupUrl.replace(/\/+$/,"")+"/rest/v1/signups",{method:"POST",headers:Object.assign({apikey:CFG.signupKey,"content-type":"application/json",Prefer:"return=minimal"},/^eyJ/.test(CFG.signupKey)?{Authorization:"Bearer "+CFG.signupKey}:{}),body:JSON.stringify({email:P.email,lang:P.lang,source:IS_MAC?"mac":"web",app_version:VERSION})});
+    const ok=res.status<300||res.status===409;P.signupPending=!ok;savePrefs();return ok;}
+  catch(e){P.signupPending=true;savePrefs();return false;}
+}
+async function testKey(){
+  OB.prov=OB.prov||"anthropic";const a={provider:OB.prov,key:OB.key,base:OB.base};
+  if(!a.key&&OB.prov!=="custom"){OB.testErr=t("a_errs").auth;drawOB();return false;}
+  OB.testing=true;OB.testErr="";drawOB();
+  try{const ids=(await listModels(a)).sort();if(!ids.length)throw {code:"no_model"};
+    const [mm,ff]=pickModels(OB.prov,ids);OB.models=ids;OB.main=OB.main&&ids.includes(OB.main)?OB.main:mm;OB.fast=OB.fast&&ids.includes(OB.fast)?OB.fast:ff;OB.tested=true;}
+  catch(e){OB.tested=false;OB.models=[];const E=t("a_errs");OB.testErr=E[e&&e.code]||E.other+(e&&e.message?" ("+String(e.message).slice(0,120)+")":"");}
+  OB.testing=false;drawOB();return OB.tested;
+}
+function saveAI(){P.ai={provider:OB.prov,key:OB.key,base:OB.base,model:OB.main,fast:OB.fast,models:OB.models,ok:true};savePrefs();CLAUDE=makeAdapter(P.ai);render();}
+
+/* ---------- export / import ---------- */
+function backupJSON(){return JSON.stringify({app:"followthrough",version:VERSION,exportedAt:new Date().toISOString(),board:S},null,2);}
+async function exportData(){
+  const name="followthrough-backup-"+TODAY()+".json",data=backupJSON();
+  try{if(IS_MAC){await native("saveFile",{name,data});}
+    else{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+    toast(t("exp_done"));}catch(e){}
+}
+function validBoard(b){return b&&Array.isArray(b.tasks)&&Array.isArray(b.questions)&&Array.isArray(b.people);}
+function readImport(file){
+  OB.impErr="";const r=new FileReader();
+  r.onload=async()=>{const text=String(r.result||"");let j=null;try{j=JSON.parse(text);}catch(e){}
+    const board=j&&(validBoard(j.board)?j.board:validBoard(j)?j:null);
+    if(board){OB.imp={file:file.name+" · "+Math.max(1,Math.round(file.size/1024))+" KB",board,date:j.exportedAt?fmtDate(j.exportedAt):"—",version:j.version||"1.0",ai:false};openOB("scanned");return;}
+    if(!CLAUDE){OB.impErr=t("imp_bad");drawOB();return;}
+    OB.impBusy=true;drawOB();
+    try{const out=await CLAUDE.json(`Turn these notes into a task board for someone who coordinates work with other people. Today is ${TODAY()}.
+Reply with only JSON: {"people":[{"name":"","team":""}],"tasks":[{"title":"","next":"","prio":"P0|P1|P2","due":"YYYY-MM-DD or null","waitingOn":"person name or null","waitingFor":"what they owe or null"}],"questions":[{"text":"","person":"person name","answer":"answer if the notes contain one, else empty"}]}
+Use only what the notes say. At most 40 tasks and 40 questions.
+
+Notes (${file.name}):
+"""
+${text.slice(0,60000)}
+"""`,{modelTier:"default"});
+      const b=fromAI(out);if(!b.tasks.length&&!b.questions.length)throw {code:"empty"};
+      OB.imp={file:file.name+" · "+Math.max(1,Math.round(file.size/1024))+" KB",board:b,ai:true};OB.impBusy=false;openOB("scanned");
+    }catch(e){OB.impBusy=false;OB.impErr=e&&e.code==="empty"?t("imp_none"):claudeErr(e);drawOB();}
+  };
+  r.readAsText(file);
+}
+function fmtDate(isoStr){const d=new Date(isoStr);if(isNaN(d))return "—";return L()==="zh"?`${d.getMonth()+1} 月 ${d.getDate()} 日`:MON[d.getMonth()]+" "+d.getDate();}
+function fromAI(o){const b=emptyState();b.project=P.project||b.project;const byName={};
+  const pid=n=>{n=String(n||"").trim();if(!n)return "";const k=n.toLowerCase();if(!byName[k]){const p={id:uid("p_"),name:n,team:""};b.people.push(p);byName[k]=p.id;}return byName[k];};
+  (o.people||[]).forEach(p=>{const id=pid(p.name);const pp=b.people.find(x=>x.id===id);if(pp&&p.team)pp.team=String(p.team);});
+  (o.tasks||[]).slice(0,40).forEach(x=>{if(!x||!x.title)return;const w=x.waitingOn?{personId:pid(x.waitingOn),what:String(x.waitingFor||"A reply"),since:TODAY()}:null;
+    b.tasks.push({id:uid("t_"),title:String(x.title),prio:["P0","P1","P2"].includes(x.prio)?x.prio:"P1",status:"open",next:String(x.next||""),due:/^\d{4}-\d{2}-\d{2}$/.test(x.due||"")?x.due:null,waiting:w,history:[{at:TODAY(),text:"Imported."}],created:TODAY()});});
+  (o.questions||[]).slice(0,40).forEach(x=>{if(!x||!x.text)return;b.questions.push({id:uid("q_"),personId:pid(x.person||"Someone"),taskId:"",text:String(x.text),answer:String(x.answer||""),answeredAt:x.answer?TODAY():null,created:TODAY()});});
+  return b;}
+function doImport(){undoSnap=JSON.stringify(S);const b=JSON.parse(JSON.stringify(OB.imp.board));b.sample=false;b.pristine=false;b.draft=null;S=b;normalize();save();P.onboarded=true;savePrefs();OB.imp=null;closeOB();render();toast(t("imp_done"),true);}
+
+/* ---------- board setup ---------- */
+function addPerson2(team){
+  const name=(OB.pplName||"").trim(),e=$("#oberr-ppl");
+  if(!name){e.textContent=t("err_name");e.hidden=false;$("#ob-ppl").focus();return;}
+  OB.people.push(name+(team?" · "+team:""));OB.pplName="";OB.otherTeam=false;drawOB();$("#ob-ppl").focus();
+}
+function createBoard(){
+  if(!check([["ppl"]]))return;
+  const b=emptyState();b.project="";
+  OB.people.forEach(s=>{const [n,...rest]=s.split(/\s*[·,，]\s*/);if(n)b.people.push({id:uid("p_"),name:n,team:rest.join(", ")});});
+  S=b;normalize();save();P.onboarded=true;savePrefs();closeOB();go("today");
+}
+
+/* ---------- live transcription ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const REC={on:false,who:"me",rec:null,t0:0,local:false,err:"",
+  can(){return IS_MAC||!!SR;},
+  start(){const d=draft();this.err="";this.on=true;this.t0=Date.now()-CAP.elapsed*1000;CAP.editing=false;
+    const lang=L()==="zh"?"zh-CN":"en-US";
+    CAP.tick=setInterval(()=>{CAP.elapsed=Math.round((Date.now()-this.t0)/1000);const tm=$("#timer");if(tm)tm.textContent=fmtClock(CAP.elapsed);
+      document.querySelectorAll("#wave span").forEach((s,j)=>{if(j>95)s.style.height=Math.round(6+Math.random()*24)+"px";});},1000);
+    if(IS_MAC){native("speech.start",{lang}).catch(e=>{this.fail(e&&e.code==="denied"?t("rec_denied"):String(e&&e.message||e));});render();return;}
+    const r=new SR();r.lang=lang;r.continuous=true;r.interimResults=true;this.rec=r;
+    const go=()=>{try{r.start();}catch(e){}};
+    if(SR.available&&"processLocally" in r){SR.available({langs:[lang],processLocally:true}).then(st=>{if(st==="available"){r.processLocally=true;this.local=true;}go();render();}).catch(()=>go());}else go();
+    r.onresult=e=>{let interim="";for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)this.line(x[0].transcript);else interim+=x[0].transcript;}const el=$("#interim");if(el)el.textContent=interim;};
+    r.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed")this.fail(t("rec_denied"));};
+    r.onend=()=>{if(this.on)go();};
+    render();
+  },
+  line(text){text=String(text||"").trim();if(!text)return;const d=draft();const p=person(d.personId);
+    const sp=this.who==="me"?(L()==="zh"?"我":"You"):(p?p.name:t("rec_them"));
+    d.transcript+=(d.transcript?"\n":"")+`[${fmtClock(CAP.elapsed)}] ${sp}: ${text.charAt(0).toUpperCase()+text.slice(1)}`;save();render();},
+  onNative(ev){if(ev.type==="final")this.line(ev.text);else if(ev.type==="partial"){const el=$("#interim");if(el)el.textContent=ev.text;}else if(ev.type==="error")this.fail(ev.code==="denied"?t("rec_denied"):ev.message);},
+  stop(){this.on=false;clearInterval(CAP.tick);if(IS_MAC)native("speech.stop").catch(()=>{});else if(this.rec)try{this.rec.stop();}catch(e){}save();render();},
+  fail(msg){this.err=msg;this.stop();}
+};
+function captureChrome(){
+  const d=S.draft;if(!d||d.phase==="review")return;
+  const ctrl=$(".sess .ctrl");if(!ctrl)return;
+  const hint=[...document.querySelectorAll(".tx > p.hint")].pop();
+  if(hint)hint.textContent=!REC.can()?t("rec_none"):REC.on?(IS_MAC?t("rec_mac"):REC.local?t("rec_local"):t("rec_web")):(REC.err||t("rec_hint"));
+  if(!REC.can()||CAP.replay)return;
+  const p=person(d.personId);
+  if(REC.on){
+    ctrl.querySelectorAll('[data-act="replay"]').forEach(b=>b.remove());
+    ctrl.insertAdjacentHTML("afterbegin",`<span class="live" data-raw><i></i>${L()==="zh"?"录音中":"Recording"}</span>`);
+    ctrl.insertAdjacentHTML("beforeend",`<button class="btn stop" type="button" data-rec="stop" data-raw>${t("rec_stop")}</button>`);
+    $(".wave")&&$(".wave").classList.add("on");
+    const tx=$(".tx");tx.insertAdjacentHTML("afterbegin",`<div class="rec-bar" data-raw><span class="hint">${t("rec_who")}</span><button type="button" class="who-btn${REC.who==="me"?" on":""}" data-who="me">${t("rec_me")}</button><button type="button" class="who-btn${REC.who==="them"?" on":""}" data-who="them">${esc(p?p.name:t("rec_them"))}</button></div>`);
+    const lines=$("#lines")||$(".emptytx");if(lines)lines.insertAdjacentHTML("afterend",`<div class="interim" id="interim" data-raw></div>`);
+    const et=$(".emptytx");if(et&&!d.transcript)et.hidden=true;
+  }else{
+    ctrl.insertAdjacentHTML("afterbegin",`<button class="btn" type="button" data-rec="start" data-raw><span class="rec" style="display:inline-block;margin-right:6px;vertical-align:1px"></span>${t("rec")}</button>`);
+  }
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",async e=>{
+  const g=k=>e.target.closest(k);let el;
+  if(el=g("[data-ob]")){openOB(el.dataset.ob==="ai"?"aiPanel":el.dataset.ob);return;}
+  if(el=g("[data-rec]")){el.dataset.rec==="start"?REC.start():REC.stop();return;}
+  if(el=g("[data-who]")){REC.who=el.dataset.who;document.querySelectorAll(".who-btn").forEach(b=>b.classList.toggle("on",b===el));return;}
+  if(!OB.screen){
+    if(g('[data-act="fresh-yes"]')&&!S.sample)openOB("setup");
+    return;}
+  if(g("[data-obscrim]")&&!g("[data-obstop]")){if(!["welcome","privacy","signup","about","ai","mac","done","setup"].includes(OB.screen))closeOB();return;}
+  if(el=g("[data-lang]")){P.lang=el.dataset.lang;savePrefs();document.documentElement.lang=P.lang==="zh"?"zh-CN":"en";applySampleLang();if(S&&S.sample&&S.pristine){S=sampleState();}render();drawOB();return;}
+  if(el=g("[data-obgo]")){const v=el.dataset.obgo;openOB(v==="next"?nextStep():v==="prev"?prevStep():v);return;}
+  if(g("[data-obclose]")){closeOB();return;}
+  if(el=g("[data-obtab]")){OB.tab=+el.dataset.obtab;drawOB();return;}
+  if(el=g("[data-obprov]")){if(OB.prov!==el.dataset.obprov){OB.prov=el.dataset.obprov;OB.tested=false;OB.models=[];OB.testErr="";OB.main="";OB.fast="";if(!P.ai||P.ai.provider!==OB.prov)OB.key="";else OB.key=P.ai.key;}drawOB();return;}
+  if(g("[data-obtest]")){testKey();return;}
+  if(el=g("[data-obaisave]")){if(!OB.tested){if(!OB.key&&OB.prov!=="custom"){OB.testErr=t("a_need");drawOB();return;}if(!(await testKey()))return;}saveAI();el.dataset.obaisave==="next"?openOB(nextStep()):closeOB();return;}
+  if(g("[data-obaioff]")){P.ai=null;savePrefs();CLAUDE=null;OB.tested=false;OB.models=[];OB.key="";closeOB();render();return;}
+  if(g("[data-obsignup]")){if(!check([["email","email"]]))return;P.email=$("#ob-email").value.trim();savePrefs();OB.busy=true;drawOB();await sendSignup();OB.busy=false;if(OB.screen==="signupOnly"){toast(t("signed"));openOB("settings");}else openOB(nextStep());return;}
+  if(el=g("[data-obrole]")){OB.role=el.dataset.obrole;document.querySelectorAll(".ob-role").forEach(b=>b.classList.toggle("on",b===el));$("#oberr-role").hidden=true;return;}
+  if(g("[data-obabout]")){if(!check([["name"],["role"]]))return;P.name=$("#ob-name").value.trim();const roleChanged=P.role!==OB.role;P.role=OB.role;ME=P.name;if(roleChanged&&S.sample&&S.pristine){S=sampleState();applySampleLang();}savePrefs();render();openOB(nextStep());return;}
+  if(el=g("[data-obstart]")){OB.start=el.dataset.obstart;document.querySelectorAll(".ob-opt").forEach(b=>b.classList.toggle("on",b===el));return;}
+  if(g("[data-obfinish]")){P.onboarded=true;savePrefs();if(OB.start==="sample"){if(!S.sample){S=sampleState();applySampleLang();save();}closeOB();go("today");}else openOB("setup");return;}
+  if(el=g("[data-obteam]")){if(el.dataset.obteam==="__other"){OB.otherTeam=!OB.otherTeam;OB.pplName=($("#ob-ppl")||{}).value||OB.pplName;drawOB();}else{OB.pplName=($("#ob-ppl")||{}).value||"";addPerson2(el.dataset.obteam);}return;}
+  if(g("[data-obaddother]")){addPerson2(($("#ob-otherteam")||{}).value.trim());return;}
+  if(el=g("[data-obsetrole]")){P.role=el.dataset.obsetrole;savePrefs();if(S.sample&&S.pristine){S=sampleState();applySampleLang();}render();drawOB();return;}
+  if(el=g("[data-obtheme]")){P.theme=el.dataset.obtheme;savePrefs();applyTheme();drawOB();return;}
+  if(g("[data-obexport]")){exportData();return;}
+  if(g("[data-oberase]")){OB.erase=true;drawOB();return;}
+  if(g("[data-oberaseno]")){OB.erase=false;drawOB();return;}
+  if(g("[data-oberaseyes]")){kvSet(LS_KEY,null);kvSet(PREF_KEY,null);kvSet("pm-tracker-theme",null);try{localStorage.clear();}catch(x){}location.reload();return;}
+  if(g("[data-obtour]")){openOB("welcome");return;}
+  if(el=g("[data-obrm]")){OB.people.splice(+el.dataset.obrm,1);drawOB();return;}
+  if(g("[data-obsetup]")){createBoard();return;}
+  if(g("[data-obimport]")){doImport();return;}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&OB.screen&&!["welcome","privacy","signup","about","ai","mac","done","setup"].includes(OB.screen))closeOB();});
+
+/* ---------- start ---------- */
+document.documentElement.lang=P.lang==="zh"?"zh-CN":"en";
+applyTheme();applySampleLang();ME=P.name||"";
+if(P.signupPending&&P.email)sendSignup();
+window.TRACKER={P,OB,REC,PROVIDERS,listModels,pickModels,makeAdapter,parseJSONLoose,localize,zh,openOB,closeOB,IS_MAC};
+boot();
+if(!P.onboarded)openOB("welcome");
+})();
+
+</script>
+</body>
+</html>

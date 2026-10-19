@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onboarding Preview v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Newsreader:opsz,wght@6..72,400&display=swap">
+<style>
+:root{
+  --bg:#f6f6f3;--surface:#fff;--surface-2:#f0efeb;--hover:#ecebe6;--border:#e5e3dd;--border-strong:#d3d0c8;
+  --ink:#1c1b19;--ink-2:#67645e;--ink-3:#9c988f;--accent:#2f56c9;--accent-soft:#e7ecfb;
+  --danger:#bd3f2e;--danger-soft:#fae9e5;--warn:#9f6612;--warn-soft:#f8eedb;--ok:#2a7a4e;--ok-soft:#e3f1e8;
+  --violet:#6548b3;--violet-soft:#eee9f9;--clay:#b95d38;--clay-soft:#f7e9e2;--on-ink:#fff;--scrim:rgba(20,18,15,.34);
+  --display:"Newsreader","Songti SC",Georgia,serif;--body:"Geist","PingFang SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"Geist Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--hover:#2a2a27;--border:#2e2d2a;--border-strong:#3e3d39;--ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;--accent:#88a5ff;--accent-soft:#1f2946;--danger:#f0836f;--danger-soft:#3a1f1a;--warn:#e2ab52;--warn-soft:#372a14;--ok:#68c690;--ok-soft:#173122;--violet:#b49df0;--violet-soft:#29223f;--clay:#e68d66;--clay-soft:#38241b;--on-ink:#131312;--scrim:rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--hover:#2a2a27;--border:#2e2d2a;--border-strong:#3e3d39;--ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;--accent:#88a5ff;--accent-soft:#1f2946;--danger:#f0836f;--danger-soft:#3a1f1a;--warn:#e2ab52;--warn-soft:#372a14;--ok:#68c690;--ok-soft:#173122;--violet:#b49df0;--violet-soft:#29223f;--clay:#e68d66;--clay-soft:#38241b;--on-ink:#131312;--scrim:rgba(0,0,0,.5);color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{text-wrap:balance;margin:0}p,li,.d{text-wrap:pretty}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+.picker{position:sticky;top:0;z-index:30;display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;color:var(--ink-2);padding:5px 11px;border-radius:8px;font-size:12.5px;font-weight:500}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.ghost{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px}
+.stage{display:flex;justify-content:center;padding:22px 16px 14px}
+.frame{position:relative;width:100%;max-width:1100px;min-height:1120px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.top{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;flex:none}
+.mark{width:20px;height:20px;border-radius:6px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font-size:11px;font-weight:600}
+.nav{display:flex;gap:2px;min-width:0;overflow:hidden}.nav span{padding:5px 10px;border-radius:7px;color:var(--ink-2);font-size:13px;font-weight:500;white-space:nowrap}.nav span.on{background:var(--surface-2);color:var(--ink)}
+.grow{flex:1}
+.tb{display:flex;gap:6px;flex:none}
+.topbtn{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.topbtn:hover{border-color:var(--border-strong);color:var(--ink)}
+.topbtn .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.topbtn.icon{width:30px;justify-content:center;padding:5px 0;font-size:14px}
+.board{padding:28px 32px}
+.date{font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+.hello{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.18}
+.hello .l2{color:var(--ink-2)}
+.item{display:flex;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-top:8px;max-width:640px}
+.circ{width:18px;height:18px;border:1.5px solid var(--border-strong);border-radius:50%;flex:none}
+.item .t{font-weight:500}.item .s{font-size:12.5px;color:var(--ink-2)}
+.blabel{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em;margin:26px 0 4px}
+.empty-board{border:1px dashed var(--border-strong);border-radius:12px;padding:22px;max-width:640px;color:var(--ink-3);margin-top:10px}
+
+.scrim{position:absolute;inset:0;background:var(--scrim);display:flex;align-items:flex-start;justify-content:center;padding:56px 20px 20px}
+.card{width:min(540px,100%);background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 60px rgba(20,18,15,.22);padding:24px 24px 20px}
+.card.wide{width:min(580px,100%)}
+.steps{display:flex;gap:5px;margin-bottom:18px}
+.steps i{height:4px;flex:1;border-radius:2px;background:var(--surface-2)}
+.steps i.on{background:var(--ink)}
+.chead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.eyebrow{font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em}
+.x{margin-left:auto;border:0;background:none;color:var(--ink-3);font-size:18px;line-height:1;padding:2px 4px}
+.x:hover{color:var(--ink)}
+.card h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.22;letter-spacing:-.01em;margin:4px 0 8px}
+.card p{margin:0 0 12px;color:var(--ink-2);font-size:13.5px}
+.acts{display:flex;align-items:center;gap:8px;margin-top:18px}
+.btn{border:1px solid var(--border-strong);background:var(--surface);border-radius:9px;padding:7px 14px;font-size:13px;font-weight:500;white-space:nowrap}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.sm{padding:4px 10px;font-size:12px}
+.skip{border:0;background:none;color:var(--ink-3);font-size:13px;padding:0}
+.skip:hover{color:var(--ink)}
+.inp,.sel{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:9px 11px;font-size:14px}
+.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.flabel{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin:12px 0 5px}
+.hint{font-size:12px;color:var(--ink-3);margin-top:6px}
+.langs{display:inline-flex;background:var(--surface-2);border-radius:9px;padding:3px;gap:2px;margin-left:auto}
+.langs button{border:0;background:none;border-radius:7px;padding:3px 10px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.langs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
+.even{display:grid!important;justify-content:start}
+.even>*{justify-self:stretch;text-align:center}
+.err{font-size:12px;color:var(--danger);margin-top:5px}
+.inp.bad{border-color:var(--danger)}
+.req{color:var(--danger);margin-left:2px}
+.pill{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--ink-2);background:var(--surface)}
+.oss{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink-2)}
+.oss b{color:var(--ink);font-weight:500}
+.flow{display:grid;gap:8px;margin:6px 0 4px}
+.fl{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:11px;padding:10px 12px}
+.fl .ic{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.fl .h{font-size:13px;font-weight:500}
+.fl .d{font-size:12.5px;color:var(--ink-2)}
+.lnk{border:0;background:none;padding:0;color:var(--accent);font-size:13px;font-weight:500}
+.tabs{display:flex;gap:2px;background:var(--surface-2);border-radius:9px;padding:3px;margin:4px 0 10px}
+.tabs button{flex:1;border:0;background:none;border-radius:7px;padding:5px 6px;font-size:12px;font-weight:500;color:var(--ink-2)}
+.tabs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.demo{border:1px solid var(--border);border-radius:11px;padding:12px;background:var(--bg);min-height:138px}
+.demo .ln{font-size:12.5px;padding:3px 0}
+.demo .sp{font-weight:600;font-size:11.5px;margin-right:4px}
+.demo mark{background:var(--ok-soft);color:inherit;border-radius:3px;padding:0 2px}
+.demo .row{display:flex;gap:8px;align-items:center;font-size:12.5px;border:1px solid var(--border);border-radius:8px;padding:6px 8px;margin-bottom:5px;background:var(--surface)}
+.demo .row .ic{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:10px;font-weight:600;flex:none}
+.demo .bub{font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:7px 9px;margin-bottom:6px}
+.demo .cap{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.live{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--danger);font-weight:500;margin-bottom:6px}
+.live i{width:6px;height:6px;border-radius:50%;background:var(--danger)}
+.provs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 10px}
+.prov{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:7px 8px;font-size:12.5px;font-weight:500;text-align:left}
+.prov small{display:block;font-weight:400;color:var(--ink-3);font-size:11px}
+.prov.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+details{border:1px solid var(--border);border-radius:10px;margin-top:10px}
+summary{cursor:pointer;padding:9px 12px;font-size:13px;font-weight:500;list-style:none;display:flex;align-items:center;gap:8px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;color:var(--ink-3);font-size:15px}
+details[open] summary::after{content:"–"}
+details ol{margin:0;padding:0 14px 12px 32px;font-size:12.5px;color:var(--ink-2)}
+details ol li{margin:4px 0}
+code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.keyrow{display:flex;gap:8px;margin-top:10px}
+.keyrow .inp{font-family:var(--mono);font-size:12.5px}
+.ok{font-size:12px;color:var(--ok);margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.perks{display:grid;gap:8px;margin:8px 0 6px}
+.perk{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.perk .ic{width:26px;height:26px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:13px}
+.perk .h{font-weight:500}
+.perk .d{font-size:12.5px;color:var(--ink-2)}
+.dl{display:flex;gap:12px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px}
+.appicon{width:44px;height:44px;border-radius:11px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font-weight:600;font-size:20px;flex:none}
+.set{border-top:1px solid var(--border);padding:14px 0}
+.set:first-of-type{border-top:0;padding-top:4px}
+.set h3{font-size:13px;font-weight:600;margin-bottom:8px}
+.setrow{display:flex;align-items:center;gap:10px;font-size:13px;padding:4px 0;flex-wrap:wrap}
+.setrow .l{flex:1;min-width:0;color:var(--ink-2)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;border:1px solid var(--border);border-radius:999px;padding:3px 6px 3px 10px;background:var(--surface-2)}
+.chip button{border:0;background:none;color:var(--ink-3);padding:0 2px}
+.note{max-width:1100px;margin:0 auto 40px;padding:0 16px;text-align:center;color:var(--ink-3);font-size:12.5px}
+@media (max-width:760px){.dl{flex-wrap:wrap}.dl .grow{display:none}.dl .btn{width:100%}.nav{display:none}.board{padding:22px 18px}.hello{font-size:26px}.provs{grid-template-columns:repeat(2,minmax(0,1fr))}.scrim{padding:20px 12px}}
+.drop{border:1.5px dashed var(--border-strong);border-radius:12px;padding:22px;text-align:center;display:grid;gap:8px;justify-items:center;margin:6px 0 4px;background:var(--bg)}
+.drop .big{font-size:22px;color:var(--ink-3)}
+.scan{border:1px solid var(--ok);background:var(--ok-soft);border-radius:12px;padding:12px 14px;margin:6px 0 4px}
+.scan .f{font-size:12.5px;color:var(--ink-2);font-family:var(--mono)}
+.counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.cnt{background:var(--surface);border-radius:9px;padding:8px 10px}
+.cnt .v{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.cnt .l{font-size:11.5px;color:var(--ink-2)}
+.kinds{display:grid;gap:6px;margin-top:10px}
+.kind{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2)}
+.kind b{color:var(--ink);font-weight:500}
+.imp{margin-top:10px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="picker">
+  <div class="seg" id="screens">
+    <button data-v="0" class="on">1 Welcome</button><button data-v="1">2 Privacy</button><button data-v="2">3 Sign up</button><button data-v="about">4 About you</button><button data-v="3">5 AI</button><button data-v="4">6 Mac app</button><button data-v="5">7 Done</button>
+    <button data-v="ai">AI settings</button><button data-v="settings">Settings</button><button data-v="setup">Setup my board</button><button data-v="import">Import</button><button data-v="scanned">Import · scanned</button>
+  </div>
+  <div class="seg" id="langPick"><button data-l="en" class="on">English</button><button data-l="zh">中文</button></div>
+  <button class="ghost" id="theme">Dark</button>
+</div>
+
+<div class="stage"><div class="frame">
+  <div class="top"><div class="brand"><div class="mark">T</div>Tracker</div>
+    <div class="nav" id="nav"></div>
+    <span class="grow"></span>
+    <div class="tb"><button class="topbtn" data-open="ai"><span class="dot"></span><span id="aiLbl"></span></button><button class="topbtn" id="dlBtn"></button><button class="topbtn icon" data-open="settings" aria-label="Settings">⚙</button></div>
+  </div>
+  <div class="board" id="board"></div>
+  <div class="scrim" id="scrim"><div class="card" id="card" role="dialog" aria-modal="true"></div></div>
+</div></div>
+<p class="note" id="note"></p>
+
+<script>
+const T={
+en:{imp_link:"Used Tracker before? Import your data",imp_eb:"Import",imp_h:"Bring your board back",imp_p:"Choose the backup you exported from Tracker. We check the file on this computer before anything is added.",imp_drop:"Drop a backup file here",imp_pick:"Choose file",
+ imp_kinds:[["Tracker backup (.json)","Read instantly on this computer. No AI needed."],["Other notes or exports (.csv, .md, .txt)","AI sorts them into tasks and questions. Needs an AI model connected."]],
+ imp_found:"Looks good. Here's what we found:",imp_c:["Tasks","Questions","People","Captures"],imp_from:"Exported Oct 12 · Tracker 1.0",imp_mode:"This replaces the sample week.",imp_go:"Import 24 items",imp_other:"Choose another file",
+nav:["Today","Tasks","Questions","Capture"],ai:"AI: off",dl:"↓ Mac app",
+ date:"Sunday, October 18",hello:n=>n?`Good afternoon, ${n}.`:"Good afternoon.",l2:"Two moves today, one person to nudge.",next:"Next actions",
+ t1:"Update metric spec with Maya's cohort definition",s1:"Lock success metric for referral test",t2:"Prep three questions for the design review",s2:"Design review: referral entry point",
+ emptyHello:n=>`Welcome, ${n}.`,emptyL2:"Let's set up your board.",emptyBox:"Your tasks will show up here.",
+ back:"Back",cont:"Continue",skip:"Skip for now",
+ w_eb:"Welcome",w_h:"Congrats, you found your PM tracker.",w_p:"Built only for what a PM juggles: the scattered asks, answers, and follow-ups that pile up between meetings.",
+ w_pills:["Next actions","Who you're waiting on","Questions to ask","1:1 captures"],w_oss:"<b>Open source.</b> If it helps you, fork it and change anything to fit how you work.",w_go:"Get started",w_lang:"Language",
+ p_eb:"Before you start",p_h:"Your work stays with you.",p_p:"Here is exactly what happens to your data.",
+ p_rows:[["✓","ok","Your work stays on your computer","Tasks, questions, transcripts, and your API key never reach us."],
+  ["@","acc","We store one thing: your email","Only so we know who signed up and can send product updates. Never shared or sold."],
+  ["→","acc","AI requests go straight to your provider","Sent from your computer to the AI provider you pick, with your own key."],
+  ["◐","warn","Transcription runs on your Mac","The Mac app uses Apple's on-device speech. In a browser, your browser's speech service is used instead."],
+  ["✕","mute","Never","No analytics, trackers, or ads."]],
+ p_more:"Export or erase your data anytime in Settings.",p_code:"Read the code ↗",p_go:"Sounds good",
+ s_eb:"Sign up",s_h:"Sign up with your email",s_p:"Your email is the only thing we store. It tells us who uses Tracker, and we send an update when a new version ships.",s_email:"Email",s_ph:"you@example.com",s_note:"Never shared or sold. Your board stays on this computer.",s_go:"Sign up",
+ ab_eb:"About you",ab_h:"What should we call you?",ab_p:"This stays on your computer. Your Today page greets you by name.",ab_name:"Your name",ab_namePh:"Justin",ab_proj:"What are you working on?",ab_projPh:"Referral program v2",
+ err_req:"Fill this in to continue.",err_email:"Enter a valid email, like you@example.com.",err_people:"Add at least one person, then press Enter.",
+ a_eb:"Optional",a_h:"Connect an AI model",a_p:"AI turns what people said into answers, next steps, and follow-ups. Use any provider you already pay for.",
+ a_tabs:["Capture","Review","Nudges","Ask"],a_prov:"Provider",a_how:p=>p==="Other"?"How to set up a custom endpoint":`How to get ${/^[AEIOU]/.test(p)?"an":"a"} ${p} API key`,
+ a_test:"Test",a_okmsg:"✓ Connected. 6 models found.",a_m1:"Model for reviews",a_m2:"Model for quick notes",a_after:"Pick after Test",a_keynote:"Your key stays on this computer and is sent only to the provider above.",a_save:"Save and continue",a_saveOnly:"Save",a_title:"AI settings",a_status:"Not connected",
+ how_tail:"Usage bills to your own account, usually cents per meeting.",
+ m_eb:"Recommended",m_h:"Get the Mac app",m_p:"Same board, always one glance away.",
+ m_perks:[["▣","Floats on your desktop","Keep it on top of other windows, or tuck it in the menu bar."],["◐","Apple's on-device transcription","Record a 1:1 and transcribe it privately on your Mac."],["↻","Opens when you log in","Your day's moves are waiting before your first meeting."]],
+ m_dl:"Download for Mac",m_meta:"Free · macOS 13+ · Apple silicon or Intel",m_first:"First launch: right-click the app and choose Open.",m_later:"Keep using the browser",
+ d_eb:"All set",d_h:n=>`You're ready, ${n}.`,d_p:"A sample week is loaded so you can look around. When you're ready, choose Start my own board in the banner.",d_go:"Open my board",
+ st_title:"Settings",st_lang:"Language",st_ai:"AI",st_aiRow:"Not connected",st_aiBtn:"Set up",st_data:"Your data",st_dataL:"Saved on this computer only",st_exp:"Export",st_imp:"Import",st_erase:"Erase everything",st_acct:"Account",st_acctL:"justin@example.com",st_out:"Sign out",st_help:"Help",st_tour:"Show the welcome tour again",st_code:"Read the code ↗",st_done:"Done",
+ su_eb:"Your own board",su_h:"Set up your board",su_p:"Three quick things, then it's yours.",su_proj:"What are you working on?",su_projPh:"Referral program v2",su_people:"Who do you work with most?",su_peoplePh:"Name and team, then Enter",su_task:"Your first task",su_taskPh:"Draft the PRD for referral entry",su_next:"Its next step",su_nextPh:"Write the problem statement",su_go:"Create my board",su_later:"Start empty",
+ note:"Static preview · center card · switch English / 中文 at the top · AI settings and Settings open on their own from the top bar"},
+zh:{imp_link:"以前用过？导入你的数据",imp_eb:"导入",imp_h:"把你的看板搬回来",imp_p:"选择你之前从 Tracker 导出的备份。文件会先在这台电脑上检查，确认无误再导入。",imp_drop:"把备份文件拖到这里",imp_pick:"选择文件",
+ imp_kinds:[["Tracker 备份（.json）","在这台电脑上直接读取，不需要 AI。"],["其他笔记或导出文件（.csv、.md、.txt）","由 AI 整理成任务和问题，需要先连接 AI 模型。"]],
+ imp_found:"检查通过，识别到以下内容：",imp_c:["任务","问题","对接人","会议记录"],imp_from:"10 月 12 日导出 · Tracker 1.0",imp_mode:"导入后会替换示例数据。",imp_go:"导入 24 项",imp_other:"换一个文件",
+nav:["今天","任务","问题","记录"],ai:"AI：未连接",dl:"↓ Mac 应用",
+ date:"10 月 18 日 星期日",hello:n=>n?`下午好，${n}。`:"下午好。",l2:"今天有两件要推进，一个人要催。",next:"下一步",
+ t1:"按 Maya 的 cohort 口径更新指标文档",s1:"锁定 referral 实验的成功指标",t2:"为设计评审准备三个问题",s2:"设计评审：referral 入口",
+ emptyHello:n=>`欢迎，${n}。`,emptyL2:"先把你的看板搭起来。",emptyBox:"你的任务会出现在这里。",
+ back:"返回",cont:"继续",skip:"先跳过",
+ w_eb:"欢迎",w_h:"恭喜，你找到了专属 PM 的追踪看板。",w_p:"专为 PM 设计：会议之间那些零散的需求、答复和待跟进事项，都在这里接住。",
+ w_pills:["下一步行动","在等谁","要问的问题","1:1 记录"],w_oss:"<b>开源项目。</b>用得顺手的话，欢迎 fork，按你的工作方式随意改。",w_go:"开始",w_lang:"语言",
+ p_eb:"开始之前",p_h:"你的工作内容，只属于你。",p_p:"你的数据去了哪里，一条一条说清楚。",
+ p_rows:[["✓","ok","工作内容只存在你的电脑上","任务、问题、转写稿和 API key，都不会传给我们。"],
+  ["@","acc","我们只存一样东西：你的邮箱","只用来统计注册人数和发送产品更新。不分享，不出售。"],
+  ["→","acc","AI 请求直接发给你选的服务商","从你的电脑直接发出，使用你自己的 key。"],
+  ["◐","warn","转写在你的 Mac 本地完成","Mac 应用使用苹果的本地语音识别。在浏览器里则使用浏览器自带的语音服务。"],
+  ["✕","mute","绝不会有","没有数据分析、追踪器或广告。"]],
+ p_more:"随时可以在设置里导出或清除你的数据。",p_code:"查看源代码 ↗",p_go:"明白了",
+ s_eb:"注册",s_h:"用邮箱注册",s_p:"邮箱是我们唯一会保存的信息，用来了解有多少人在用 Tracker，并在新版本发布时通知你。",s_email:"邮箱",s_ph:"you@example.com",s_note:"绝不分享或出售。看板内容只留在这台电脑上。",s_go:"注册",
+ ab_eb:"关于你",ab_h:"怎么称呼你？",ab_p:"这些只保存在你的电脑上，「今天」页面会用名字跟你打招呼。",ab_name:"你的名字",ab_namePh:"Justin",ab_proj:"你在做什么项目？",ab_projPh:"Referral 项目 v2",
+ err_req:"填写后才能继续。",err_email:"请输入有效邮箱，例如 you@example.com。",err_people:"至少添加一位对接人，输入后按回车。",
+ a_eb:"可选",a_h:"连接 AI 模型",a_p:"AI 会把对话内容整理成答复、下一步和待跟进事项。用你已经在付费的任意服务商都可以。",
+ a_tabs:["记录","整理","催办","提问"],a_prov:"服务商",a_how:p=>p==="Other"?"如何设置自定义接口":`如何获取 ${p} API key`,
+ a_test:"测试",a_okmsg:"✓ 已连接，找到 6 个模型。",a_m1:"整理用的模型",a_m2:"速记用的模型",a_after:"测试后选择",a_keynote:"key 只保存在这台电脑上，只会发给上面选的服务商。",a_save:"保存并继续",a_saveOnly:"保存",a_title:"AI 设置",a_status:"未连接",
+ how_tail:"费用记在你自己的账户上，一次会议通常只要几分钱。",
+ m_eb:"推荐",m_h:"下载 Mac 应用",m_p:"同一个看板，抬眼就能看到。",
+ m_perks:[["▣","悬浮在桌面上","可以置顶在其他窗口之上，也可以收进菜单栏。"],["◐","苹果本地语音转写","录下 1:1，在你的 Mac 上私密转写。"],["↻","开机自动打开","第一个会议之前，今天要推的事已经摆在眼前。"]],
+ m_dl:"下载 Mac 版",m_meta:"免费 · macOS 13+ · Apple 芯片或 Intel",m_first:"首次打开：右键点应用，选择「打开」。",m_later:"继续用浏览器",
+ d_eb:"准备好了",d_h:n=>`一切就绪，${n}。`,d_p:"已经放好了一周的示例数据，可以先随便看看。准备好之后，在顶部横幅点「开始我自己的看板」。",d_go:"打开我的看板",
+ st_title:"设置",st_lang:"语言",st_ai:"AI",st_aiRow:"未连接",st_aiBtn:"去设置",st_data:"你的数据",st_dataL:"只保存在这台电脑上",st_exp:"导出",st_imp:"导入",st_erase:"清除全部数据",st_acct:"账号",st_acctL:"justin@example.com",st_out:"退出登录",st_help:"帮助",st_tour:"重新查看欢迎引导",st_code:"查看源代码 ↗",st_done:"完成",
+ su_eb:"你自己的看板",su_h:"搭建你的看板",su_p:"填三样东西，看板就是你的了。",su_proj:"你在做什么项目？",su_projPh:"Referral 项目 v2",su_people:"你最常对接的人？",su_peoplePh:"输入名字和团队，按回车",su_task:"第一个任务",su_taskPh:"写 referral 入口的 PRD",su_next:"它的下一步",su_nextPh:"先写问题陈述",su_go:"创建我的看板",su_later:"先空着开始",
+ note:"静态预览 · 居中卡片 · 顶部可切换 English / 中文 · 「AI 设置」和「设置」从顶栏单独打开"}};
+const DEMO={en:[
+ `<div class="live"><i></i>Recording · on-device · 12:47</div><div class="ln"><span class="sp" style="color:var(--violet)">Maya</span>Per signup cohort. <mark>Exclude reactivated users</mark>, otherwise the invite channel looks better.</div><div class="ln"><span class="sp" style="color:var(--accent)">You</span>I'll update the metric spec today.</div><div class="cap">Live transcript on your Mac. AI highlights answers and promises.</div>`,
+ `<div class="row"><span class="ic" style="background:var(--ok-soft);color:var(--ok)">A</span>D7 retention = per signup cohort</div><div class="row"><span class="ic" style="background:var(--accent-soft);color:var(--accent)">N</span>Update metric spec, share Friday</div><div class="row"><span class="ic" style="background:var(--warn-soft);color:var(--warn)">W</span>Waiting on Maya: power calc, Thu</div><div class="cap">Accept or skip each update. One click applies them.</div>`,
+ `<div class="bub">Hi Leo, could you look at the tracking schema today? It's holding up the event spec for the referral test.</div><div class="cap">AI drafts a friendly Slack nudge. Copy, tweak, send.</div>`,
+ `<div class="bub" style="color:var(--ink-2)">Why exclude reactivated users?</div><div class="bub">Maya said they return through invite links more often, which would inflate the referral channel's retention.</div><div class="cap">Ask anything about a meeting you captured.</div>`],
+zh:[
+ `<div class="live"><i></i>录音中 · 本地转写 · 12:47</div><div class="ln"><span class="sp" style="color:var(--violet)">Maya</span>按注册 cohort 算。<mark>回流用户要排除</mark>，不然邀请渠道会显得更好。</div><div class="ln"><span class="sp" style="color:var(--accent)">我</span>我今天就更新指标文档。</div><div class="cap">在你的 Mac 上实时转写，AI 标出答复和承诺。</div>`,
+ `<div class="row"><span class="ic" style="background:var(--ok-soft);color:var(--ok)">答</span>D7 留存按注册 cohort 计算</div><div class="row"><span class="ic" style="background:var(--accent-soft);color:var(--accent)">下</span>更新指标文档，周五同步</div><div class="row"><span class="ic" style="background:var(--warn-soft);color:var(--warn)">等</span>等 Maya：样本量计算，周四</div><div class="cap">每条更新可以接受或跳过，一键写进看板。</div>`,
+ `<div class="bub">Leo，今天能帮忙看下埋点 schema 吗？referral 实验的事件文档在等它。</div><div class="cap">AI 帮你起草一条友好的 Slack 催办，复制、改改就能发。</div>`,
+ `<div class="bub" style="color:var(--ink-2)">为什么要排除回流用户？</div><div class="bub">Maya 说回流用户更常通过邀请链接回来，会抬高 referral 渠道的留存。</div><div class="cap">对任何一次记录过的会议提问。</div>`]};
+const PROVS=[["Anthropic","Claude","sk-ant-…","console.anthropic.com"],["OpenAI","GPT","sk-…","platform.openai.com"],["Google","Gemini","AIza…","aistudio.google.com"],["DeepSeek","DeepSeek","sk-…","platform.deepseek.com"],["OpenRouter","Any model","sk-or-…","openrouter.ai"],["Other","OpenAI-compatible","Base URL + key","Groq, Together, local Ollama"]];
+let L="en",screen="0",tab=0,prov=0,people=["Maya · DS","Leo · Eng"];
+const ST=["0","1","2","about","3","4","5"];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function bars(){const i=ST.indexOf(screen);return `<div class="steps">${ST.map((s,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>`;}
+function head(eb,close){return `<div class="chead"><span class="eyebrow">${eb}</span>${close?`<button class="x" data-close aria-label="Close">×</button>`:""}</div>`;}
+function provBlock(t){const p=PROVS[prov];
+  return `<div class="flabel" style="margin-top:6px">${t.a_prov}</div><div class="provs">${PROVS.map((x,i)=>`<button class="prov${i===prov?" on":""}" data-p="${i}">${x[0]}<small>${x[1]}</small></button>`).join("")}</div>
+  <details><summary>${t.a_how(p[0])}</summary><ol>${p[0]==="Other"?`<li>${L==="zh"?"支持任何 OpenAI 兼容接口：":"Works with any OpenAI-compatible endpoint: "}${p[3]}.</li><li>${L==="zh"?"填入接口地址，例如":"Enter the base URL, for example"} <code>http://localhost:11434/v1</code>.</li>`:
+    `<li>${L==="zh"?"登录":"Sign in at"} <code>${p[3]}</code>.</li><li>${L==="zh"?"进入 API keys，新建一个 key。":"Open API keys and create a new key."}</li><li>${L==="zh"?"复制 key，粘贴到下面。":"Copy the key and paste it below."}</li>`}<li>${t.how_tail}</li></ol></details>
+  <div class="keyrow"><input class="inp" placeholder="${p[2]}" aria-label="API key"><button class="btn">${t.a_test}</button></div>
+  <div class="ok">${t.a_okmsg}</div>
+  <div class="two"><label><span class="flabel" style="margin-top:4px">${t.a_m1}</span><select class="sel"><option>${prov===0?"claude-sonnet-5-5":t.a_after}</option></select></label><label><span class="flabel" style="margin-top:4px">${t.a_m2}</span><select class="sel"><option>${prov===0?"claude-haiku-5-5":t.a_after}</option></select></label></div>
+  <p class="hint">${t.a_keynote}</p>`;}
+const VALS={};
+function field(id,label,type,ph,val){const v=VALS[id]!=null?VALS[id]:val;return `<label><span class="flabel">${label}<span class="req">*</span></span><input class="inp" id="f-${id}" type="${type}" placeholder="${ph}" value="${esc(v)}" data-f="${id}"></label><div class="err" id="err-${id}" hidden></div>`;}
+function validate(spec){const t=T[L];let ok=true,first=null;
+  spec.split(",").forEach(r=>{const [id,kind]=r.split(":");
+    if(id==="ppl"){const bad=!people.length;document.getElementById("err-ppl").hidden=!bad;if(bad){ok=false;first=first||document.getElementById("pplIn");}return;}
+    const el=document.getElementById("f-"+id),e=document.getElementById("err-"+id),v=el.value.trim();
+    let msg="";if(!v)msg=t.err_req;else if(kind==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v))msg=t.err_email;
+    el.classList.toggle("bad",!!msg);e.textContent=msg;e.hidden=!msg;if(msg){ok=false;first=first||el;}});
+  if(first)first.focus();return ok;}
+function card(){const t=T[L],n=document.getElementById("nameIn")?.value||(L==="zh"?"Justin":"Justin");
+  const c=document.getElementById("card");c.className="card"+(screen==="settings"||screen==="ai"?" wide":"");
+  if(screen==="0")return `${bars()}<div class="chead"><span class="eyebrow">${t.w_eb}</span><div class="langs" aria-label="${t.w_lang}"><button data-l="en" class="${L==="en"?"on":""}">English</button><button data-l="zh" class="${L==="zh"?"on":""}">中文</button></div></div>
+    <h2>${t.w_h}</h2><p>${t.w_p}</p><div class="pills">${t.w_pills.map(x=>`<span class="pill">${x}</span>`).join("")}</div>
+    <div class="oss"><span>◇</span><span>${t.w_oss}</span></div><div class="acts"><button class="btn pri" data-go="1">${t.w_go}</button><span class="grow"></span><button class="lnk" data-go="import">${t.imp_link}</button></div>`;
+  if(screen==="1")return `${bars()}${head(t.p_eb)}<h2>${t.p_h}</h2><p>${t.p_p}</p>
+    <div class="flow">${t.p_rows.map(([ic,k,h,d])=>{const c={ok:"var(--ok-soft);color:var(--ok)",acc:"var(--accent-soft);color:var(--accent)",warn:"var(--warn-soft);color:var(--warn)",mute:"var(--surface-2);color:var(--ink-2)"}[k];return `<div class="fl"><span class="ic" style="background:${c}">${ic}</span><div><div class="h">${h}</div><div class="d">${d}</div></div></div>`;}).join("")}</div>
+    <p class="hint" style="margin-top:10px">${t.p_more} <button class="lnk" style="font-size:12px">${t.p_code}</button></p>
+    <div class="acts"><button class="btn pri" data-go="2">${t.p_go}</button><span class="grow"></span><button class="skip" data-go="0">${t.back}</button></div>`;
+  if(screen==="2")return `${bars()}${head(t.s_eb)}<h2>${t.s_h}</h2><p>${t.s_p}</p>
+    ${field("em",t.s_email,"email",t.s_ph,"")}
+    <p class="hint">${t.s_note}</p>
+    <div class="acts"><button class="btn pri" data-go="about" data-req="em:email">${t.s_go}</button><span class="grow"></span><button class="skip" data-go="1">${t.back}</button></div>`;
+  if(screen==="about")return `${bars()}${head(t.ab_eb)}<h2>${t.ab_h}</h2><p>${t.ab_p}</p>
+    ${field("nm",t.ab_name,"text",t.ab_namePh,"")}${field("pj",t.ab_proj,"text",t.ab_projPh,"")}
+    <div class="acts"><button class="btn pri" data-go="3" data-req="nm,pj">${t.cont}</button><span class="grow"></span><button class="skip" data-go="2">${t.back}</button></div>`;
+  if(screen==="3")return `${bars()}${head(t.a_eb)}<h2>${t.a_h}</h2><p>${t.a_p}</p>
+    <div class="tabs">${t.a_tabs.map((x,i)=>`<button class="${i===tab?"on":""}" data-t="${i}">${x}</button>`).join("")}</div><div class="demo">${DEMO[L][tab]}</div>${provBlock(t)}
+    <div class="acts"><button class="btn pri" data-go="4">${t.a_save}</button><span class="grow"></span><button class="skip" data-go="4">${t.skip}</button></div>`;
+  if(screen==="4")return `${bars()}${head(t.m_eb)}<h2>${t.m_h}</h2><p>${t.m_p}</p>
+    <div class="perks">${t.m_perks.map(([ic,h,d])=>`<div class="perk"><span class="ic">${ic}</span><div><div class="h">${h}</div><div class="d">${d}</div></div></div>`).join("")}</div>
+    <div class="dl"><div class="appicon">T</div><div style="min-width:0"><div style="font-weight:500">Tracker</div><div class="hint" style="margin:0">${t.m_meta.split(" · ").map(x=>`<span style="white-space:nowrap">${x}</span>`).join(" · ")}</div></div><span class="grow"></span><button class="btn pri">${t.m_dl}</button></div>
+    <p class="hint">${t.m_first}</p>
+    <div class="acts"><button class="btn pri" data-go="5">${t.cont}</button><span class="grow"></span><button class="skip" data-go="5">${t.m_later}</button></div>`;
+  if(screen==="5")return `${bars()}${head(t.d_eb)}<h2>${t.d_h(VALS.nm||"Justin")}</h2><p>${t.d_p}</p><div class="acts"><button class="btn pri" data-close>${t.d_go}</button></div>`;
+  if(screen==="ai")return `${head(t.a_title,true)}<h2>${t.a_h}</h2><p>${t.a_p}</p>
+    <div class="tabs">${t.a_tabs.map((x,i)=>`<button class="${i===tab?"on":""}" data-t="${i}">${x}</button>`).join("")}</div><div class="demo">${DEMO[L][tab]}</div>${provBlock(t)}
+    <div class="acts"><button class="btn pri" data-close>${t.a_saveOnly}</button><span class="grow"></span><button class="skip" data-close>${L==="zh"?"取消":"Cancel"}</button></div>`;
+  if(screen==="settings")return `${head(t.st_title,true)}
+    <div class="set"><h3>${t.st_lang}</h3><div class="langs" style="margin:0"><button data-l="en" class="${L==="en"?"on":""}">English</button><button data-l="zh" class="${L==="zh"?"on":""}">中文</button></div></div>
+    <div class="set"><h3>${t.st_ai}</h3><div class="setrow"><span class="l">${t.st_aiRow}</span><button class="btn sm" data-open="ai">${t.st_aiBtn}</button></div></div>
+    <div class="set"><h3>${t.st_data}</h3><div class="setrow"><span class="l">${t.st_dataL}</span><button class="btn sm">${t.st_exp}</button><button class="btn sm">${t.st_imp}</button><button class="btn sm danger">${t.st_erase}</button></div></div>
+    <div class="set"><h3>${t.st_acct}</h3><div class="setrow"><span class="l">${t.st_acctL}</span><button class="btn sm">${t.st_out}</button></div></div>
+    <div class="set"><h3>${t.st_help}</h3><div class="setrow"><button class="lnk" data-go="0">${t.st_tour}</button><span class="grow"></span><button class="lnk">${t.st_code}</button></div></div>
+    <div class="acts"><button class="btn pri" data-close>${t.st_done}</button></div>`;
+  if(screen==="setup")return `${head(t.su_eb,true)}<h2>${t.su_h}</h2><p>${t.su_p}</p>
+    ${field("sp",t.su_proj,"text",t.su_projPh,"")}
+    <label><span class="flabel">${t.su_people}<span class="req">*</span></span><input class="inp" id="pplIn" placeholder="${t.su_peoplePh}"></label>
+    <div class="chips">${people.map((p,i)=>`<span class="chip">${esc(p)}<button data-rm="${i}" aria-label="Remove">×</button></span>`).join("")}</div><div class="err" id="err-ppl" hidden>${t.err_people}</div>
+    ${field("st",t.su_task,"text",t.su_taskPh,"")}${field("sn",t.su_next,"text",t.su_nextPh,"")}
+    <div class="acts"><button class="btn pri" data-close data-req="sp,st,sn,ppl">${t.su_go}</button></div>`;
+  if(screen==="import")return `${head(t.imp_eb,true)}<h2>${t.imp_h}</h2><p>${t.imp_p}</p>
+    <div class="drop"><span class="big">⇪</span><span>${t.imp_drop}</span><button class="btn sm" data-go="scanned">${t.imp_pick}</button></div>
+    <div class="kinds">${t.imp_kinds.map(([h,d])=>`<div class="kind"><span>•</span><span><b>${h}</b><br>${d}</span></div>`).join("")}</div>
+    <div class="acts"><span class="grow"></span><button class="skip" data-go="0">${t.back}</button></div>`;
+  if(screen==="scanned")return `${head(t.imp_eb,true)}<h2>${t.imp_h}</h2>
+    <div class="scan"><div class="f">tracker-backup-2026-10-12.json · 18 KB</div><div class="imp" style="margin-top:6px">✓ ${t.imp_found}</div>
+      <div class="counts">${t.imp_c.map((l,i)=>`<div class="cnt"><div class="v">${[12,8,4,3][i]}</div><div class="l">${l}</div></div>`).join("")}</div>
+      <div class="hint">${t.imp_from}</div></div>
+    <p class="hint">${t.imp_mode}</p>
+    <div class="acts"><button class="btn pri" data-go="5">${t.imp_go}</button><span class="grow"></span><button class="skip" data-go="import">${t.imp_other}</button></div>`;
+  return "";
+}
+function board(){const t=T[L],named=ST.indexOf(screen)>=4||!ST.includes(screen);
+  if(screen==="setup")return `<div class="date">${t.date}</div><h1 class="hello"><span>${t.emptyHello("Justin")}</span><br><span class="l2">${t.emptyL2}</span></h1><div class="empty-board">${t.emptyBox}</div>`;
+  return `<div class="date">${t.date}</div><h1 class="hello"><span>${t.hello(named?(VALS.nm||"Justin"):"")}</span><br><span class="l2">${t.l2}</span></h1>
+    <div class="blabel">${t.next}</div><div class="item"><span class="circ"></span><div><div class="t">${t.t1}</div><div class="s">${t.s1}</div></div></div><div class="item"><span class="circ"></span><div><div class="t">${t.t2}</div><div class="s">${t.s2}</div></div></div>`;}
+function show(){const t=T[L];document.documentElement.lang=L==="zh"?"zh-CN":"en";
+  document.getElementById("nav").innerHTML=t.nav.map((x,i)=>`<span class="${i===0?"on":""}">${x}</span>`).join("");
+  document.getElementById("aiLbl").textContent=t.ai;document.getElementById("dlBtn").textContent=t.dl;
+  document.getElementById("board").innerHTML=board();
+  document.getElementById("scrim").hidden=screen==="closed";
+  if(screen!=="closed")document.getElementById("card").innerHTML=card();
+  document.getElementById("note").textContent=t.note;
+  document.querySelectorAll("#screens button").forEach(b=>b.classList.toggle("on",b.dataset.v===screen));
+  document.querySelectorAll("#langPick button").forEach(b=>b.classList.toggle("on",b.dataset.l===L));
+  const pi=document.getElementById("pplIn");if(pi)pi.onkeydown=e=>{if(e.key==="Enter"&&pi.value.trim()){people.push(pi.value.trim());show();const ep=document.getElementById("err-ppl");if(ep)ep.hidden=true;document.getElementById("pplIn").focus();}};
+  glue();evenRows();
+}
+function evenRows(){document.querySelectorAll("#card .pills,#card .chips,#card .setrow,#card .tabs,#card .provs").forEach(el=>{el.classList.remove("even");el.style.gridTemplateColumns="";
+  const kids=[...el.children].filter(k=>k.offsetParent!==null);if(kids.length<2)return;
+  const rows=lines(kids);if(rows.length<2)return;
+  if(rows[rows.length-1].length===1){const cols=Math.ceil(kids.length/rows.length);el.classList.add("even");el.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;}});}
+function lines(kids){const rows=[];let bottom=-1e9;kids.map(k=>[k,k.getBoundingClientRect()]).sort((x,y)=>x[1].top-y[1].top).forEach(([k,r])=>{if(r.top>=bottom-1){rows.push([k]);bottom=r.bottom;}else{rows[rows.length-1].push(k);bottom=Math.max(bottom,r.bottom);}});return rows;}
+window.addEventListener("resize",evenRows);
+function glue(){document.querySelectorAll("#card h2,#card p,#card .d,#board .t,#board .s").forEach(el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let last=null,n;while(n=w.nextNode())if(n.nodeValue.trim())last=n;if(last&&L==="en")last.nodeValue=last.nodeValue.replace(/([^\s])[ ]+(\S+\s*)$/,"$1 $2");});}
+document.addEventListener("input",e=>{const f=e.target.dataset&&e.target.dataset.f;if(f){VALS[f]=e.target.value;e.target.classList.remove("bad");const er=document.getElementById("err-"+f);if(er)er.hidden=true;}});
+document.addEventListener("click",e=>{
+  const s=e.target.closest("#screens button");if(s){screen=s.dataset.v;show();return;}
+  const l=e.target.closest("[data-l]");if(l){L=l.dataset.l;show();return;}
+  const g=e.target.closest("[data-go]");if(g){if(g.dataset.req&&!validate(g.dataset.req))return;screen=g.dataset.go;show();return;}
+  const o=e.target.closest("[data-open]");if(o){screen=o.dataset.open;show();return;}
+  const cl=e.target.closest("[data-close]");if(cl){if(cl.dataset.req&&!validate(cl.dataset.req))return;screen="closed";show();return;}
+  const tb=e.target.closest("[data-t]");if(tb){tab=+tb.dataset.t;show();return;}
+  const p=e.target.closest(".prov");if(p){prov=+p.dataset.p;show();return;}
+  const rm=e.target.closest("[data-rm]");if(rm){people.splice(+rm.dataset.rm,1);show();return;}
+});
+const root=document.documentElement,th=document.getElementById("theme");
+const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+const sync=()=>th.textContent=isDark()?"Light":"Dark";
+th.onclick=()=>{root.dataset.theme=isDark()?"light":"dark";sync();};sync();show();
+</script>
+</body>
+</html>

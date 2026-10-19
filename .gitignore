@@ -1,0 +1,9 @@
+# build output (docs/ is committed: it is the GitHub Pages site)
+dist/
+build/
+mac/Resources/web/
+
+# local only
+.claude/
+.DS_Store
+design/case-study-brief.md

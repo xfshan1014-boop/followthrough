@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key><string>Followthrough</string>
+  <key>CFBundleDisplayName</key><string>Followthrough</string>
+  <key>CFBundleIdentifier</key><string>io.github.xfshan1014.followthrough</string>
+  <key>CFBundleExecutable</key><string>Followthrough</string>
+  <key>CFBundleIconFile</key><string>AppIcon</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleShortVersionString</key><string>__VERSION__</string>
+  <key>CFBundleVersion</key><string>__BUILD__</string>
+  <key>LSMinimumSystemVersion</key><string>13.0</string>
+  <key>LSApplicationCategoryType</key><string>public.app-category.productivity</string>
+  <key>NSHighResolutionCapable</key><true/>
+  <key>NSMicrophoneUsageDescription</key><string>Followthrough listens during a meeting you record so it can transcribe it on your Mac.</string>
+  <key>NSSpeechRecognitionUsageDescription</key><string>Followthrough uses Apple's speech recognition to turn your recorded meeting into a transcript, on your Mac when possible.</string>
+  <key>NSHumanReadableCopyright</key><string>Open source under the MIT License.</string>
+</dict>
+</plist>

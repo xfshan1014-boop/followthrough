@@ -1,0 +1,1123 @@
+<title>PM Daily Tracker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
+<style>
+/* Layout: a morning briefing. Main column = what to do; right rail = who you're waiting on and what they said. */
+:root{
+  --bg:#f6f6f3;--surface:#ffffff;--surface-2:#f0efeb;--hover:#ecebe6;
+  --border:#e5e3dd;--border-strong:#d3d0c8;
+  --ink:#1c1b19;--ink-2:#67645e;--ink-3:#9c988f;
+  --accent:#2f56c9;--accent-soft:#e7ecfb;
+  --danger:#bd3f2e;--danger-soft:#fae9e5;
+  --warn:#9f6612;--warn-soft:#f8eedb;
+  --ok:#2a7a4e;--ok-soft:#e3f1e8;
+  --violet:#6548b3;--violet-soft:#eee9f9;
+  --clay:#b95d38;--clay-soft:#f7e9e2;
+  --on-ink:#ffffff;
+  --display:"Newsreader",Georgia,"Times New Roman",serif;
+  --body:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--hover:#2a2a27;
+  --border:#2e2d2a;--border-strong:#3e3d39;
+  --ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;
+  --accent:#88a5ff;--accent-soft:#1f2946;
+  --danger:#f0836f;--danger-soft:#3a1f1a;
+  --warn:#e2ab52;--warn-soft:#372a14;
+  --ok:#68c690;--ok-soft:#173122;
+  --violet:#b49df0;--violet-soft:#29223f;
+  --clay:#e68d66;--clay-soft:#38241b;
+  --on-ink:#131312;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#131312;--surface:#1b1b1a;--surface-2:#242422;--hover:#2a2a27;
+  --border:#2e2d2a;--border-strong:#3e3d39;
+  --ink:#ecebe6;--ink-2:#a6a39b;--ink-3:#716e67;
+  --accent:#88a5ff;--accent-soft:#1f2946;
+  --danger:#f0836f;--danger-soft:#3a1f1a;
+  --warn:#e2ab52;--warn-soft:#372a14;
+  --ok:#68c690;--ok-soft:#173122;
+  --violet:#b49df0;--violet-soft:#29223f;
+  --clay:#e68d66;--clay-soft:#38241b;
+  --on-ink:#131312;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p,.t,.s,.d,.tx-t,.sum,.pv,.pd,.ans-r,.note-v{text-wrap:pretty}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.app{max-width:1100px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.top{display:flex;align-items:center;gap:18px;padding:13px 22px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.mark{width:20px;height:20px;border-radius:6px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font-size:11px;font-weight:600}
+.nav{display:flex;gap:2px}
+.nav a{padding:5px 11px;border-radius:7px;color:var(--ink-2);font-size:13px;font-weight:500;text-decoration:none}
+.nav a:hover{background:var(--hover);color:var(--ink)}
+.nav a.on{background:var(--surface-2);color:var(--ink)}
+.grow{flex:1}
+.ghost{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 10px;font-size:12.5px}
+.ghost:hover{border-color:var(--border-strong);color:var(--ink)}
+
+.banner{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:9px 22px;background:var(--surface-2);border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink-2)}
+.banner b{color:var(--ink);font-weight:500}
+.linkbtn{border:0;background:none;padding:0;color:var(--accent);font-size:12.5px;font-weight:500}
+.linkbtn.danger{color:var(--danger)}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 320px}
+.main{padding:30px 32px 34px;min-width:0}
+.rail{border-left:1px solid var(--border);background:var(--bg);padding:26px 22px;min-width:0}
+.label{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:500;color:var(--ink-3);letter-spacing:.03em;margin:0 0 10px}
+.label .c{font-variant-numeric:tabular-nums}
+.label .act{margin-left:auto}
+.sec{margin-top:28px}
+
+.date{font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+.hello{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.18;letter-spacing:-.01em}
+.hello .l2{color:var(--ink-2)}
+.sub{color:var(--ink-2);margin:10px 0 0;font-size:13.5px}
+
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:1px 7px;border-radius:5px;white-space:nowrap;line-height:1.6}
+.P0{background:var(--danger-soft);color:var(--danger)}
+.P1{background:var(--warn-soft);color:var(--warn)}
+.P2{background:var(--surface-2);color:var(--ink-2)}
+.who{background:var(--violet-soft);color:var(--violet)}
+.okt{background:var(--ok-soft);color:var(--ok)}
+.blk{background:var(--danger-soft);color:var(--danger)}
+
+.item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface)}
+.item+.item{margin-top:8px}
+.item:hover{border-color:var(--border-strong)}
+.check{width:18px;height:18px;border:1.5px solid var(--border-strong);border-radius:50%;flex:none;margin-top:1px;background:var(--surface);padding:0;position:relative}
+.check:hover{border-color:var(--ok);background:var(--ok-soft)}
+.item .body{flex:1;min-width:0;cursor:pointer}
+.item .t{font-weight:500;font-size:14.5px}
+.item .s{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.item .src{font-size:11.5px;color:var(--ok);margin-top:5px}
+.item .tags{display:flex;gap:5px;flex:none;align-items:center}
+.due{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.due.late{color:var(--danger);font-weight:500}
+.adv{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.adv input{flex:1;min-width:180px}
+
+.inp,.sel,.ta{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:7px 10px;font-size:13.5px;width:100%}
+.inp:focus,.sel:focus,.ta:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.ta{min-height:90px;resize:vertical;line-height:1.55}
+.btn{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:500;white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.btn.pri:hover{opacity:.9}
+.btn.claude{background:var(--clay);border-color:var(--clay);color:#fff}
+.btn.claude:hover{opacity:.92}
+.btn.stop{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.sm{padding:3px 9px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:default}
+
+.row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px;align-items:baseline}
+.row:last-child{border-bottom:0}
+.row .d{width:64px;flex:none;color:var(--ink-3);font-size:12.5px;font-variant-numeric:tabular-nums}
+.row .t{flex:1;min-width:0}
+.row.click{cursor:pointer}.row.click:hover .t{color:var(--accent)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.card+.label{margin-top:22px}
+.wait{padding:8px 0;border-bottom:1px solid var(--border)}
+.wait:last-child{border-bottom:0}
+.wait .h{display:flex;justify-content:space-between;gap:8px}
+.wait .n{font-size:13.5px;font-weight:500}
+.wait .age{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.wait .age.late{color:var(--danger);font-weight:500}
+.wait .w{font-size:12.5px;color:var(--ink-2)}
+.wait .acts{display:flex;gap:12px;margin-top:4px}
+.draft{margin-top:8px;background:var(--surface-2);border-radius:8px;padding:9px 10px;font-size:13px;line-height:1.5;white-space:pre-wrap}
+.draft .acts{margin-top:6px}
+.ans{padding:8px 0;border-bottom:1px solid var(--border)}
+.ans:last-child{border-bottom:0}
+.ans .q{font-size:12px;color:var(--ink-2)}
+.ans .ans-r{font-size:13.5px;margin:2px 0 5px}
+.qgrp{font-size:12px;font-weight:500;color:var(--violet);margin:8px 0 2px}
+.qgrp:first-child{margin-top:0}
+.qline{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:13px}
+.qline .qt{flex:1;min-width:0}
+.qline .linkbtn{font-size:11.5px;flex:none}
+.empty{color:var(--ink-3);font-size:13px;padding:6px 0}
+.capcard{display:flex;align-items:center;gap:10px;border:1px dashed var(--border-strong);border-radius:var(--r);padding:11px 13px;color:var(--ink-2);font-size:13px;text-decoration:none;background:var(--surface)}
+.capcard:hover{border-color:var(--clay);color:var(--ink)}
+.rec{width:8px;height:8px;border-radius:50%;background:var(--danger);flex:none}
+.foot{max-width:1100px;margin:14px auto 0;color:var(--ink-3);font-size:12px;text-align:center}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(20,18,15,.38);z-index:40;display:flex;justify-content:flex-end}
+.drawer{width:min(440px,100%);height:100%;background:var(--surface);border-left:1px solid var(--border);overflow:auto;
+  padding:22px 22px calc(28px + env(safe-area-inset-bottom,0px));padding-right:max(22px,env(safe-area-inset-right,0px));padding-top:calc(22px + env(safe-area-inset-top,0px))}
+.drawer h2{font-size:17px;font-weight:600;margin-bottom:16px}
+.f{margin-bottom:13px}
+.f>label{display:block;font-size:11.5px;color:var(--ink-3);margin-bottom:5px;font-weight:500}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hist{border-left:2px solid var(--border);padding-left:12px}
+.hist .e{font-size:12.5px;margin-bottom:9px}
+.hist .m{color:var(--ink-3);font-size:11.5px}
+.dacts{display:flex;gap:8px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--on-ink);padding:9px 14px;border-radius:10px;font-size:13px;z-index:60;display:flex;gap:12px;align-items:center}
+.toast .linkbtn{color:var(--on-ink);text-decoration:underline}
+
+/* capture */
+.sess{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;padding:24px 28px 18px;border-bottom:1px solid var(--border)}
+.sess .meta{min-width:0;flex:1 1 360px}
+.sess h1{font-family:var(--display);font-weight:400;font-size:27px;line-height:1.2;letter-spacing:-.01em;margin:2px 0 8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-2)}
+.ctrl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.timer{font-family:var(--mono);font-size:19px;font-variant-numeric:tabular-nums}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--danger)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--danger);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.wave{display:flex;align-items:center;gap:3px;height:30px;padding:0 28px;margin-top:12px;overflow:hidden}
+.wave span{flex:1;max-width:4px;min-width:2px;border-radius:2px;background:var(--border-strong);transition:height .3s}
+.wave.on span.hot{background:var(--danger)}
+.setup{padding:22px 28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-bottom:1px solid var(--border)}
+.setup .wide{grid-column:1/-1}
+.tx{padding:16px 28px 26px;min-width:0}
+.line{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:8px 0}
+.line .ts{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:3px}
+.line .spn{font-size:12px;font-weight:600;margin-bottom:1px}
+.line .tx-t{font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
+.me{color:var(--accent)}.them{color:var(--violet)}
+mark{background:var(--ok-soft);color:inherit;border-radius:4px;padding:0 2px}
+mark.pr{background:var(--warn-soft)}
+.caret{display:inline-block;width:2px;height:15px;background:var(--ink-3);vertical-align:-2px;animation:pulse 1s steps(2) infinite;margin-left:2px}
+.txbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+.pill{font-size:12px;color:var(--ink-2);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+.hint{font-size:12.5px;color:var(--ink-3)}
+.emptytx{border:1px dashed var(--border-strong);border-radius:12px;padding:22px;text-align:center;display:grid;gap:12px;justify-items:center}
+.emptytx p{margin:0;color:var(--ink-2);max-width:46ch}
+.spark{width:18px;height:18px;border-radius:5px;background:var(--clay-soft);color:var(--clay);display:inline-grid;place-items:center;font-size:11px;font-weight:600;flex:none}
+.qbox{display:flex;gap:9px;padding:5px 0;font-size:13px;align-items:flex-start}
+.qbox .bx{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border-strong);flex:none;margin-top:2px;position:relative}
+.qbox.done .bx{background:var(--ok);border-color:var(--ok)}
+.qbox.done .bx::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.qbox.done .qt{color:var(--ink-2)}
+.qbox .a{font-size:12px;color:var(--ok);margin-top:1px}
+.note{border-top:1px solid var(--border);padding:9px 0 3px}
+.note:first-child{border-top:0;padding-top:0}
+.note .k{font-size:11px;font-weight:500;margin-bottom:2px}
+.note .note-v{font-size:13.5px;line-height:1.45}
+.note .to{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.thinking{font-size:12.5px;color:var(--ink-3);display:flex;align-items:center;gap:7px}
+.dots i{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--ink-3);margin-right:2px;animation:pulse 1.2s infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+.err{font-size:12.5px;color:var(--danger);margin-top:6px}
+.sum{font-family:var(--display);font-size:18.5px;line-height:1.55;margin:0 0 24px}
+.prop{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border);border-radius:11px;padding:12px 14px;background:var(--surface)}
+.prop+.prop{margin-top:8px}
+.prop .ic{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:11.5px;font-weight:600;flex:none}
+.prop .b{flex:1;min-width:0}
+.prop .k{font-size:11.5px;color:var(--ink-3)}
+.prop .pv{font-size:14px;font-weight:500;margin:1px 0 2px}
+.prop .pd{font-size:12.5px;color:var(--ink-2)}
+.prop .acts{display:flex;gap:6px;flex:none;flex-wrap:wrap}
+.prop.added{border-color:var(--ok);background:var(--ok-soft)}
+.prop.skipped{opacity:.55}
+.prop .edit{display:grid;gap:6px;margin-top:6px}
+.applybar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;padding:12px 14px;border-radius:11px;background:var(--surface-2)}
+.chat .m{font-size:13px;line-height:1.5;padding:7px 0;border-bottom:1px solid var(--border);white-space:pre-wrap}
+.chat .m:last-child{border-bottom:0}
+.chat .m.u{color:var(--ink-2)}
+.ask{display:flex;gap:8px;margin-top:10px}
+.past .row .t{font-weight:500}
+
+/* tasks table + questions inbox */
+.phead{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;padding:26px 30px 14px}
+.phead h1{font-family:var(--display);font-weight:400;font-size:29px;line-height:1.2;letter-spacing:-.01em}
+.phead .sub{color:var(--ink-2);font-size:13px;margin:4px 0 0}
+.phead .inp{width:200px}
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:4px 30px 0}
+.stat{border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;background:var(--bg);text-align:left}
+.stat:hover{border-color:var(--border-strong)}
+.stat.on{border-color:var(--ink)}
+.stat .v{font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .l{font-size:12px;color:var(--ink-2)}
+.fbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:14px 30px;border-bottom:1px solid var(--border)}
+.fchip{font-size:12.5px;color:var(--ink-2);border:1px solid var(--border);border-radius:999px;padding:3px 11px;background:var(--surface)}
+.fchip:hover{border-color:var(--border-strong);color:var(--ink)}
+.fchip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.fbar .sel{width:auto;padding:4px 8px;font-size:12.5px}
+.tbl-wrap{padding:4px 30px 28px;overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:780px}
+.tbl th{text-align:left;font-size:11px;font-weight:500;color:var(--ink-3);padding:10px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl th button{border:0;background:none;padding:0;font:inherit;color:inherit}
+.tbl th button:hover{color:var(--ink)}
+.tbl th .ar{margin-left:3px}
+.tbl td{padding:11px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr.click{cursor:pointer}
+.tbl tr.click:hover td{background:var(--hover)}
+.tbl .t{font-weight:500}
+.tbl .n{font-size:12.5px;color:var(--ink-2);margin-top:1px}
+.tbl tr.done .t{color:var(--ink-2);text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;white-space:nowrap}
+.st i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.qmain{padding:18px 30px 28px;min-width:0}
+.addq{display:grid;grid-template-columns:minmax(0,1fr) 170px 200px auto;gap:8px;margin-bottom:12px}
+.addq .two{grid-column:1/-1}
+.qrow{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:12px;padding:12px 4px;border-bottom:1px solid var(--border);align-items:start}
+.qrow .bx{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-strong);margin-top:3px;background:var(--surface);padding:0;position:relative}
+.qrow .bx:hover{border-color:var(--ok)}
+.qrow.done .bx{background:var(--ok);border-color:var(--ok)}
+.qrow.done .bx::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.qrow .qt{font-weight:500}
+.qrow.done .qt{color:var(--ink-2)}
+.qrow .qm{font-size:12px;color:var(--ink-2);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.qrow .qa{font-size:13px;color:var(--ok);margin-top:4px}
+.qrow .r{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.qrow .ed{display:grid;gap:6px;margin-top:8px}
+.tasklink{border:0;background:none;padding:0;font-size:12px;color:var(--accent)}
+.tasklink:hover{text-decoration:underline}
+.srow{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;padding:6px 8px;border-radius:7px;font-size:13px;text-align:left}
+.srow:hover{background:var(--hover)}
+.srow.on{background:var(--surface-2);font-weight:500}
+.agenda .i{font-size:13px;padding:6px 0;border-bottom:1px solid var(--border)}
+.agenda .i:last-of-type{border-bottom:0}
+
+@media (max-width:880px){
+  .cols{grid-template-columns:1fr}
+  .rail{border-left:0;border-top:1px solid var(--border)}
+  .setup{grid-template-columns:1fr}
+  .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .addq{grid-template-columns:1fr}
+  .nav{order:3;width:100%;overflow-x:auto}
+}
+@media (max-width:520px){
+  .main,.tx,.sess,.setup,.phead,.strip,.fbar,.tbl-wrap,.qmain{padding-left:18px;padding-right:18px}
+  .phead .inp{width:100%}
+  .wave{padding:0 18px}
+  .hello{font-size:26px}
+  .two{grid-template-columns:1fr}
+  .item{flex-wrap:wrap}
+  .item .tags{width:100%;padding-left:30px}
+  .prop{flex-wrap:wrap}
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><div class="mark" aria-hidden="true">T</div>Tracker</div>
+    <nav class="nav" aria-label="Pages">
+      <a href="#today" id="nav-today">Today</a>
+      <a href="#tasks" id="nav-tasks">Tasks</a>
+      <a href="#questions" id="nav-questions">Questions</a>
+      <a href="#capture" id="nav-capture">Capture</a>
+    </nav>
+    <div class="grow"></div>
+    <button class="ghost" id="themeBtn" type="button">Dark</button>
+  </header>
+  <div id="banner"></div>
+  <main id="view" aria-live="polite"></main>
+</div>
+<p class="foot" id="foot">Loading your board…</p>
+<div id="overlay"></div>
+<div id="toast"></div>
+
+<script>
+/* ---------- utilities ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=p=>p+Math.random().toString(36).slice(2,9);
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const TODAY=()=>iso(new Date());
+const addDays=(n,base)=>{const d=base?new Date(base+"T12:00:00"):new Date();d.setDate(d.getDate()+n);return iso(d);};
+const diffDays=(a,b)=>Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5);
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDue(d){if(!d)return "";const n=diffDays(TODAY(),d);if(n<0)return n===-1?"Yesterday":Math.abs(n)+"d late";if(n===0)return "Today";if(n===1)return "Tomorrow";
+  const x=new Date(d+"T12:00:00");return n<7?DOW[x.getDay()]:MON[x.getMonth()]+" "+x.getDate();}
+function fmtLong(){const d=new Date();return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.getDay()]+", "+["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]+" "+d.getDate();}
+const PRI={P0:0,P1:1,P2:2};
+
+/* Keep the last two words of every text block together so no line ends with a lone word. */
+const GLUE_SEL="h1,h2,h3,p,.t,.s,.d,.w,.q,.qt,.ans-r,.tx-t,.sum,.pv,.pd,.note-v,.src,.hint";
+function glue(root){
+  (root||document).querySelectorAll(GLUE_SEL).forEach(el=>{
+    if(el.closest("[contenteditable],textarea,input"))return;
+    const words=el.textContent.trim().split(/\s+/);if(words.length<4)return;
+    const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let last=null,n;
+    while(n=w.nextNode())if(n.nodeValue.trim())last=n;
+    if(!last)return;
+    const v=last.nodeValue,m=v.match(/^([\s\S]*\S)[ \t]+(\S+\s*)$/);
+    if(m)last.nodeValue=m[1]+" "+m[2];
+  });
+}
+
+/* ---------- sample week (shown until you start your own board) ---------- */
+function sampleState(){
+  const D=addDays;
+  return {v:1,sample:true,project:"Referral program v2",updatedAt:Date.now(),
+    people:[
+      {id:"p_maya",name:"Maya",team:"Data science"},
+      {id:"p_priya",name:"Priya",team:"Data analytics"},
+      {id:"p_leo",name:"Leo",team:"Engineering"},
+      {id:"p_ana",name:"Ana",team:"Design"},
+      {id:"p_sam",name:"Sam",team:"Mentor, PM"}],
+    tasks:[
+      {id:"t_metric",title:"Lock success metric for referral test",prio:"P0",status:"open",next:"Update metric spec with Maya's cohort definition",due:D(0),waiting:null,
+        history:[{at:D(-4),text:"Created. Need one primary metric before PRD review."},{at:D(-3),text:"Asked Maya: cohort or rolling D7 retention?"},{at:D(-1),text:"Maya answered: per signup cohort, exclude reactivated users."}]},
+      {id:"t_prd",title:"Draft PRD for in-app referral entry",prio:"P1",status:"open",next:"Write the edge cases section",due:D(2),waiting:null,history:[{at:D(-5),text:"Created from kickoff with Sam."}]},
+      {id:"t_track",title:"Align event tracking spec with Eng",prio:"P0",status:"blocked",next:"Nudge Leo on the schema review",due:D(1),waiting:{personId:"p_leo",what:"Tracking schema review",since:D(-3)},history:[{at:D(-3),text:"Sent schema doc to Leo for review."}]},
+      {id:"t_base",title:"Baseline funnel numbers",prio:"P1",status:"open",next:"Fold the baseline into the metric spec once it lands",due:D(3),waiting:{personId:"p_priya",what:"Last 30 days of funnel data by channel",since:D(-1)},history:[{at:D(-1),text:"Asked Priya for the 30-day baseline."}]},
+      {id:"t_design",title:"Design review: referral entry point",prio:"P1",status:"open",next:"Prep three questions for the design review",due:D(1),waiting:null,history:[]},
+      {id:"t_sync",title:"Weekly sync deck",prio:"P1",status:"open",next:"Add a slide on the metric definition and baseline",due:D(3),waiting:null,history:[]},
+      {id:"t_ideas",title:"Collect ideas for the next iteration",prio:"P2",status:"open",next:"Skim support tickets tagged invite",due:null,waiting:null,history:[]},
+      {id:"t_kick",title:"Send kickoff notes to stakeholders",prio:"P1",status:"done",next:"",due:D(-4),waiting:null,history:[{at:D(-4),text:"Done."}]}],
+    questions:[
+      {id:"q_d7",personId:"p_maya",taskId:"t_metric",text:"Cohort or rolling D7 retention?",answer:"Per signup cohort; exclude reactivated users.",answeredAt:D(-1),created:D(-3)},
+      {id:"q_ss",personId:"p_maya",taskId:"t_metric",text:"Minimum sample size to detect a 2% lift?",answer:"",answeredAt:null,created:D(-3)},
+      {id:"q_gr",personId:"p_maya",taskId:"t_metric",text:"Should the guardrail include cancel rate?",answer:"",answeredAt:null,created:D(-3)},
+      {id:"q_dl",personId:"p_leo",taskId:"t_prd",text:"Can the referral entry deep link from SMS?",answer:"",answeredAt:null,created:D(-6)},
+      {id:"q_sh",personId:"p_ana",taskId:"t_design",text:"Is the share sheet native or custom?",answer:"",answeredAt:null,created:D(-5)}],
+    sessions:[],
+    draft:null};
+}
+function emptyState(){return {v:1,sample:false,project:"My project",updatedAt:Date.now(),people:[],tasks:[],questions:[],sessions:[],draft:null};}
+
+const SAMPLE_TRANSCRIPT=[
+  ["You","Thanks for making time. For the referral test, should D7 retention be per cohort or rolling? I want one number I can put in the PRD."],
+  ["Maya","Per signup cohort. And exclude reactivated users, otherwise the invite channel looks better than it really is."],
+  ["You","Makes sense. What sample size would we need to see a two percent lift?"],
+  ["Maya","Roughly forty thousand users per arm at current traffic. I'll send you the power calc by Thursday."],
+  ["You","Great. I'll update the metric spec today and share it in Friday's sync."],
+  ["Maya","Also check with Priya whether the baseline already splits by channel. If it doesn't, we can't compare invite against organic."],
+  ["You","Good call, I'll ask her this afternoon. One more thing, should we run it on Android first?"],
+  ["Maya","I'd run both platforms together. Splitting them halves the sample and we'd wait twice as long."],
+  ["You","Okay, both platforms. I'll note that in the PRD's rollout section."]
+];
+
+/* ---------- storage: private doc in your Claude account, else this browser ---------- */
+let S=null,mode="loading",dbRef=null,writing=false,dirty=false,saveTimer=0;
+const LS_KEY="pm-tracker-v1";
+function lsGet(){try{const s=localStorage.getItem(LS_KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
+function lsSet(o){try{localStorage.setItem(LS_KEY,JSON.stringify(o));}catch(e){}}
+function save(){S.updatedAt=Date.now();clearTimeout(saveTimer);saveTimer=setTimeout(flush,600);}
+async function flush(){
+  if(mode!=="cloud"){lsSet(S);return;}
+  if(writing){dirty=true;return;}
+  writing=true;dirty=false;
+  try{await dbRef.set(JSON.parse(JSON.stringify(S)));}
+  catch(e){if(e&&e.code==="unavailable"){setTimeout(()=>{dirty=true;},1500);}else{mode="local";lsSet(S);renderFoot();}}
+  writing=false;if(dirty)flush();
+}
+async function boot(){
+  S=lsGet()||sampleState();mode="local";render();
+  try{
+    const C=window.claude;if(!C||!C.use)return finishBoot();
+    const [db,user]=await Promise.all([C.use("db"),C.use("user")]);
+    USER=user;
+    if(user){try{const me=await user.me();ME=me.name||"";}catch(e){}}
+    const id=user?await user.id():null;
+    if(db&&id){
+      dbRef=db.doc("data/users/"+id+"/board");
+      const snap=await dbRef.get();
+      if(snap.exists){S=JSON.parse(JSON.stringify(snap.data()));}
+      mode="cloud";
+    }
+  }catch(e){mode="local";}
+  finishBoot();
+}
+function finishBoot(){normalize();render();renderFoot();initClaude();}
+function normalize(){["people","tasks","questions","sessions"].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[];});}
+function renderFoot(){$("#foot").textContent=mode==="cloud"?"Saved privately to your Claude account":"Saved in this browser only";}
+
+/* ---------- Claude ---------- */
+let CLAUDE=null,USER=null,ME="";
+async function initClaude(){try{CLAUDE=window.claude&&window.claude.use?await window.claude.use("sample"):null;}catch(e){CLAUDE=null;}render();}
+function claudeErr(e){const c=e&&e.code;
+  if(c==="not_granted"||c==="sampling_disabled"||c==="not_declared"||c==="capability_disabled"){CLAUDE=null;return "Claude isn't available for this page. You can still add everything by hand.";}
+  if(c==="rate_limited")return "Too many requests right now. Try again in a minute.";
+  if(c==="invalid_json")return "Claude's reply came back in the wrong shape. Try again.";
+  if(c==="prompt_too_large")return "That transcript is too long. Trim it and try again.";
+  if(c==="cancelled")return "";
+  return "Claude couldn't finish that. Try again.";}
+
+/* ---------- lookups ---------- */
+const person=id=>S.people.find(p=>p.id===id);
+const task=id=>S.tasks.find(t=>t.id===id);
+const pName=id=>{const p=person(id);return p?p.name:"Someone";};
+const pLabel=id=>{const p=person(id);return p?p.name+" · "+shortTeam(p.team):"Someone";};
+function shortTeam(t){const m={"data science":"DS","data analytics":"DA","engineering":"Eng","design":"Design","operations":"Ops","product":"PM","mentor, pm":"Mentor"};return m[(t||"").toLowerCase()]||t||"";}
+function openTasks(){return S.tasks.filter(t=>t.status!=="done");}
+function waitAge(t){return t.waiting?Math.max(0,diffDays(t.waiting.since,TODAY())):0;}
+function sortTasks(a,b){return PRI[a.prio]-PRI[b.prio]||((a.due||"9999")<(b.due||"9999")?-1:(a.due||"9999")>(b.due||"9999")?1:0);}
+
+/* ---------- UI state ---------- */
+const UI={advancing:null,drawer:null,confirmDel:false,nudge:{},nudgeBusy:{},nudgeErr:{},askQ:false,answering:null,toast:null,confirmFresh:false,
+  tFilter:"open",tSort:{k:"prio",dir:1},tSearch:"",qFilter:"ask",qPerson:"",agendaPerson:"",qEdit:null,qDel:null,qAnswer:null};
+const ROUTES=["today","tasks","questions","capture"];
+let ROUTE=(h=>ROUTES.includes(h)?h:"today")(location.hash.slice(1));
+function route(){return ROUTE;}
+function go(r){if(!ROUTES.includes(r))r="today";ROUTE=r;try{history.replaceState(null,"","#"+r);}catch(e){}render();window.scrollTo(0,0);}
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(ROUTES.includes(h)&&h!==ROUTE)go(h);});
+document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const r=a.getAttribute("href").slice(1);if(ROUTES.includes(r)){e.preventDefault();go(r);}},true);
+
+function render(){
+  if(!S)return;
+  const r=route();
+  ROUTES.forEach(x=>$("#nav-"+x).classList.toggle("on",r===x));
+  $("#banner").innerHTML=S.sample?`<div class="banner"><span><b>Sample week.</b> A made-up PM internship so you can try everything. Edits are saved.</span><span class="grow"></span>${UI.confirmFresh?`<span>Clear the sample and start empty?</span><button class="linkbtn danger" data-act="fresh-yes">Clear it</button><button class="linkbtn" data-act="fresh-no">Keep it</button>`:`<button class="linkbtn" data-act="fresh">Start my own board</button>`}</div>`:"";
+  $("#view").innerHTML=r==="capture"?viewCapture():r==="tasks"?viewTasks():r==="questions"?viewQuestions():viewToday();
+  renderOverlay();renderToast();glue();
+  if(r==="capture")afterCapture();
+  if(r==="tasks"||r==="questions")afterLists();
+}
+
+/* ---------- Today ---------- */
+function greeting(){const h=new Date().getHours();return h<12?"Good morning":h<18?"Good afternoon":"Good evening";}
+function viewToday(){
+  const open=openTasks().sort(sortTasks);
+  const now=open.filter(t=>t.status!=="blocked"&&(t.prio==="P0"||(t.due&&diffDays(TODAY(),t.due)<=1)));
+  const later=open.filter(t=>!now.includes(t)&&t.status!=="blocked");
+  const blocked=open.filter(t=>t.status==="blocked");
+  const waits=open.filter(t=>t.waiting).sort((a,b)=>waitAge(b)-waitAge(a));
+  const nudge=waits.filter(t=>waitAge(t)>=2).length;
+  const fresh=S.questions.filter(q=>q.answer&&q.answeredAt&&diffDays(q.answeredAt,TODAY())<=2).sort((a,b)=>a.answeredAt<b.answeredAt?1:-1);
+  const l2=now.length||nudge?`${now.length?`${now.length===1?"One move":cap(num(now.length))+" moves"} today`:"No urgent moves today"}${nudge?`, ${nudge===1?"one person":num(nudge)+" people"} to nudge`:""}.`:"Nothing urgent. A good day to get ahead.";
+  const name=ME?ME.split(" ")[0]:"";
+  const week=open.filter(t=>t.due&&diffDays(TODAY(),t.due)>=0&&diffDays(TODAY(),t.due)<7).sort((a,b)=>a.due<b.due?-1:1);
+  const sub=[S.project,open.length+" open",blocked.length?blocked.length+" blocked":"",fresh.length?fresh.length+(fresh.length===1?" answer":" answers")+" since yesterday":""].filter(Boolean).join(" · ");
+
+  return `<div class="cols"><section class="main">
+    <div class="date">${fmtLong()}</div>
+    <h1 class="hello"><span>${greeting()}${name?", "+esc(name):""}.</span><br><span class="l2">${l2}</span></h1>
+    <p class="sub">${esc(sub)}</p>
+
+    <div class="sec"><div class="label">Next actions <span class="c">${now.length}</span><span class="act"><button class="btn sm" data-act="new-task">Add task</button></span></div>
+      ${now.length?now.map(itemHTML).join(""):`<p class="empty">${open.length?"Nothing due today. Pick something from Later.":"Add your first task to see your next moves here."}</p>`}
+    </div>
+    ${blocked.length?`<div class="sec"><div class="label">Blocked <span class="c">${blocked.length}</span></div>${blocked.map(itemHTML).join("")}</div>`:""}
+    ${later.length?`<div class="sec"><div class="label">Later <span class="c">${later.length}</span></div>${later.map(itemHTML).join("")}</div>`:""}
+    <div class="sec"><div class="label">This week</div>
+      ${week.length?week.map(t=>`<div class="row click" data-act="open" data-id="${t.id}"><span class="d">${fmtDue(t.due)}</span><span class="t">${esc(t.title)}</span></div>`).join(""):`<p class="empty">No due dates in the next seven days.</p>`}
+    </div>
+    ${doneHTML()}
+  </section>
+  <aside class="rail">
+    <div class="label">Waiting on <span class="c">${waits.length}</span></div>
+    <div class="card">${waits.length?waits.map(waitHTML).join(""):`<p class="empty">Nobody owes you anything right now.</p>`}</div>
+    <div class="label">New answers</div>
+    <div class="card">${fresh.length?fresh.map(q=>`<div class="ans"><div class="q">${esc(pLabel(q.personId))} · ${esc(q.text)}</div><div class="ans-r">${esc(q.answer)}</div>${task(q.taskId)?`<span class="tag okt">${esc(task(q.taskId).title)}</span>`:""}</div>`).join(""):`<p class="empty">Answers you log or capture show up here.</p>`}</div>
+    <div class="label">Questions to ask <span class="c">${S.questions.filter(q=>!q.answer).length}</span><span class="act"><button class="linkbtn" data-act="ask-q">Add</button></span></div>
+    <div class="card">${questionsHTML()}</div>
+    <div class="label" style="margin-top:22px">Capture</div>
+    <a class="capcard" href="#capture"><span class="rec"></span>Capture a 1:1 and let Claude pull out answers</a>
+  </aside></div>`;
+}
+const NUMW=["zero","one","two","three","four","five","six","seven","eight","nine","ten"];
+const num=n=>NUMW[n]||String(n);const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function itemHTML(t){
+  const late=t.due&&diffDays(TODAY(),t.due)<0;
+  const lastAns=S.questions.filter(q=>q.taskId===t.id&&q.answer&&q.answeredAt&&diffDays(q.answeredAt,TODAY())<=2).sort((a,b)=>a.answeredAt<b.answeredAt?1:a.answeredAt>b.answeredAt?-1:S.questions.indexOf(b)-S.questions.indexOf(a))[0];
+  return `<div class="item">
+    <button class="check" data-act="advance" data-id="${t.id}" aria-label="Finish this step"></button>
+    <div class="body" data-act="open" data-id="${t.id}">
+      <div class="t">${esc(t.next||t.title)}</div>
+      <div class="s">${t.next?esc(t.title):"No next step yet"}${t.waiting?` · waiting on ${esc(pName(t.waiting.personId))}`:""}</div>
+      ${lastAns?`<div class="src">From ${esc(pName(lastAns.personId))}'s answer: ${esc(lastAns.answer)}</div>`:""}
+      ${UI.advancing===t.id?`<div class="adv" data-stop>
+        <input class="inp" id="advInput" placeholder="What's the next step?" aria-label="Next step">
+        <button class="btn pri" data-act="adv-save" data-id="${t.id}">Set next step</button>
+        <button class="btn" data-act="adv-done" data-id="${t.id}">Task is done</button>
+        <button class="btn" data-act="adv-cancel">Cancel</button></div>`:""}
+    </div>
+    <div class="tags">${t.status==="blocked"?`<span class="tag blk">Blocked</span>`:""}${t.due?`<span class="due${late?" late":""}">${fmtDue(t.due)}</span>`:""}<span class="tag ${t.prio}">${t.prio}</span></div>
+  </div>`;
+}
+function doneHTML(){const d=S.tasks.filter(t=>t.status==="done");if(!d.length)return "";
+  return `<div class="sec"><div class="label">Done <span class="c">${d.length}</span></div>${d.map(t=>`<div class="row click" data-act="open" data-id="${t.id}"><span class="d">Done</span><span class="t" style="color:var(--ink-2)">${esc(t.title)}</span></div>`).join("")}</div>`;}
+function waitHTML(t){
+  const a=waitAge(t),late=a>=3,w=t.waiting;
+  return `<div class="wait"><div class="h"><span class="n">${esc(pLabel(w.personId))}</span><span class="age${late?" late":""}">${a===0?"today":a+"d"}</span></div>
+    <div class="w">${esc(w.what)}</div>
+    <div class="acts">${CLAUDE?`<button class="linkbtn" data-act="nudge" data-id="${t.id}">${UI.nudgeBusy[t.id]?"Drafting…":"Draft a nudge"}</button>`:""}<button class="linkbtn" data-act="got-it" data-id="${t.id}">Got it</button></div>
+    ${UI.nudgeErr[t.id]?`<div class="err">${esc(UI.nudgeErr[t.id])}</div>`:""}
+    ${UI.nudge[t.id]?`<div class="draft">${esc(UI.nudge[t.id])}<div class="acts"><button class="linkbtn" data-act="copy-nudge" data-id="${t.id}">Copy</button> <button class="linkbtn" data-act="close-nudge" data-id="${t.id}">Close</button></div></div>`:""}
+  </div>`;
+}
+function questionsHTML(){
+  const open=S.questions.filter(q=>!q.answer);
+  let h="";
+  if(UI.askQ){h+=`<div style="display:grid;gap:6px;margin-bottom:10px">
+    <select class="sel" id="qPerson" aria-label="Who to ask">${S.people.map(p=>`<option value="${p.id}">${esc(pLabel(p.id))}</option>`).join("")}<option value="__new">New person…</option></select>
+    <div id="qNewPerson" hidden class="two"><input class="inp" id="qNewName" placeholder="Name"><input class="inp" id="qNewTeam" placeholder="Team"></div>
+    <input class="inp" id="qText" placeholder="Is the baseline split by channel?" aria-label="Question">
+    <select class="sel" id="qTask" aria-label="Related task"><option value="">No related task</option>${openTasks().map(t=>`<option value="${t.id}">${esc(t.title)}</option>`).join("")}</select>
+    <div style="display:flex;gap:6px"><button class="btn pri sm" data-act="q-save">Add question</button><button class="btn sm" data-act="q-cancel">Cancel</button></div></div>`;}
+  if(!open.length)return h+(UI.askQ?"":`<p class="empty">No open questions.</p>`);
+  const by={};open.forEach(q=>(by[q.personId]=by[q.personId]||[]).push(q));
+  h+=Object.keys(by).map(pid=>`<div class="qgrp">${esc(pLabel(pid))}</div>`+by[pid].map(q=>`<div class="qline"><span class="qt">${esc(q.text)}</span><button class="linkbtn" data-act="answer" data-id="${q.id}">Answer</button></div>`+
+    (UI.answering===q.id?`<div style="display:grid;gap:6px;margin:4px 0 8px"><input class="inp" id="ansText" placeholder="What did they say?"><div style="display:flex;gap:6px"><button class="btn pri sm" data-act="ans-save" data-id="${q.id}">Save answer</button><button class="btn sm" data-act="ans-cancel">Cancel</button></div></div>`:"")).join("")).join("");
+  return h;
+}
+
+/* ---------- task drawer ---------- */
+function renderOverlay(){
+  const o=$("#overlay");
+  if(!UI.drawer){o.innerHTML="";return;}
+  const isNew=UI.drawer==="new";
+  const t=isNew?{title:"",prio:"P1",status:"open",next:"",due:"",waiting:null,history:[]}:task(UI.drawer);
+  if(!t){UI.drawer=null;o.innerHTML="";return;}
+  const qs=isNew?[]:S.questions.filter(q=>q.taskId===t.id);
+  o.innerHTML=`<div class="scrim" data-act="close-drawer"><div class="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" data-stop>
+    <h2 id="dTitle">${isNew?"New task":"Task"}</h2>
+    <div class="f"><label for="fTitle">Task</label><input class="inp" id="fTitle" value="${esc(t.title)}" placeholder="Lock success metric for referral test"></div>
+    <div class="f"><label for="fNext">Next action</label><input class="inp" id="fNext" value="${esc(t.next)}" placeholder="Ask Maya how D7 retention is defined"></div>
+    <div class="two">
+      <div class="f"><label for="fPrio">Priority</label><select class="sel" id="fPrio">${["P0","P1","P2"].map(p=>`<option${p===t.prio?" selected":""}>${p}</option>`).join("")}</select></div>
+      <div class="f"><label for="fDue">Due</label><input class="inp" type="date" id="fDue" value="${esc(t.due||"")}"></div>
+    </div>
+    <div class="f"><label for="fStatus">Status</label><select class="sel" id="fStatus">${[["open","Open"],["blocked","Blocked"],["done","Done"]].map(([v,l])=>`<option value="${v}"${v===t.status?" selected":""}>${l}</option>`).join("")}</select></div>
+    <div class="f"><label for="fWaitWho">Waiting on</label>
+      <div class="two"><select class="sel" id="fWaitWho"><option value="">Nobody</option>${S.people.map(p=>`<option value="${p.id}"${t.waiting&&t.waiting.personId===p.id?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}<option value="__new">New person…</option></select>
+      <input class="inp" id="fWaitWhat" value="${esc(t.waiting?t.waiting.what:"")}" placeholder="What they owe you"></div>
+      <div id="fNewPerson" hidden class="two" style="margin-top:6px"><input class="inp" id="fNewName" placeholder="Name"><input class="inp" id="fNewTeam" placeholder="Team"></div>
+    </div>
+    ${qs.length?`<div class="f"><label>Questions</label>${qs.map(q=>`<div class="qline"><span class="qt">${esc(pName(q.personId))}: ${esc(q.text)}${q.answer?`<br><span style="color:var(--ok)">${esc(q.answer)}</span>`:""}</span></div>`).join("")}</div>`:""}
+    ${t.history&&t.history.length?`<div class="f"><label>History</label><div class="hist">${t.history.slice().reverse().map(e=>`<div class="e"><div class="m">${esc(fmtDue(e.at)||e.at)}</div>${esc(e.text)}</div>`).join("")}</div></div>`:""}
+    <div class="dacts">
+      <button class="btn pri" data-act="save-task">${isNew?"Add task":"Save"}</button>
+      <button class="btn" data-act="close-drawer">Cancel</button>
+      <span class="grow"></span>
+      ${isNew?"":UI.confirmDel?`<span class="hint">Delete this task?</span><button class="linkbtn danger" data-act="del-yes">Delete</button><button class="linkbtn" data-act="del-no">Keep</button>`:`<button class="linkbtn danger" data-act="del">Delete</button>`}
+    </div>
+    <p class="err" id="fErr" hidden></p>
+  </div></div>`;
+  const ww=$("#fWaitWho");ww.onchange=()=>{$("#fNewPerson").hidden=ww.value!=="__new";};
+  setTimeout(()=>{const f=$("#fTitle");if(f&&isNew)f.focus();},0);
+}
+function addPerson(name,team){const p={id:uid("p_"),name:name.trim(),team:team.trim()};S.people.push(p);return p.id;}
+function saveTask(){
+  const title=$("#fTitle").value.trim();
+  if(!title){const e=$("#fErr");e.textContent="Give the task a name first.";e.hidden=false;$("#fTitle").focus();return;}
+  let who=$("#fWaitWho").value;const what=$("#fWaitWhat").value.trim();
+  if(who==="__new"){const n=$("#fNewName").value.trim();if(!n){const e=$("#fErr");e.textContent="Add the new person's name.";e.hidden=false;return;}who=addPerson(n,$("#fNewTeam").value);}
+  const isNew=UI.drawer==="new";
+  const t=isNew?{id:uid("t_"),history:[{at:TODAY(),text:"Created."}]}:task(UI.drawer);
+  const oldNext=t.next;
+  Object.assign(t,{title,next:$("#fNext").value.trim(),prio:$("#fPrio").value,due:$("#fDue").value||null,status:$("#fStatus").value});
+  const prevWho=t.waiting&&t.waiting.personId;
+  t.waiting=who?{personId:who,what:what||"A reply",since:(t.waiting&&prevWho===who)?t.waiting.since:TODAY()}:null;
+  if(!isNew&&oldNext&&oldNext!==t.next)t.history.push({at:TODAY(),text:"Step done: "+oldNext});
+  if(isNew)S.tasks.push(t);
+  UI.drawer=null;UI.confirmDel=false;save();render();
+}
+
+/* ---------- Tasks (table) ---------- */
+const created=t=>t.created||(t.history&&t.history[0]&&t.history[0].at)||null;
+function tStatus(t){return t.status==="done"?"done":t.status==="blocked"?"blocked":t.waiting?"waiting":"open";}
+const ST={open:["Open","var(--accent)"],waiting:["Waiting","var(--warn)"],blocked:["Blocked","var(--danger)"],done:["Done","var(--ok)"]};
+const TFILTERS=[["open","All open"],["mine","Mine to do"],["waiting","Waiting"],["blocked","Blocked"],["done","Done"]];
+function tPass(t){const f=UI.tFilter,s=tStatus(t);
+  if(f==="open"&&s==="done")return false;if(f==="mine"&&s!=="open")return false;
+  if(f==="waiting"&&s!=="waiting")return false;if(f==="blocked"&&s!=="blocked")return false;if(f==="done"&&s!=="done")return false;
+  const q=UI.tSearch.trim().toLowerCase();if(q){const w=t.waiting?pName(t.waiting.personId)+" "+t.waiting.what:"";if(!(t.title+" "+t.next+" "+w).toLowerCase().includes(q))return false;}
+  return true;}
+function tCompare(a,b){const {k,dir}=UI.tSort;let x,y;
+  if(k==="prio"){x=PRI[a.prio];y=PRI[b.prio];if(x===y)return sortTasks(a,b);}
+  else if(k==="due"){x=a.due||"9999";y=b.due||"9999";}
+  else if(k==="age"){x=-(created(a)?diffDays(created(a),TODAY()):-1);y=-(created(b)?diffDays(created(b),TODAY()):-1);}
+  else if(k==="status"){const o={blocked:0,waiting:1,open:2,done:3};x=o[tStatus(a)];y=o[tStatus(b)];}
+  else if(k==="title"){x=a.title.toLowerCase();y=b.title.toLowerCase();}
+  else if(k==="wait"){x=a.waiting?-waitAge(a):1;y=b.waiting?-waitAge(b):1;}
+  return (x<y?-1:x>y?1:0)*dir;}
+function th(label,k){const on=UI.tSort.k===k;return `<th><button data-act="t-sort" data-id="${k}" aria-label="Sort by ${label}">${label}${on?`<span class="ar">${UI.tSort.dir>0?"↑":"↓"}</span>`:""}</button></th>`;}
+function viewTasks(){
+  const open=openTasks();
+  const soon=open.filter(t=>t.due&&diffDays(TODAY(),t.due)<=2).length;
+  const counts={open:open.length,blocked:open.filter(t=>tStatus(t)==="blocked").length,waiting:open.filter(t=>tStatus(t)==="waiting").length};
+  const rows=S.tasks.filter(tPass).sort(tCompare);
+  const stat=(f,v,l,c)=>`<button class="stat${UI.tFilter===f?" on":""}" data-act="t-filter" data-id="${f}"><div class="v"${c?` style="color:${c}"`:""}>${v}</div><div class="l">${l}</div></button>`;
+  return `<div class="phead"><div><h1>Tasks</h1><p class="sub">Every task, its next step, and who it depends on</p></div><span class="grow"></span>
+      <input class="inp" id="tSearch" type="search" placeholder="Search tasks" value="${esc(UI.tSearch)}" aria-label="Search tasks"><button class="btn pri" data-act="new-task">Add task</button></div>
+    <div class="strip">${stat("open",counts.open,"Open")}${stat("blocked",counts.blocked,"Blocked","var(--danger)")}${stat("waiting",counts.waiting,"Waiting on others","var(--warn)")}${stat("soon",soon,"Due in 2 days")}</div>
+    <div class="fbar">${TFILTERS.map(([f,l])=>`<button class="fchip${UI.tFilter===f?" on":""}" data-act="t-filter" data-id="${f}">${l}</button>`).join("")}</div>
+    <div class="tbl-wrap">${rows.length||UI.tFilter==="soon"?`<table class="tbl"><thead><tr><th style="width:34px"><span class="sr" hidden>Done</span></th>${th("Task → next action","title")}${th("Priority","prio")}${th("Status","status")}${th("Waiting on","wait")}${th("Due","due")}${th("Age","age")}</tr></thead>
+      <tbody>${(UI.tFilter==="soon"?S.tasks.filter(t=>t.status!=="done"&&t.due&&diffDays(TODAY(),t.due)<=2&&(!UI.tSearch||t.title.toLowerCase().includes(UI.tSearch.toLowerCase()))).sort(tCompare):rows).map(tRow).join("")}</tbody></table>
+      <p class="hint" style="margin-top:12px">Click a row to open the task. Click a column header to sort.</p>`:
+      `<p class="empty" style="padding:24px 0">${S.tasks.length?"No tasks match this filter.":"No tasks yet. Add your first one to get started."}</p>`}</div>`;
+}
+function tRow(t){
+  const s=tStatus(t),a=created(t)?diffDays(created(t),TODAY()):null,late=t.due&&t.status!=="done"&&diffDays(TODAY(),t.due)<0;
+  return `<tr class="click${s==="done"?" done":""}" data-act="open" data-id="${t.id}">
+    <td><button class="check" data-act="t-done" data-id="${t.id}" aria-label="${s==="done"?"Reopen":"Mark done"}"${s==="done"?` style="background:var(--ok);border-color:var(--ok)"`:""}></button></td>
+    <td><div class="t">${esc(t.title)}</div>${t.next&&s!=="done"?`<div class="n">→ ${esc(t.next)}</div>`:""}</td>
+    <td><span class="tag ${t.prio}">${t.prio}</span></td>
+    <td><span class="st"><i style="background:${ST[s][1]}"></i>${ST[s][0]}</span></td>
+    <td>${t.waiting?`${esc(pLabel(t.waiting.personId))} <span class="num ${waitAge(t)>=3?"late":"faint"}" style="${waitAge(t)>=3?"color:var(--danger);font-weight:500":"color:var(--ink-3)"}">${waitAge(t)}d</span>`:`<span class="faint" style="color:var(--ink-3)">—</span>`}</td>
+    <td class="num"${late?` style="color:var(--danger);font-weight:500"`:""}>${t.due?fmtDue(t.due):`<span style="color:var(--ink-3)">—</span>`}</td>
+    <td class="num" style="color:var(--ink-3)">${a==null?"—":a+"d"}</td></tr>`;
+}
+
+/* ---------- Questions (inbox + 1:1 agenda) ---------- */
+function qPass(q){if(UI.qFilter==="ask"&&q.answer)return false;if(UI.qFilter==="answered"&&!q.answer)return false;if(UI.qPerson&&q.personId!==UI.qPerson)return false;return true;}
+function agendaPerson(){
+  if(UI.agendaPerson&&person(UI.agendaPerson))return UI.agendaPerson;
+  if(UI.qPerson)return UI.qPerson;
+  const c={};S.questions.filter(q=>!q.answer).forEach(q=>c[q.personId]=(c[q.personId]||0)+1);
+  return Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||"";
+}
+function viewQuestions(){
+  const toAsk=S.questions.filter(q=>!q.answer),answered=S.questions.filter(q=>q.answer);
+  const list=S.questions.filter(qPass).sort((a,b)=>(!!a.answer-!!b.answer)||((b.answeredAt||"")>(a.answeredAt||"")?1:-1));
+  const byP={};toAsk.forEach(q=>byP[q.personId]=(byP[q.personId]||0)+1);
+  const ap=agendaPerson(),agenda=toAsk.filter(q=>q.personId===ap);
+  const chip=(f,l)=>`<button class="fchip${UI.qFilter===f?" on":""}" data-act="q-filter" data-id="${f}">${l}</button>`;
+  return `<div class="phead"><div><h1>Questions</h1><p class="sub">Everything you need to ask, and what people told you</p></div></div>
+    <div class="fbar">${chip("ask","To ask "+toAsk.length)}${chip("answered","Answered "+answered.length)}${chip("all","All "+S.questions.length)}<span class="grow"></span>
+      <label class="hint" for="qPersonFilter">Person</label><select class="sel" id="qPersonFilter"><option value="">Anyone</option>${S.people.map(p=>`<option value="${p.id}"${UI.qPerson===p.id?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}</select></div>
+    <div class="cols"><section class="qmain">
+      <form class="addq" id="addQ">
+        <input class="inp" id="nqText" placeholder="Does the baseline already split by channel?" aria-label="New question">
+        <select class="sel" id="nqPerson" aria-label="Ask whom">${S.people.map(p=>`<option value="${p.id}"${(UI.qPerson||ap)===p.id?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}<option value="__new"${S.people.length?"":" selected"}>New person…</option></select>
+        <select class="sel" id="nqTask" aria-label="Related task"><option value="">No related task</option>${openTasks().sort(sortTasks).map(t=>`<option value="${t.id}">${esc(t.title)}</option>`).join("")}</select>
+        <button class="btn pri" type="submit">Add</button>
+        <div class="two" id="nqNew"${S.people.length?" hidden":""}><input class="inp" id="nqName" placeholder="Name"><input class="inp" id="nqTeam" placeholder="Team"></div>
+      </form>
+      <p class="err" id="nqErr" hidden></p>
+      ${list.length?list.map(qRow).join(""):`<p class="empty" style="padding:18px 0">${S.questions.length?"Nothing here for this filter.":"No questions yet. Add one above, or capture a 1:1 and Claude will find follow-ups."}</p>`}
+    </section>
+    <aside class="rail">
+      <div class="label">By person</div>
+      <div class="card" style="padding:6px">${Object.keys(byP).length?Object.keys(byP).map(pid=>`<button class="srow${UI.qPerson===pid?" on":""}" data-act="q-person" data-id="${pid}"><span>${esc(pLabel(pid))}</span><span class="num" style="color:var(--ink-3)">${byP[pid]}</span></button>`).join("")+(UI.qPerson?`<button class="srow" data-act="q-person" data-id=""><span style="color:var(--accent)">Show everyone</span></button>`:""):`<p class="empty" style="padding:6px 8px">Nobody to ask right now.</p>`}</div>
+      <div class="label" style="margin-top:22px">Agenda for your next 1:1${ap?" with "+esc(pName(ap)):""}</div>
+      <div class="card agenda">${S.people.length?`<select class="sel" id="agendaPerson" aria-label="Agenda for" style="margin-bottom:8px">${S.people.map(p=>`<option value="${p.id}"${ap===p.id?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}</select>`:""}
+        ${agenda.length?agenda.map(q=>`<div class="i">${esc(q.text)}${task(q.taskId)?`<br><span class="hint">→ ${esc(task(q.taskId).title)}</span>`:""}</div>`).join(""):`<p class="empty">No open questions for ${ap?esc(pName(ap)):"this person"}.</p>`}
+        ${agenda.length?`<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn sm" data-act="copy-agenda">Copy agenda</button><button class="btn sm pri" data-act="start-capture" data-id="${ap}">Start capture</button></div>`:""}
+      </div>
+    </aside></div>`;
+}
+function qRow(q){
+  const t=task(q.taskId),age=q.answer?null:(q.created?diffDays(q.created,TODAY()):null);
+  if(UI.qEdit===q.id)return `<div class="qrow"><span></span><div class="ed">
+      <input class="inp" id="qeText" value="${esc(q.text)}" aria-label="Question">
+      <div class="two"><select class="sel" id="qePerson" aria-label="Ask whom">${S.people.map(p=>`<option value="${p.id}"${p.id===q.personId?" selected":""}>${esc(pLabel(p.id))}</option>`).join("")}</select>
+      <select class="sel" id="qeTask" aria-label="Related task"><option value="">No related task</option>${S.tasks.filter(x=>x.status!=="done"||x.id===q.taskId).map(x=>`<option value="${x.id}"${x.id===q.taskId?" selected":""}>${esc(x.title)}</option>`).join("")}</select></div>
+      ${q.answer?`<input class="inp" id="qeAnswer" value="${esc(q.answer)}" aria-label="Answer">`:""}
+      <div style="display:flex;gap:6px"><button class="btn pri sm" data-act="qe-save" data-id="${q.id}">Save</button><button class="btn sm" data-act="qe-cancel">Cancel</button></div></div><span></span></div>`;
+  return `<div class="qrow${q.answer?" done":""}">
+    <button class="bx" data-act="${q.answer?"q-reopen":"q-log"}" data-id="${q.id}" aria-label="${q.answer?"Mark as not answered":"Log answer"}"></button>
+    <div><div class="qt">${esc(q.text)}</div>
+      ${q.answer?`<div class="qa">${esc(q.answer)}</div>`:""}
+      <div class="qm"><span class="tag who">${esc(pLabel(q.personId))}</span>${t?`<button class="tasklink" data-act="open" data-id="${t.id}">→ ${esc(t.title)}</button>`:""}<span>${q.answer?(q.answeredAt?"answered "+esc(fmtDue(q.answeredAt).toLowerCase()):"answered"):age!=null?age+"d old":""}</span></div>
+      ${UI.qAnswer===q.id?`<div class="ed"><input class="inp" id="qaText" placeholder="What did ${esc(pName(q.personId))} say?" aria-label="Answer"><div style="display:flex;gap:6px"><button class="btn pri sm" data-act="qa-save" data-id="${q.id}">Save answer</button><button class="btn sm" data-act="qa-cancel">Cancel</button></div></div>`:""}
+    </div>
+    <div class="r">${UI.qDel===q.id?`<span class="hint">Delete?</span><button class="linkbtn danger" data-act="qd-yes" data-id="${q.id}">Delete</button><button class="linkbtn" data-act="qd-no">Keep</button>`:
+      `${q.answer?"":`<button class="linkbtn" data-act="q-log" data-id="${q.id}">Log answer</button>`}<button class="linkbtn" data-act="q-edit" data-id="${q.id}">Edit</button><button class="linkbtn danger" data-act="q-del" data-id="${q.id}">Delete</button>`}</div>
+  </div>`;
+}
+function afterLists(){
+  const ts=$("#tSearch");if(ts){ts.oninput=()=>{UI.tSearch=ts.value;const p=ts.selectionStart;render();const n=$("#tSearch");n.focus();try{n.setSelectionRange(p,p);}catch(e){}};}
+  const pf=$("#qPersonFilter");if(pf)pf.onchange=()=>{UI.qPerson=pf.value;UI.agendaPerson="";render();};
+  const ap=$("#agendaPerson");if(ap)ap.onchange=()=>{UI.agendaPerson=ap.value;render();};
+  const np=$("#nqPerson");if(np)np.onchange=()=>{$("#nqNew").hidden=np.value!=="__new";};
+}
+function addQuestion(){
+  const err=$("#nqErr"),txt=$("#nqText").value.trim();err.hidden=true;
+  if(!txt){err.textContent="Write the question first.";err.hidden=false;$("#nqText").focus();return;}
+  let pid=$("#nqPerson").value;
+  if(pid==="__new"){const n=$("#nqName").value.trim();if(!n){err.textContent="Add the person's name.";err.hidden=false;$("#nqName").focus();return;}pid=addPerson(n,$("#nqTeam").value);}
+  S.questions.push({id:uid("q_"),personId:pid,taskId:$("#nqTask").value,text:txt,answer:"",answeredAt:null,created:TODAY()});
+  save();render();setTimeout(()=>{const x=$("#nqText");if(x)x.focus();},0);
+}
+function startCaptureFor(pid){
+  if(CAP.replay)stopReplay();
+  const qs=S.questions.filter(q=>!q.answer&&q.personId===pid);
+  const tid=(qs.find(q=>task(q.taskId))||{}).taskId||"";
+  S.draft={id:uid("s_"),title:"1:1 with "+pName(pid),personId:pid,taskId:tid,transcript:"",phase:"setup",notes:null,review:null,chat:[]};
+  save();go("capture");
+}
+
+/* ---------- toast with undo ---------- */
+let toastTimer=0;
+function toast(msg,undo){UI.toast={msg,undo};clearTimeout(toastTimer);toastTimer=setTimeout(()=>{UI.toast=null;renderToast();},6000);renderToast();}
+function renderToast(){const t=UI.toast;$("#toast").innerHTML=t?`<div class="toast" role="status"><span>${esc(t.msg)}</span>${t.undo?`<button class="linkbtn" data-act="undo">Undo</button>`:""}</div>`:"";}
+
+/* ---------- Capture ---------- */
+const CAP={replay:null,elapsed:0,tick:0,liveBusy:false,liveErr:"",revBusy:false,revErr:"",ctl:null,chatBusy:false,chatErr:"",editing:false,stream:""};
+function draft(){if(!S.draft)S.draft={id:uid("s_"),title:"",personId:S.people[0]?S.people[0].id:"",taskId:"",transcript:"",phase:"setup",notes:null,review:null,chat:[]};return S.draft;}
+function parseLines(txt){
+  return txt.split(/\n+/).map(s=>s.trim()).filter(Boolean).map(s=>{
+    let ts="",m=s.match(/^\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?\s*/);if(m){ts=m[1];s=s.slice(m[0].length);}
+    const k=s.match(/^([A-Z][\w .'-]{0,24}):\s+(.*)$/);
+    return k?{ts,sp:k[1],text:k[2]}:{ts,sp:"",text:s};
+  });
+}
+const fmtClock=s=>pad(Math.floor(s/60))+":"+pad(s%60);
+function viewCapture(){
+  const d=draft();
+  if(d.phase==="review")return viewReview(d);
+  const p=person(d.personId),t=task(d.taskId);
+  const prepped=S.questions.filter(q=>q.personId===d.personId&&(!q.answer||(d.notes&&d.notes.answered&&d.notes.answered.includes(q.id))));
+  const lines=parseLines(d.transcript);
+  const live=!!CAP.replay;
+  const title=d.title||(p?"1:1 with "+p.name:"New capture");
+  return `<div class="sess">
+      <div class="meta"><div class="label" style="margin:0">Capture${live?" · live":""}</div>
+        <h1>${esc(title)}</h1>
+        <div class="chips">${p?`<span class="tag who">${esc(pLabel(p.id))}</span>`:""}${t?`<span class="tag ${t.prio}">${esc(t.title)}</span>`:""}<span>${lines.length} lines</span></div></div>
+      <div class="ctrl">
+        ${live?`<span class="live"><i></i>Replaying</span>`:""}
+        <span class="timer" id="timer">${fmtClock(CAP.elapsed)}</span>
+        ${live?`<button class="btn stop" data-act="replay-stop">Stop</button>`:`<button class="btn" data-act="replay">Replay sample 1:1</button>`}
+        <button class="btn pri" data-act="finish" ${lines.length?"":"disabled"}>${CLAUDE?"Finish and review":"Finish"}</button>
+      </div>
+    </div>
+    <div class="wave${live?" on":""}" id="wave" aria-hidden="true"></div>
+    <div class="setup">
+      <div><label class="label" for="cTitle">Meeting</label><input class="inp" id="cTitle" value="${esc(d.title)}" placeholder="${esc(title)}"></div>
+      <div><label class="label" for="cPerson">With</label><select class="sel" id="cPerson"><option value="">Group or no one</option>${S.people.map(x=>`<option value="${x.id}"${x.id===d.personId?" selected":""}>${esc(pLabel(x.id))}</option>`).join("")}</select></div>
+      <div><label class="label" for="cTask">About</label><select class="sel" id="cTask"><option value="">No specific task</option>${openTasks().map(x=>`<option value="${x.id}"${x.id===d.taskId?" selected":""}>${esc(x.title)}</option>`).join("")}</select></div>
+    </div>
+    <div class="cols">
+      <section class="tx">
+        ${lines.length&&!CAP.editing?`<div id="lines">${lines.map((l,i)=>lineHTML(l,i,live&&i===lines.length-1)).join("")}</div>`:
+          `<div class="emptytx"><p>Paste a transcript from Zoom, Otter, or Voice Memos, or type notes as you go. Use "Name: what they said" on each line so Claude knows who said what.</p>
+           <textarea class="ta" id="cText" style="min-height:220px;text-align:left" placeholder="Maya: Per signup cohort. Exclude reactivated users.">${esc(d.transcript)}</textarea>
+           ${lines.length?`<button class="btn" data-act="edit-done">Done editing</button>`:`<span class="hint">Or press Replay sample 1:1 to watch a meeting come in.</span>`}</div>`}
+        <div class="txbar">
+          <span class="pill">Speakers: ${esc([...new Set(lines.map(l=>l.sp).filter(Boolean))].join(", ")||"none yet")}</span>
+          ${lines.length&&!CAP.editing&&!live?`<button class="linkbtn" data-act="edit-tx">Edit transcript</button>`:""}
+          <span class="grow"></span>
+          ${lines.length&&!live?`<button class="linkbtn danger" data-act="clear-tx">Clear</button>`:""}
+        </div>
+        <p class="hint" style="margin-top:10px">Live microphone recording comes with the desktop app. In the browser, paste a transcript or type notes.</p>
+      </section>
+      <aside class="rail">
+        <div class="label">${p?"Questions for "+esc(p.name):"Questions"} <span class="c">${prepped.filter(q=>q.answer||(d.notes&&d.notes.answered&&d.notes.answered.includes(q.id))).length} of ${prepped.length}</span></div>
+        <div class="card">${prepped.length?prepped.map(q=>{const a=d.notes&&d.notes.answers&&d.notes.answers[q.id];const done=!!(a||q.answer);
+          return `<div class="qbox${done?" done":""}"><span class="bx"></span><div><div class="qt">${esc(q.text)}</div>${done?`<div class="a">${esc(a||q.answer)}</div>`:""}</div></div>`;}).join(""):`<p class="empty">${p?"No open questions for "+esc(p.name)+".":"Pick who you're meeting to see your prepared questions."}</p>`}</div>
+        <div class="label" style="margin-top:22px"><span class="spark">✳</span>Claude's notes</div>
+        <div class="card">
+          ${!CLAUDE?`<p class="empty">Claude isn't available in this view. Finish to add updates by hand.</p>`:
+            CAP.liveBusy?`<div class="thinking"><span class="dots"><i></i><i></i><i></i></span>Reading the transcript…</div>`:
+            d.notes&&d.notes.items.length?d.notes.items.map(noteHTML).join(""):`<p class="empty">Claude pulls answers, your next steps, and promises from the conversation.</p>`}
+          ${CAP.liveErr?`<div class="err">${esc(CAP.liveErr)}</div>`:""}
+          ${CLAUDE&&!CAP.liveBusy?`<div style="margin-top:10px"><button class="btn claude sm" data-act="live-extract" ${lines.length?"":"disabled"}>${d.notes?"Update notes":"Read so far"}</button></div>`:""}
+        </div>
+        ${pastHTML()}
+      </aside>
+    </div>`;
+}
+function hlText(text){
+  let h=esc(text);const d=S.draft;if(!d||!d.notes)return h;
+  d.notes.items.forEach(it=>{if(!it.quote)return;const q=esc(it.quote);if(q.length<6)return;const i=h.indexOf(q);
+    if(i>=0)h=h.slice(0,i)+`<mark${it.type==="answer"?"":` class="pr"`}>`+q+"</mark>"+h.slice(i+q.length);});
+  return h;
+}
+function lineHTML(l,i,caret){
+  const me=/^(you|me|i)$/i.test(l.sp)||(ME&&l.sp===ME.split(" ")[0]);
+  return `<div class="line"><span class="ts">${esc(l.ts||fmtClock(i*23))}</span><div>${l.sp?`<div class="spn ${me?"me":"them"}">${esc(l.sp)}</div>`:""}<div class="tx-t">${hlText(l.text)}${caret?`<span class="caret"></span>`:""}</div></div></div>`;
+}
+const KIND={answer:["Answer","var(--ok)"],next_action:["Your next step","var(--accent)"],waiting:["Waiting on them","var(--warn)"],question:["New question","var(--violet)"],task:["New task","var(--ink)"],still_open:["Still open","var(--ink-3)"]};
+function noteHTML(it){const k=KIND[it.type]||KIND.task;const tt=task(it.taskId);
+  return `<div class="note"><div class="k" style="color:${k[1]}">${k[0]}${it.personId&&it.type!=="next_action"?" · "+esc(pName(it.personId)):""}</div><div class="note-v">${esc(it.type==="answer"?it.detail:it.title)}</div>${tt?`<div class="to">→ ${esc(tt.title)}</div>`:""}</div>`;}
+function pastHTML(){const s=S.sessions.slice().reverse().slice(0,5);if(!s.length)return "";
+  return `<div class="label" style="margin-top:22px">Past captures</div><div class="card past">${s.map(x=>`<div class="row"><span class="d">${esc(fmtDue(x.date)||x.date)}</span><span class="t">${esc(x.title)}<br><span class="hint">${x.applied} updates applied</span></span></div>`).join("")}</div>`;}
+
+function afterCapture(){
+  const w=$("#wave");if(w&&!w.children.length){let h="";for(let i=0;i<110;i++){const v=Math.abs(Math.sin(i*.37)*Math.cos(i*.11))*.85+.12;h+=`<span class="${i>95?"hot":""}" style="height:${Math.round(v*30)}px"></span>`;}w.innerHTML=h;}
+  const d=S.draft;if(!d)return;
+  const ti=$("#cTitle");if(ti)ti.oninput=()=>{d.title=ti.value;save();};
+  const cp=$("#cPerson");if(cp)cp.onchange=()=>{d.personId=cp.value;d.notes=null;save();render();};
+  const ct=$("#cTask");if(ct)ct.onchange=()=>{d.taskId=ct.value;save();render();};
+  const tx=$("#cText");if(tx){tx.oninput=()=>{d.transcript=tx.value;save();};}
+  const ln=$("#lines");if(ln&&CAP.replay)ln.lastElementChild&&ln.lastElementChild.scrollIntoView({block:"nearest"});
+}
+function startReplay(){
+  const d=draft();
+  if(!d.personId||d.personId!=="p_maya"&&person("p_maya"))d.personId=person("p_maya")?"p_maya":d.personId;
+  if(task("t_metric")&&!d.taskId)d.taskId="t_metric";
+  if(!d.title)d.title="Metric definition sync with Maya";
+  d.transcript="";d.notes=null;CAP.elapsed=0;CAP.editing=false;let i=0;
+  CAP.replay=setInterval(()=>{
+    if(i>=SAMPLE_TRANSCRIPT.length){stopReplay();return;}
+    const [sp,text]=SAMPLE_TRANSCRIPT[i];d.transcript+=(d.transcript?"\n":"")+`[${fmtClock(CAP.elapsed)}] ${sp}: ${text}`;i++;CAP.elapsed+=Math.round(18+text.length/6);render();
+  },1700);
+  CAP.tick=setInterval(()=>{CAP.elapsed++;const t=$("#timer");if(t)t.textContent=fmtClock(CAP.elapsed);
+    document.querySelectorAll("#wave span").forEach((s,j)=>{if(j>95)s.style.height=Math.round(6+Math.random()*24)+"px";});},1000);
+  render();
+}
+function stopReplay(){clearInterval(CAP.replay);clearInterval(CAP.tick);CAP.replay=null;save();render();}
+
+function boardContext(d){
+  return JSON.stringify({
+    people:S.people.map(p=>({id:p.id,name:p.name,team:p.team})),
+    tasks:openTasks().map(t=>({id:t.id,title:t.title,next:t.next,waiting:t.waiting?{person:pName(t.waiting.personId),what:t.waiting.what}:null})),
+    open_questions:S.questions.filter(q=>!q.answer).map(q=>({id:q.id,person:pName(q.personId),personId:q.personId,taskId:q.taskId,text:q.text})),
+    meeting:{title:d.title||"",with:d.personId?pName(d.personId):"",withId:d.personId||null,taskId:d.taskId||null}
+  });
+}
+function extractPrompt(d,full){
+  return `You help someone who coordinates work with other people turn a meeting transcript into updates for their task tracker. Today is ${TODAY()}.
+
+Board and meeting context (JSON):
+${boardContext(d)}
+
+Transcript ("You" is the person whose board this is):
+"""
+${d.transcript.slice(0,60000)}
+"""
+
+Reply with only JSON in this shape:
+{"summary": "${full?"2-3 plain sentences: what was decided, who owes what":"one sentence"}", "items": [ ... ]}
+
+Each item:
+{"type": "answer" | "next_action" | "waiting" | "question" | "task" | "still_open",
+ "taskId": id of an existing task or null,
+ "questionId": id of an existing open question (for answer and still_open) or null,
+ "personId": id of an existing person or null,
+ "title": short, at most 70 characters,
+ "detail": one line, at most 110 characters,
+ "due": "YYYY-MM-DD" or null,
+ "quote": an exact phrase copied from the transcript, at most 80 characters, or null}
+
+Meaning of each type:
+- answer: an existing open question was answered. title = the question, detail = the answer in plain words.
+- next_action: what the PM should do next on an existing task. title = the action, verb first.
+- waiting: something another person promised to deliver. title = what, personId = who, due if a day was named.
+- question: a new follow-up question the PM should ask someone. title = the question, personId = who to ask.
+- task: new work that no existing task covers. title = the task, detail = its first step.
+- still_open: an open question for the person in this meeting that the transcript did not cover. title = the question.
+Use only ids from the context. Resolve weekday names to dates after today. ${full?"At most 8 items.":"At most 5 items, the most important first."}`;
+}
+function cleanItems(arr){
+  return (Array.isArray(arr)?arr:[]).filter(x=>x&&KIND[x.type]&&x.title).slice(0,8).map(x=>({
+    type:x.type,taskId:task(x.taskId)?x.taskId:null,questionId:S.questions.some(q=>q.id===x.questionId)?x.questionId:null,
+    personId:person(x.personId)?x.personId:null,title:String(x.title).slice(0,120),detail:String(x.detail||"").slice(0,200),
+    due:/^\d{4}-\d{2}-\d{2}$/.test(x.due||"")?x.due:null,quote:x.quote?String(x.quote).slice(0,120):null}));
+}
+async function liveExtract(){
+  const d=draft();if(!CLAUDE||!d.transcript.trim())return;
+  CAP.liveBusy=true;CAP.liveErr="";render();
+  try{const r=await CLAUDE.json(extractPrompt(d,false),{modelTier:"quick"});
+    const items=cleanItems(r&&r.items);
+    d.notes={items,answered:items.filter(i=>i.type==="answer"&&i.questionId).map(i=>i.questionId),answers:Object.fromEntries(items.filter(i=>i.type==="answer"&&i.questionId).map(i=>[i.questionId,i.detail]))};
+    save();
+  }catch(e){CAP.liveErr=claudeErr(e);}
+  CAP.liveBusy=false;render();
+}
+async function finish(){
+  const d=draft();if(CAP.replay)stopReplay();
+  d.phase="review";d.review={summary:"",items:[],state:{}};CAP.revErr="";save();
+  if(!CLAUDE){render();return;}
+  CAP.revBusy=true;render();
+  try{const r=await CLAUDE.json(extractPrompt(d,true),{modelTier:"default"});
+    d.review.summary=String(r&&r.summary||"");d.review.items=cleanItems(r&&r.items);
+    d.notes={items:d.review.items,answered:d.review.items.filter(i=>i.type==="answer"&&i.questionId).map(i=>i.questionId),answers:{}};
+  }catch(e){CAP.revErr=claudeErr(e);}
+  CAP.revBusy=false;save();render();
+}
+
+const ICON={answer:["A","okt"],next_action:["N",""],waiting:["W","P1"],question:["Q","who"],task:["T","P2"],still_open:["?","P2"]};
+function propTarget(it){
+  const t=task(it.taskId)||task(S.draft.taskId);
+  if(it.type==="answer")return "Answer → question";
+  if(it.type==="next_action")return "Next step → "+(t?t.title:"new task");
+  if(it.type==="waiting")return "Waiting on "+(it.personId?pName(it.personId):"someone")+" → "+(t?t.title:"new task");
+  if(it.type==="question")return "New question → "+(it.personId?pName(it.personId):"someone");
+  if(it.type==="task")return "New task";
+  return "Still open → keep for next time";
+}
+function viewReview(d){
+  const R=d.review||{items:[],state:{}};const p=person(d.personId);
+  const pending=R.items.map((_,i)=>i).filter(i=>!R.state[i]);
+  const added=R.items.filter((_,i)=>R.state[i]==="added").length;
+  return `<div class="sess"><div class="meta"><div class="label" style="margin:0">Capture · review</div><h1>${esc(d.title||(p?"1:1 with "+p.name:"Capture"))}</h1>
+    <div class="chips">${p?`<span class="tag who">${esc(pLabel(p.id))}</span>`:""}${task(d.taskId)?`<span class="tag ${task(d.taskId).prio}">${esc(task(d.taskId).title)}</span>`:""}<span>${parseLines(d.transcript).length} lines</span></div></div>
+    <div class="ctrl"><button class="btn" data-act="back-edit">Back to transcript</button><button class="btn" data-act="copy-summary" ${R.summary?"":"disabled"}>Copy summary</button><button class="btn pri" data-act="close-session">Done</button></div></div>
+  <div class="cols"><section class="main">
+    ${CAP.revBusy?`<div class="thinking" style="padding:20px 0"><span class="dots"><i></i><i></i><i></i></span>Claude is reading the whole meeting. This takes up to a minute.</div>`:""}
+    ${CAP.revErr?`<p class="err">${esc(CAP.revErr)}</p><button class="btn claude" data-act="retry-review">Try again</button>`:""}
+    ${!CLAUDE&&!CAP.revBusy?`<p class="empty">Claude isn't available in this view. Add answers and next steps on the Today page.</p>`:""}
+    ${R.summary?`<div class="label">Summary</div><p class="sum">${esc(R.summary)}</p>`:""}
+    ${R.items.length?`<div class="label">Proposed updates to your board <span class="c">${R.items.length}</span></div>
+      ${R.items.map((it,i)=>propHTML(it,i,R.state[i])).join("")}
+      <div class="applybar"><span class="hint">${added} added · ${pending.length} to review</span><span class="grow"></span>
+        ${pending.length?`<button class="btn" data-act="skip-rest">Skip the rest</button><button class="btn pri" data-act="apply-all">Apply all ${pending.length}</button>`:`<button class="btn pri" data-act="close-session">Back to Today</button>`}</div>`:
+      (!CAP.revBusy&&R.summary?`<p class="empty">No board updates found in this meeting.</p>`:"")}
+  </section>
+  <aside class="rail">
+    ${keyMoments(d)}
+    ${CLAUDE?`<div class="label" style="margin-top:22px"><span class="spark">✳</span>Ask about this meeting</div>
+    <div class="card chat">${(d.chat||[]).map(m=>`<div class="m ${m.role==="user"?"u":""}">${esc(m.content)}</div>`).join("")}
+      ${CAP.chatBusy?`<div class="m">${CAP.stream?esc(CAP.stream):`<span class="thinking"><span class="dots"><i></i><i></i><i></i></span>Thinking…</span>`}</div>`:""}
+      ${CAP.chatErr?`<div class="err">${esc(CAP.chatErr)}</div>`:""}
+      <form class="ask" id="askForm"><input class="inp" id="askInput" placeholder="Why exclude reactivated users?" aria-label="Ask about this meeting">${CAP.chatBusy?`<button class="btn" type="button" data-act="chat-stop">Stop</button>`:`<button class="btn claude" type="submit">Ask</button>`}</form></div>`:""}
+  </aside></div>`;
+}
+function keyMoments(d){
+  const qs=(d.review?d.review.items:[]).filter(i=>i.quote).slice(0,4);
+  if(!qs.length)return `<div class="label">Transcript</div><div class="card"><p class="empty">${parseLines(d.transcript).length} lines captured.</p></div>`;
+  return `<div class="label">Key moments</div><div class="card">${qs.map(i=>`<div class="note"><div class="k" style="color:${(KIND[i.type]||KIND.task)[1]}">${(KIND[i.type]||KIND.task)[0]}</div><div class="note-v">"${esc(i.quote)}"</div></div>`).join("")}</div>`;
+}
+function propHTML(it,i,st){
+  const ic=ICON[it.type]||ICON.task;const editing=UI.editProp===i;
+  return `<div class="prop${st?" "+st:""}"><div class="ic tag ${ic[1]}" style="${ic[1]?"":"background:var(--accent-soft);color:var(--accent)"}">${ic[0]}</div>
+    <div class="b"><div class="k">${esc(propTarget(it))}</div>
+      ${editing?`<div class="edit"><input class="inp" id="peTitle" value="${esc(it.title)}" aria-label="Title"><input class="inp" id="peDetail" value="${esc(it.detail)}" aria-label="Detail"><div style="display:flex;gap:6px"><button class="btn pri sm" data-act="pe-save" data-i="${i}">Save</button><button class="btn sm" data-act="pe-cancel">Cancel</button></div></div>`:
+      `<div class="pv">${esc(it.title)}</div>${it.detail||it.due?`<div class="pd">${esc(it.detail)}${it.due?(it.detail?" · ":"")+"due "+esc(fmtDue(it.due)):""}</div>`:""}`}
+    </div>
+    <div class="acts">${st==="added"?`<button class="btn sm" disabled>Added</button>`:st==="skipped"?`<button class="btn sm" data-act="unskip" data-i="${i}">Undo skip</button>`:editing?"":`<button class="btn sm" data-act="pe" data-i="${i}">Edit</button><button class="btn sm" data-act="skip" data-i="${i}">Skip</button><button class="btn sm pri" data-act="add" data-i="${i}">${it.type==="still_open"?"Keep":"Add"}</button>`}</div>
+  </div>`;
+}
+function applyItem(it,d){
+  const src="From "+(d.title||"capture");
+  const t=task(it.taskId)||task(d.taskId);
+  if(it.type==="answer"){
+    let q=S.questions.find(x=>x.id===it.questionId)||S.questions.find(x=>!x.answer&&x.text.toLowerCase()===it.title.toLowerCase());
+    if(!q){q={id:uid("q_"),personId:it.personId||d.personId||"",taskId:t?t.id:"",text:it.title,answer:"",answeredAt:null};S.questions.push(q);}
+    q.answer=it.detail||it.title;q.answeredAt=TODAY();
+    const qt=task(q.taskId);if(qt)qt.history.push({at:TODAY(),text:pName(q.personId)+" answered: "+q.answer});
+  }else if(it.type==="next_action"){
+    if(t){if(t.next)t.history.push({at:TODAY(),text:"Step done: "+t.next});t.next=it.title;if(it.due)t.due=it.due;if(t.status==="blocked"&&!t.waiting)t.status="open";t.history.push({at:TODAY(),text:src+": next step set."});}
+    else S.tasks.push({id:uid("t_"),title:it.title,prio:"P1",status:"open",next:it.detail||"",due:it.due,waiting:null,history:[{at:TODAY(),text:src}]});
+  }else if(it.type==="waiting"){
+    const w={personId:it.personId||d.personId||"",what:it.title,since:TODAY()};
+    if(t){t.waiting=w;if(it.due&&(!t.due||it.due<t.due))t.due=it.due;t.history.push({at:TODAY(),text:src+": waiting on "+pName(w.personId)+" for "+it.title});}
+    else S.tasks.push({id:uid("t_"),title:it.title,prio:"P1",status:"open",next:"Follow up when it arrives",due:it.due,waiting:w,history:[{at:TODAY(),text:src}]});
+  }else if(it.type==="question"){
+    S.questions.push({id:uid("q_"),personId:it.personId||d.personId||"",taskId:t?t.id:"",text:it.title,answer:"",answeredAt:null,created:TODAY()});
+  }else if(it.type==="task"){
+    S.tasks.push({id:uid("t_"),title:it.title,prio:"P1",status:"open",next:it.detail||"",due:it.due,waiting:null,history:[{at:TODAY(),text:src}]});
+  }
+}
+function closeSession(){
+  const d=S.draft;if(!d)return;
+  const applied=d.review?Object.values(d.review.state).filter(s=>s==="added").length:0;
+  if(d.transcript.trim())S.sessions.push({id:d.id,title:d.title||(person(d.personId)?"1:1 with "+pName(d.personId):"Capture"),personId:d.personId,taskId:d.taskId,date:TODAY(),summary:d.review?d.review.summary:"",applied});
+  S.sessions=S.sessions.slice(-30);S.draft=null;CAP.elapsed=0;save();go("today");render();
+}
+async function askMeeting(){
+  const d=S.draft,inp=$("#askInput");const q=inp.value.trim();if(!q||!CLAUDE||CAP.chatBusy)return;
+  d.chat=d.chat||[];d.chat.push({role:"user",content:q});CAP.chatBusy=true;CAP.chatErr="";CAP.stream="";CAP.ctl=new AbortController();render();
+  const rules=`Answer questions about this meeting transcript in two or three plain sentences. Cite the speaker. If the transcript doesn't say, say so.\n\nMeeting: ${d.title}\nTranscript:\n"""\n${d.transcript.slice(0,60000)}\n"""`;
+  try{const r=await CLAUDE([{role:"user",content:rules},...d.chat.slice(-8)],{cache:false,modelTier:"quick",signal:CAP.ctl.signal,onText:({text})=>{CAP.stream=text;const last=document.querySelector(".chat .m:last-of-type");if(last)last.textContent=text;}});
+    d.chat.push({role:"assistant",content:r.text});save();
+  }catch(e){if(e&&e.text)d.chat.push({role:"assistant",content:e.text});CAP.chatErr=claudeErr(e);if(!e||e.code!=="cancelled")d.chat=d.chat;}
+  CAP.chatBusy=false;CAP.stream="";render();setTimeout(()=>{const i=$("#askInput");if(i)i.focus();},0);
+}
+async function draftNudge(id){
+  const t=task(id);if(!t||!CLAUDE||UI.nudgeBusy[id])return;const p=person(t.waiting.personId);
+  UI.nudgeBusy[id]=true;UI.nudgeErr[id]="";render();
+  try{const r=await CLAUDE(`Write a short, friendly Slack message from a colleague to ${p?p.name:"a teammate"} (${p?p.team:""}). Nudge them about: ${t.waiting.what}. It has been ${waitAge(t)} days. It blocks: ${t.title}. Two sentences at most, warm and specific, no greeting line, no sign-off. Plain text only.`,{modelTier:"quick"});
+    UI.nudge[id]=r.text.trim();
+  }catch(e){UI.nudgeErr[id]=claudeErr(e);}
+  UI.nudgeBusy[id]=false;render();
+}
+async function copy(text,btn){try{await navigator.clipboard.writeText(text);toast("Copied");}catch(e){toast("Couldn't copy. Select the text and copy it instead.");}}
+
+/* ---------- events ---------- */
+let undoSnap=null;
+document.addEventListener("click",e=>{
+  const stopper=e.target.closest("[data-stop]");
+  const el=e.target.closest("[data-act]");if(!el)return;
+  if(el.dataset.act==="close-drawer"&&stopper&&el.classList.contains("scrim"))return;
+  const a=el.dataset.act,id=el.dataset.id,i=+el.dataset.i;
+  const D=S.draft;
+  switch(a){
+    case "fresh":UI.confirmFresh=true;render();break;
+    case "fresh-no":UI.confirmFresh=false;render();break;
+    case "fresh-yes":undoSnap=JSON.stringify(S);S=emptyState();UI.confirmFresh=false;save();render();toast("Sample cleared",true);break;
+    case "undo":if(undoSnap){S=JSON.parse(undoSnap);undoSnap=null;save();UI.toast=null;render();}break;
+    case "new-task":UI.drawer="new";UI.confirmDel=false;renderOverlay();break;
+    case "open":if(e.target.closest(".adv"))return;UI.drawer=id;UI.confirmDel=false;renderOverlay();glue($("#overlay"));break;
+    case "close-drawer":UI.drawer=null;UI.confirmDel=false;renderOverlay();break;
+    /* tasks table */
+    case "t-filter":UI.tFilter=id;render();break;
+    case "t-sort":UI.tSort=UI.tSort.k===id?{k:id,dir:-UI.tSort.dir}:{k:id,dir:1};render();break;
+    case "t-done":{undoSnap=JSON.stringify(S);const t=task(id);if(t.status==="done"){t.status="open";t.history.push({at:TODAY(),text:"Reopened."});save();render();toast("Reopened",true);}
+      else{t.status="done";t.waiting=null;t.history.push({at:TODAY(),text:"Done."});save();render();toast("Marked done",true);}break;}
+    /* questions inbox */
+    case "q-filter":UI.qFilter=id;render();break;
+    case "q-person":UI.qPerson=id;UI.agendaPerson="";render();break;
+    case "q-log":UI.qAnswer=id;UI.qEdit=null;render();setTimeout(()=>{const x=$("#qaText");if(x)x.focus();},0);break;
+    case "qa-cancel":UI.qAnswer=null;render();break;
+    case "qa-save":{const v=$("#qaText").value.trim();if(!v){$("#qaText").focus();return;}const q=S.questions.find(x=>x.id===id);q.answer=v;q.answeredAt=TODAY();const t=task(q.taskId);if(t)t.history.push({at:TODAY(),text:pName(q.personId)+" answered: "+v});UI.qAnswer=null;save();render();toast("Answer saved");break;}
+    case "q-reopen":{undoSnap=JSON.stringify(S);const q=S.questions.find(x=>x.id===id);q.answer="";q.answeredAt=null;save();render();toast("Moved back to To ask",true);break;}
+    case "q-edit":UI.qEdit=id;UI.qAnswer=null;render();setTimeout(()=>{const x=$("#qeText");if(x)x.focus();},0);break;
+    case "qe-cancel":UI.qEdit=null;render();break;
+    case "qe-save":{const q=S.questions.find(x=>x.id===id),v=$("#qeText").value.trim();if(!v){$("#qeText").focus();return;}q.text=v;q.personId=$("#qePerson").value;q.taskId=$("#qeTask").value;const an=$("#qeAnswer");if(an)q.answer=an.value.trim()||q.answer;UI.qEdit=null;save();render();break;}
+    case "q-del":UI.qDel=id;render();break;
+    case "qd-no":UI.qDel=null;render();break;
+    case "qd-yes":{undoSnap=JSON.stringify(S);S.questions=S.questions.filter(x=>x.id!==id);UI.qDel=null;save();render();toast("Question deleted",true);break;}
+    case "copy-agenda":{const ap=agendaPerson();const items=S.questions.filter(q=>!q.answer&&q.personId===ap);copy("1:1 with "+pName(ap)+"\n"+items.map(q=>"- "+q.text).join("\n"));break;}
+    case "start-capture":startCaptureFor(id);break;
+    case "save-task":saveTask();break;
+    case "del":UI.confirmDel=true;renderOverlay();break;
+    case "del-no":UI.confirmDel=false;renderOverlay();break;
+    case "del-yes":{undoSnap=JSON.stringify(S);const t=task(UI.drawer);S.tasks=S.tasks.filter(x=>x.id!==UI.drawer);UI.drawer=null;UI.confirmDel=false;save();render();toast("Deleted "+(t?t.title:"task"),true);break;}
+    case "advance":UI.advancing=id;render();setTimeout(()=>{const x=$("#advInput");if(x)x.focus();},0);break;
+    case "adv-cancel":UI.advancing=null;render();break;
+    case "adv-save":{const t=task(id),v=$("#advInput").value.trim();if(!v){$("#advInput").focus();return;}if(t.next)t.history.push({at:TODAY(),text:"Step done: "+t.next});t.next=v;UI.advancing=null;save();render();toast("Next step set");break;}
+    case "adv-done":{undoSnap=JSON.stringify(S);const t=task(id);t.status="done";t.waiting=null;t.history.push({at:TODAY(),text:"Done."});UI.advancing=null;save();render();toast("Marked done",true);break;}
+    case "nudge":draftNudge(id);break;
+    case "copy-nudge":copy(UI.nudge[id]);break;
+    case "close-nudge":delete UI.nudge[id];render();break;
+    case "got-it":{undoSnap=JSON.stringify(S);const t=task(id);t.history.push({at:TODAY(),text:"Got "+t.waiting.what+" from "+pName(t.waiting.personId)+"."});t.waiting=null;if(t.status==="blocked")t.status="open";save();render();toast("Cleared",true);break;}
+    case "ask-q":UI.askQ=true;render();setTimeout(()=>{const s=$("#qPerson");if(s){s.onchange=()=>{$("#qNewPerson").hidden=s.value!=="__new";};if(!S.people.length){s.value="__new";$("#qNewPerson").hidden=false;}}const x=$("#qText");if(x)x.focus();},0);break;
+    case "q-cancel":UI.askQ=false;render();break;
+    case "q-save":{const txt=$("#qText").value.trim();if(!txt){$("#qText").focus();return;}let pid=$("#qPerson").value;
+      if(pid==="__new"){const n=$("#qNewName").value.trim();if(!n){$("#qNewName").focus();return;}pid=addPerson(n,$("#qNewTeam").value);}
+      S.questions.push({id:uid("q_"),personId:pid,taskId:$("#qTask").value,text:txt,answer:"",answeredAt:null,created:TODAY()});UI.askQ=false;save();render();break;}
+    case "answer":UI.answering=id;render();setTimeout(()=>{const x=$("#ansText");if(x)x.focus();},0);break;
+    case "ans-cancel":UI.answering=null;render();break;
+    case "ans-save":{const v=$("#ansText").value.trim();if(!v)return;const q=S.questions.find(x=>x.id===id);q.answer=v;q.answeredAt=TODAY();const t=task(q.taskId);if(t)t.history.push({at:TODAY(),text:pName(q.personId)+" answered: "+v});UI.answering=null;save();render();break;}
+    /* capture */
+    case "replay":startReplay();break;
+    case "replay-stop":stopReplay();break;
+    case "edit-tx":CAP.editing=true;render();break;
+    case "edit-done":CAP.editing=false;render();break;
+    case "clear-tx":undoSnap=JSON.stringify(S);D.transcript="";D.notes=null;CAP.elapsed=0;save();render();toast("Transcript cleared",true);break;
+    case "live-extract":liveExtract();break;
+    case "finish":finish();break;
+    case "retry-review":finish();break;
+    case "back-edit":D.phase="setup";save();render();break;
+    case "copy-summary":copy(D.review.summary);break;
+    case "close-session":closeSession();break;
+    case "add":applyItem(D.review.items[i],D);D.review.state[i]="added";save();render();break;
+    case "skip":D.review.state[i]="skipped";save();render();break;
+    case "unskip":delete D.review.state[i];save();render();break;
+    case "pe":UI.editProp=i;render();break;
+    case "pe-cancel":UI.editProp=null;render();break;
+    case "pe-save":{const it=D.review.items[i];it.title=$("#peTitle").value.trim()||it.title;it.detail=$("#peDetail").value.trim();UI.editProp=null;save();render();break;}
+    case "apply-all":D.review.items.forEach((it,j)=>{if(!D.review.state[j]){applyItem(it,D);D.review.state[j]="added";}});save();render();toast("Board updated");break;
+    case "skip-rest":D.review.items.forEach((it,j)=>{if(!D.review.state[j])D.review.state[j]="skipped";});save();render();break;
+    case "chat-stop":if(CAP.ctl)CAP.ctl.abort();break;
+  }
+});
+document.addEventListener("submit",e=>{if(e.target.id==="askForm"){e.preventDefault();askMeeting();}if(e.target.id==="addQ"){e.preventDefault();addQuestion();}});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&UI.drawer){UI.drawer=null;renderOverlay();}
+  if(e.key==="Enter"&&!e.isComposing){
+    if(e.target.id==="advInput"){e.preventDefault();document.querySelector('[data-act="adv-save"]').click();}
+    if(e.target.id==="ansText"){e.preventDefault();document.querySelector('[data-act="ans-save"]').click();}
+    if(e.target.id==="qText"){e.preventDefault();document.querySelector('[data-act="q-save"]').click();}
+  }
+});
+
+/* ---------- theme ---------- */
+const root=document.documentElement,tb=$("#themeBtn");
+const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+const syncTheme=()=>{tb.textContent=isDark()?"Light":"Dark";};
+tb.onclick=()=>{root.dataset.theme=isDark()?"light":"dark";syncTheme();try{localStorage.setItem("pm-tracker-theme",root.dataset.theme);}catch(e){}};
+try{const t=localStorage.getItem("pm-tracker-theme");if(t)root.dataset.theme=t;}catch(e){}
+syncTheme();
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",syncTheme);}catch(e){}
+/* boot() is called by the build: directly for the Artifact, after the platform layer for web and Mac. */
+</script>
