@@ -619,7 +619,7 @@ document.addEventListener("click",async e=>{
   if(el=g("[data-obrole]")){OB.role=el.dataset.obrole;document.querySelectorAll(".ob-role").forEach(b=>b.classList.toggle("on",b===el));$("#oberr-role").hidden=true;return;}
   if(g("[data-obabout]")){if(!check([["name"],["role"]]))return;P.name=$("#ob-name").value.trim();const roleChanged=P.role!==OB.role;P.role=OB.role;ME=P.name;if(roleChanged&&S.sample&&S.pristine){S=sampleState();applySampleLang();}savePrefs();render();openOB(nextStep());return;}
   if(el=g("[data-obstart]")){OB.start=el.dataset.obstart;document.querySelectorAll(".ob-opt").forEach(b=>b.classList.toggle("on",b===el));return;}
-  if(g("[data-obfinish]")){P.onboarded=true;savePrefs();if(OB.start==="sample"){if(!S.sample){S=sampleState();applySampleLang();save();}closeOB();go("today");}else openOB("setup");return;}
+  if(g("[data-obfinish]")){P.onboarded=true;savePrefs();if(OB.start==="sample"){/* never replace a board someone already filled in */const empty=!S.tasks.length&&!S.questions.length&&!S.people.length;if(!S.sample&&empty){S=sampleState();applySampleLang();save();}closeOB();go("today");}else openOB("setup");return;}
   if(el=g("[data-obteam]")){if(el.dataset.obteam==="__other"){OB.otherTeam=!OB.otherTeam;OB.pplName=($("#ob-ppl")||{}).value||OB.pplName;drawOB();}else{OB.pplName=($("#ob-ppl")||{}).value||"";addPerson2(el.dataset.obteam);}return;}
   if(g("[data-obaddother]")){addPerson2(($("#ob-otherteam")||{}).value.trim());return;}
   if(el=g("[data-obsetrole]")){P.role=el.dataset.obsetrole;savePrefs();if(S.sample&&S.pristine){S=sampleState();applySampleLang();}render();drawOB();return;}
