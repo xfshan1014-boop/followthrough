@@ -47,10 +47,22 @@ menu bar, and launch it at login.
 
 1. Download `Followthrough-<version>-mac.zip` from [Releases](https://github.com/xfshan1014-boop/followthrough/releases/latest) and unzip it.
 2. Move `Followthrough.app` to your Applications folder.
-3. First launch: **right-click the app and choose Open**. The app is open source but not signed
-   with a paid Apple Developer certificate, so macOS asks once.
+3. Open it the first time. The app is open source but not yet signed with a paid Apple Developer
+   certificate, so macOS shows *"Apple cannot check it for malicious software"* when you double-click it.
+   Click **OK**, then:
 
-Requires macOS 13 or later, Apple silicon or Intel.
+   **macOS 14 (Sonoma) and earlier**
+   - Right-click `Followthrough.app` in Finder and choose **Open**.
+   - Click **Open** in the dialog. From now on it opens normally.
+
+   **macOS 15 (Sequoia) and later**
+   - Open **System Settings → Privacy & Security** and scroll down to **Security**.
+   - Next to *"Followthrough was blocked to protect your Mac"*, click **Open Anyway**, then confirm with your password.
+
+   You only do this once. Prefer the Terminal? `xattr -dr com.apple.quarantine /Applications/Followthrough.app` does the same.
+
+Requires macOS 13 or later, Apple silicon or Intel. A signed and notarized build is coming, after which
+none of this is needed.
 
 ## Build it yourself
 

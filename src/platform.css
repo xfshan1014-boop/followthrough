@@ -140,3 +140,6 @@
 .ob-brand svg{width:44px;height:44px;flex:none}
 .ob-brand .nm{font-weight:600;font-size:16px}
 .ob-brand .tg{font-size:13px;color:var(--ink-3)}
+.ob-open{margin-top:12px;border-radius:10px;background:var(--surface-2);padding:10px 12px}
+.ob-open-h{font-size:12px;font-weight:500;color:var(--ink-2);margin-bottom:2px}
+.ob-open .ob-hint{margin:4px 0 0}

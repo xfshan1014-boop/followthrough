@@ -281,6 +281,9 @@ body{margin:0;font:14px/1.5 system-ui,-apple-system,sans-serif}img{max-width:100
 .ob-brand svg{width:44px;height:44px;flex:none}
 .ob-brand .nm{font-weight:600;font-size:16px}
 .ob-brand .tg{font-size:13px;color:var(--ink-3)}
+.ob-open{margin-top:12px;border-radius:10px;background:var(--surface-2);padding:10px 12px}
+.ob-open-h{font-size:12px;font-weight:500;color:var(--ink-2);margin-bottom:2px}
+.ob-open .ob-hint{margin:4px 0 0}
 
 </style>
 </head>
@@ -1658,7 +1661,7 @@ en:{ai_off:"AI: off",ai_on:n=>"AI: "+n,mac:"Mac app",settings:"Settings",
  a_errs:{auth:"That key was rejected. Check it and try again.",network:"Couldn't reach the provider. Check your connection.",no_base:"Add the base URL first.",rate_limited:"The provider is rate limiting. Try again in a minute.",no_model:"The provider didn't recognize that model.",other:"The provider returned an error."},
  m_eb:"Recommended",m_h:"Get the Mac app",m_p:"Same board, always one glance away.",
  m_perks:[["▣","Floats on your desktop","Keep it on top of other windows, or open it from the menu bar."],["◐","Apple's on-device transcription","Record a 1:1 and transcribe it privately on your Mac."],["↻","Opens when you log in","Your day's moves are waiting before your first meeting."]],
- m_dl:"Download for Mac",m_meta:["Free","macOS 13+","Apple silicon or Intel"],m_first:"First launch: right-click the app and choose Open.",m_later:"Keep using the browser",
+ m_dl:"Download for Mac",m_meta:["Free","macOS 13+","Apple silicon or Intel"],m_first:["First time on macOS 14: right-click the app, then choose Open.","On macOS 15 or later: open it once, then go to System Settings › Privacy & Security and click Open Anyway."],m_later:"Keep using the browser",
  d_eb:"All set",d_h:n=>`You're ready, ${n}.`,d_p:"How do you want to start?",o1h:"Set up my board",o1d:"Add the people you work with. Takes a minute.",o2h:"Look around a sample week first",o2d:r=>`A made-up ${r} week. Switch to your own board anytime.`,d_go:"Continue",
  st_lang:"Language",st_theme:"Appearance",st_themes:[["system","System"],["light","Light"],["dark","Dark"]],st_ai:"AI",st_aiOff:"Not connected",st_aiOn:(p,m)=>`${p} · ${m}`,st_aiBtn:"Set up",st_aiEdit:"Change",
  st_data:"Your data",st_dataL:IS_MAC?"Saved on this Mac only":"Saved in this browser only",st_exp:"Export",st_imp:"Import",st_erase:"Erase everything",st_eraseQ:"Erase your board, settings, and key from this device?",st_eraseYes:"Erase",
@@ -1693,7 +1696,7 @@ zh:{ai_off:"AI：未连接",ai_on:n=>"AI："+n,mac:"Mac 应用",settings:"设置
  a_errs:{auth:"key 被拒绝了，检查一下再试。",network:"连不上服务商，检查一下网络。",no_base:"请先填写接口地址。",rate_limited:"服务商限流了，一分钟后再试。",no_model:"服务商不认识这个模型。",other:"服务商返回了错误。"},
  m_eb:"推荐",m_h:"下载 Mac 应用",m_p:"同一个看板，抬眼就能看到。",
  m_perks:[["▣","悬浮在桌面上","可以置顶在其他窗口之上，也可以从菜单栏打开。"],["◐","苹果本地语音转写","录下 1:1，在你的 Mac 上私密转写。"],["↻","开机自动打开","第一个会议之前，今天要推的事已经摆在眼前。"]],
- m_dl:"下载 Mac 版",m_meta:["免费","macOS 13+","Apple 芯片或 Intel"],m_first:"首次打开：右键点应用，选择「打开」。",m_later:"继续用浏览器",
+ m_dl:"下载 Mac 版",m_meta:["免费","macOS 13+","Apple 芯片或 Intel"],m_first:["macOS 14 首次打开：右键点 App，选择「打开」。","macOS 15 及以上：先双击一次，再到「系统设置 › 隐私与安全性」点「仍要打开」。"],m_later:"继续用浏览器",
  d_eb:"准备好了",d_h:n=>`一切就绪，${n}。`,d_p:"你想怎么开始？",o1h:"搭建我的看板",o1d:"添加你常对接的人，一分钟就好。",o2h:"先看看示例周",o2d:r=>`一周虚构的${r}工作，随时可以切换到你自己的看板。`,d_go:"继续",
  st_lang:"语言",st_theme:"外观",st_themes:[["system","跟随系统"],["light","浅色"],["dark","深色"]],st_ai:"AI",st_aiOff:"未连接",st_aiOn:(p,m)=>`${p} · ${m}`,st_aiBtn:"去设置",st_aiEdit:"更改",
  st_data:"你的数据",st_dataL:IS_MAC?"只保存在这台 Mac 上":"只保存在这个浏览器里",st_exp:"导出",st_imp:"导入",st_erase:"清除全部数据",st_eraseQ:"从这台设备上清除看板、设置和 key？",st_eraseYes:"清除",
@@ -1912,7 +1915,7 @@ function cardHTML(){const s=OB.screen;
   if(s==="mac")return `${bars()}${head(t("m_eb"))}<h2>${t("m_h")}</h2><p>${t("m_p")}</p>
     <div class="ob-perks">${t("m_perks").map(([ic,h,d])=>`<div class="ob-perk"><span class="ic" aria-hidden="true">${ic}</span><div><div class="h">${h}</div><div class="d">${d}</div></div></div>`).join("")}</div>
     <div class="ob-dl"><div class="ob-appicon">${ICON_SVG}</div><div style="min-width:0"><div style="font-weight:500">Followthrough</div><div class="ob-hint" style="margin:0">${t("m_meta").map(x=>`<span style="white-space:nowrap">${x}</span>`).join(" · ")}</div></div><span class="grow"></span><a class="btn pri" href="${DOWNLOAD_URL}" target="_blank" rel="noopener">${t("m_dl")}</a></div>
-    <p class="ob-hint">${t("m_first")}</p>
+    <div class="ob-open"><div class="ob-open-h">${L()==="zh"?"第一次打开":"Opening it the first time"}</div>${t("m_first").map(x=>`<p class="ob-hint">${x}</p>`).join("")}</div>
     <div class="ob-acts"><button class="btn pri" type="button" data-obgo="next">${t("cont")}</button><span class="grow"></span><button class="ob-skip" type="button" data-obgo="next">${t("m_later")}</button></div>`;
   if(s==="done")return `${bars()}${head(t("d_eb"))}<h2>${t("d_h")(esc(P.name||""))}</h2><p>${t("d_p")}</p>
     <div class="ob-choice"><button type="button" class="ob-opt${OB.start!=="sample"?" on":""}" data-obstart="own"><span class="ic" aria-hidden="true">＋</span><span><span class="h">${t("o1h")}</span><span class="d">${t("o1d")}</span></span></button>
